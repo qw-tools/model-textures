@@ -178,7 +178,6 @@ const clearCanvasDrawing = () => {
               :src="`${baseUrl}/assets/models/playerout.gltf`"
               camera-controls
               disable-zoom
-              interaction-prompt="none"
               max-camera-orbit="auto 360deg 100"
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
