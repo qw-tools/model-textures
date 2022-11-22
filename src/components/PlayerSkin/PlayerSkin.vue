@@ -22,7 +22,7 @@ const handleDrop = (event: DragEvent) => {
   setPlayerTextureByFile(event.dataTransfer.files[0]);
 };
 
-const handleCustomSkinChange = (event: InputEvent) => {
+const handleCustomSkinChange = (event: Event) => {
   const files = (event.target as HTMLInputElement).files;
 
   if (!files) {
