@@ -56,6 +56,8 @@ const setPlayerTextureByFile = (file: File) => {
   reader.readAsDataURL(file);
 };
 
+const updatePlayerTexture = () => setPlayerTextureByCanvas(playerCanvas);
+
 const setPlayerTextureByCanvas = async (canvas: HTMLCanvasElement) => {
   if (!viewer.model || 0 === viewer.model.materials.length) {
     return;
@@ -79,7 +81,7 @@ let playerCanvasBoundingBox: DOMRect;
 let playerImage: HTMLImageElement;
 
 const renderPlayerSkinToCanvas = () => {
-  const canvasDrawTimeout = 25;
+  const canvasDrawTimeout = 40;
   window.setTimeout(() => {
     ctx?.drawImage(
       playerImage,
@@ -142,8 +144,6 @@ const drawOnCanvas = async (x0: number, y0: number, x1: number, y1: number) => {
   ctx.moveTo(x0, y0);
   ctx.lineTo(x1, y1);
   ctx.stroke();
-
-  await setPlayerTextureByCanvas(playerCanvas);
 };
 
 const clearCanvasDrawing = () => {
@@ -152,7 +152,7 @@ const clearCanvasDrawing = () => {
 
   setTimeout(async () => {
     await setPlayerTextureByCanvas(playerCanvas);
-  }, 30);
+  }, 40);
 };
 </script>
 
@@ -194,6 +194,7 @@ const clearCanvasDrawing = () => {
               class="border bg-white cursor-crosshair"
               height="386"
               width="512"
+              @mouseup="updatePlayerTexture"
               @mousedown="drawDotOnCanvas"
               @mouseenter="updateCanvasPosition"
               @mousemove="drawLineOnCanvas"
