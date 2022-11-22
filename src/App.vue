@@ -52,6 +52,8 @@ onMounted(() => {
 
 });
 
+const baseUrl = import.meta.env.BASE_URL;
+
 </script>
 
 <template>
@@ -67,11 +69,11 @@ onMounted(() => {
     <div>
       <div class="grid" :style="`filter: hue-rotate(${store.color.r}deg)`">
         <div v-for="model in models" class="container" style="display: flex;">
-          <model-viewer :src="`/assets/models/${model.filename}out.gltf`" orientation="270deg 270deg 45deg" interaction-prompt="none"
+          <model-viewer :src="`${baseUrl}/assets/models/${model.filename}out.gltf`" orientation="270deg 270deg 45deg" interaction-prompt="none"
                         disable-zoom camera-controls
                         min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 360deg 100"
                         :auto-rotate="store.rotate" auto-rotate-delay="0" rotation-per-second="10deg"
-                        :data-texture="model.texture"
+                        :data-texture="`${baseUrl}/${model.texture}`"
                         :id="model.id">
 
           </model-viewer>
