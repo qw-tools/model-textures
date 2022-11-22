@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import { resolve } from "path";
 import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
@@ -16,4 +17,12 @@ export default defineConfig({
     "process.env": process.env,
   },
   plugins: [vuePlugin],
+  build: {
+    rollupOptions: {
+      input: {
+        playerSkin: resolve(__dirname, "index.html"),
+        itemModels: resolve(__dirname, "item_models.html"),
+      },
+    },
+  },
 });
