@@ -78,7 +78,7 @@ const baseUrl = import.meta.env.BASE_URL;
 
           </model-viewer>
           <div style="display: flex; align-items: center; justify-content: center; width: 50%;" v-if="model.texture">
-            <img :src="model.texture" alt="" width="512" height="" />
+            <img :src="`${baseUrl}/${model.texture}`" alt="" width="512" height="" />
           </div>
         </div>
       </div>
