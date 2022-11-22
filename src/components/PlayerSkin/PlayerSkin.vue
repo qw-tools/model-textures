@@ -10,43 +10,55 @@ const store = reactive({
   skinTextureURI: `${baseUrl}/assets/models/playerout0_tex00.png`,
 });
 
-onMounted(() => {
-  let customSkinInput = document.getElementById(
-    "custom_skin"
-  ) as HTMLInputElement;
+const handleDrop = (event: DragEvent) => {
+  // prevent opening image in browser
+  event.stopPropagation();
+  event.preventDefault();
 
-  if (!customSkinInput) {
+  if (!event.dataTransfer) {
     return;
   }
 
-  customSkinInput.addEventListener("change", function () {
-    if (!this.files || 0 === this.files.length) {
+  setPlayerTextureByFile(event.dataTransfer.files[0]);
+};
+
+const handleCustomSkinChange = (event: InputEvent) => {
+  const files = (event.target as HTMLInputElement).files;
+
+  if (!files) {
+    return;
+  }
+
+  setPlayerTextureByFile(files[0]);
+};
+
+const setPlayerTextureByFile = (file: File) => {
+  const reader = new FileReader();
+
+  reader.addEventListener("load", async function () {
+    if (!viewer.model || 0 === viewer.model.materials.length) {
       return;
     }
 
-    let viewer = document.getElementById("player") as ModelViewerElement | null;
+    const texture = await viewer.createTexture(reader.result as string);
 
-    const reader = new FileReader();
-    reader.addEventListener("load", async function () {
-      if (!viewer || !viewer.model || 0 === viewer.model.materials.length) {
-        return;
-      }
+    if (!texture) {
+      return;
+    }
 
-      const texture = await viewer.createTexture(reader.result as string);
-
-      if (!texture) {
-        return;
-      }
-
-      viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-        texture
-      );
-      store.skinTextureURI = reader.result as string;
-    });
-
-    const file = this.files[0];
-    reader.readAsDataURL(file);
+    viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
+      texture
+    );
+    store.skinTextureURI = reader.result as string;
   });
+
+  reader.readAsDataURL(file);
+};
+
+let viewer: ModelViewerElement;
+
+onMounted(() => {
+  viewer = document.getElementById("player") as ModelViewerElement;
 });
 </script>
 
@@ -77,7 +89,11 @@ onMounted(() => {
             >
             </model-viewer>
           </div>
-          <div class="col-span-4 debug self-center">
+          <div
+            class="col-span-4 debug self-center"
+            @drop="handleDrop"
+            @dragover.prevent
+          >
             <img :src="store.skinTextureURI" alt="Player Skin" class="w-full" />
           </div>
 
@@ -89,7 +105,11 @@ onMounted(() => {
               <hr />
               <div class="flex items-center">
                 <div class="w-32"><strong>Custom skin</strong></div>
-                <input id="custom_skin" type="file" />
+                <input
+                  id="custom_skin"
+                  type="file"
+                  @change="handleCustomSkinChange"
+                />
               </div>
               <hr />
               <div>foo</div>
