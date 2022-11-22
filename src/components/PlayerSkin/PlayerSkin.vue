@@ -50,6 +50,7 @@ const setPlayerTextureByFile = (file: File) => {
       texture
     );
     store.skinTextureURI = reader.result as string;
+    clearCanvas();
     renderPlayerSkinToCanvas();
   });
 
@@ -145,8 +146,11 @@ const drawOnCanvas = async (x0: number, y0: number, x1: number, y1: number) => {
   ctx.stroke();
 };
 
-const clearCanvasDrawing = () => {
+const clearCanvas = () => {
   ctx?.clearRect(0, 0, playerCanvas.width, playerCanvas.height);
+};
+
+const clearCanvasDrawing = () => {
   renderPlayerSkinToCanvas();
 
   setTimeout(async () => {
@@ -194,10 +198,10 @@ const clearCanvasDrawing = () => {
               class="border bg-white cursor-crosshair"
               height="386"
               width="512"
-              @mouseup="updatePlayerTexture"
               @mousedown="drawDotOnCanvas"
               @mouseenter="updateCanvasPosition"
               @mousemove="drawLineOnCanvas"
+              @mouseup="updatePlayerTexture"
             ></canvas>
             <img
               id="PlayerImage"
