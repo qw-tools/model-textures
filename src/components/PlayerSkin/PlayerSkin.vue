@@ -56,6 +56,22 @@ const setPlayerTextureByFile = (file: File) => {
   reader.readAsDataURL(file);
 };
 
+const setPlayerTextureByCanvas = async (canvas: HTMLCanvasElement) => {
+  if (!viewer.model || 0 === viewer.model.materials.length) {
+    return;
+  }
+
+  const texture = await viewer.createTexture(canvas.toDataURL());
+
+  if (!texture) {
+    return;
+  }
+
+  viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
+    texture
+  );
+};
+
 let viewer: ModelViewerElement;
 let playerCanvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D | null;
@@ -113,7 +129,7 @@ const drawDotOnCanvas = (event: MouseEvent) => {
   drawOnCanvas(canvasPos.x, canvasPos.y, canvasPos.x, canvasPos.y);
 };
 
-const drawOnCanvas = (x0: number, y0: number, x1: number, y1: number) => {
+const drawOnCanvas = async (x0: number, y0: number, x1: number, y1: number) => {
   if (!ctx) {
     return;
   }
@@ -126,11 +142,17 @@ const drawOnCanvas = (x0: number, y0: number, x1: number, y1: number) => {
   ctx.moveTo(x0, y0);
   ctx.lineTo(x1, y1);
   ctx.stroke();
+
+  await setPlayerTextureByCanvas(playerCanvas);
 };
 
 const clearCanvasDrawing = () => {
   ctx?.clearRect(0, 0, playerCanvas.width, playerCanvas.height);
   renderPlayerSkinToCanvas();
+
+  setTimeout(async () => {
+    await setPlayerTextureByCanvas(playerCanvas);
+  }, 30);
 };
 </script>
 
@@ -180,12 +202,13 @@ const clearCanvasDrawing = () => {
               id="PlayerImage"
               :src="store.skinTextureURI"
               alt="Player Skin"
+              class="hidden"
             />
 
             <div class="p-2 bg-gray-300">
               <button
-                @click="clearCanvasDrawing"
                 class="border border-gray-400 hover:bg-red-100 rounded p-2 bg-gray-100 shadow"
+                @click="clearCanvasDrawing"
               >
                 Clear drawing
               </button>
