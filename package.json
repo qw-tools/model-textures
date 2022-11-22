@@ -1,7 +1,8 @@
 {
-  "name": "qwgfx",
-  "private": true,
-  "version": "0.0.0",
+  "name": "qw-gfx",
+  "version": "0.1.0",
+  "author": "Viktor Persson",
+  "repository": "vikpe/qw-gfx",
   "type": "module",
   "scripts": {
     "dev": "vite",
