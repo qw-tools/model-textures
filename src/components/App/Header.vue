@@ -4,12 +4,6 @@
       <span class="font-bold">QuakeWorld Graphics</span>
       <span class="text-gray-500">|</span>
       <span class="text-amber-200 font-bold">Player Skin Editor</span>
-      <!--      <span class="text-gray-500">|</span>-->
-      <!--      <a href="#" class="text-sky-300">Player Skin</a>-->
-      <!--      <span class="text-gray-500">|</span>-->
-      <!--      <a href="#" class="text-sky-300">Crosshair</a>-->
-      <!--      <span class="text-gray-500">|</span>-->
-      <!--      <a href="#" class="text-sky-300">Model textures</a>-->
     </div>
   </div>
 </template>
