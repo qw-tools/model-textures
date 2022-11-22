@@ -7,7 +7,7 @@
         &quot;XantoM&quot;</span
       >
       <span class="text-gray-400">|</span>
-      <a class="text-sky-600" href="https://github.com/vikpe/qwnum"
+      <a class="text-sky-600" href="https://github.com/vikpe/qw-gfx"
         >Source on GitHub &#8599;</a
       >
     </div>
