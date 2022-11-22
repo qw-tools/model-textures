@@ -1,5 +1,53 @@
 <script lang="ts" setup>
+import { onMounted, reactive } from "vue";
+import { ModelViewerElement } from "@google/model-viewer";
+
 const baseUrl = import.meta.env.BASE_URL;
+
+const store = reactive({
+  rotate: true,
+  color: { r: 0, g: 0, b: 0, a: 0 },
+  skinTextureURI: `${baseUrl}/assets/models/playerout0_tex00.png`,
+});
+
+onMounted(() => {
+  let customSkinInput = document.getElementById(
+    "custom_skin"
+  ) as HTMLInputElement;
+
+  if (!customSkinInput) {
+    return;
+  }
+
+  customSkinInput.addEventListener("change", function () {
+    if (!this.files || 0 === this.files.length) {
+      return;
+    }
+
+    let viewer = document.getElementById("player") as ModelViewerElement | null;
+
+    const reader = new FileReader();
+    reader.addEventListener("load", async function () {
+      if (!viewer || !viewer.model || 0 === viewer.model.materials.length) {
+        return;
+      }
+
+      const texture = await viewer.createTexture(reader.result as string);
+
+      if (!texture) {
+        return;
+      }
+
+      viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
+        texture
+      );
+      store.skinTextureURI = reader.result as string;
+    });
+
+    const file = this.files[0];
+    reader.readAsDataURL(file);
+  });
+});
 </script>
 
 <template>
@@ -30,16 +78,18 @@ const baseUrl = import.meta.env.BASE_URL;
             </model-viewer>
           </div>
           <div class="col-span-4 debug self-center">
-            <img
-              :src="`${baseUrl}/assets/models/playerout0_tex00.png`"
-              class="w-full"
-            />
+            <img :src="store.skinTextureURI" alt="Player Skin" class="w-full" />
           </div>
 
           <div class="col-span-3 ml-8">
             <div class="space-y-4">
               <div class="flex items-center">
                 <div class="text-lg font-bold">Settings</div>
+              </div>
+              <hr />
+              <div class="flex items-center">
+                <div class="w-32"><strong>Custom skin</strong></div>
+                <input id="custom_skin" type="file" />
               </div>
               <hr />
               <div>foo</div>
