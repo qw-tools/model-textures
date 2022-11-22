@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@google/model-viewer": "^2.1.0",
+    "@types/node": "^18.11.9",
     "@vitejs/plugin-vue": "^3.2.0",
     "autoprefixer": "^10.4.13",
     "prettier": "^2.7.1",

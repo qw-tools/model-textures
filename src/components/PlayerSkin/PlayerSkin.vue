@@ -1,5 +1,6 @@
-<script>
-import { reactive } from "vue";
+<script lang="ts" setup>
+import { onMounted, reactive } from "vue";
+import {ModelViewerElement} from "@google/model-viewer";
 
 const store = reactive({
   rotate: true,
@@ -10,9 +11,6 @@ const store = reactive({
     a: 0,
   },
 });
-</script>
-<script setup>
-import { onMounted } from "vue";
 
 const models = [
   {
@@ -49,7 +47,7 @@ const models = [
 ];
 
 onMounted(() => {
-  const viewers = document.querySelectorAll("model-viewer");
+  const viewers = document.querySelectorAll("model-viewer") as NodeListOf<ModelViewerElement>;
 
   viewers.forEach((el) => {
     el.addEventListener("load", async () => {
@@ -60,8 +58,13 @@ onMounted(() => {
       }
 
       const texture = await el.createTexture(textureSource);
+
+      if (!el.model){
+        return;
+      }
+
       el.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-        texture
+          texture
       );
     });
   });
@@ -84,39 +87,39 @@ const baseUrl = import.meta.env.BASE_URL;
           <div>
             HUE
             <input
-              v-model="store.color.r"
-              max="360"
-              min="0"
-              style="width: 200px"
-              type="range"
+                v-model="store.color.r"
+                max="360"
+                min="0"
+                style="width: 200px"
+                type="range"
             />
           </div>
         </div>
         <div>
           <div :style="`filter: hue-rotate(${store.color.r}deg)`" class="grid">
             <div
-              v-for="model in models"
-              class="container"
-              style="display: flex"
+                v-for="model in models"
+                class="container"
+                style="display: flex"
             >
               <model-viewer
-                :id="model.id"
-                :auto-rotate="store.rotate"
-                :data-texture="`${baseUrl}/${model.texture}`"
-                :src="`${baseUrl}/assets/models/${model.filename}out.gltf`"
-                auto-rotate-delay="0"
-                camera-controls
-                disable-zoom
-                interaction-prompt="none"
-                max-camera-orbit="auto 360deg 100"
-                min-camera-orbit="auto 0deg auto"
-                orientation="270deg 270deg 45deg"
-                rotation-per-second="10deg"
+                  :id="model.id"
+                  :auto-rotate="store.rotate"
+                  :data-texture="`${baseUrl}/${model.texture}`"
+                  :src="`${baseUrl}/assets/models/${model.filename}out.gltf`"
+                  auto-rotate-delay="0"
+                  camera-controls
+                  disable-zoom
+                  interaction-prompt="none"
+                  max-camera-orbit="auto 360deg 100"
+                  min-camera-orbit="auto 0deg auto"
+                  orientation="270deg 270deg 45deg"
+                  rotation-per-second="10deg"
               >
               </model-viewer>
               <div
-                v-if="model.texture"
-                style="
+                  v-if="model.texture"
+                  style="
                   display: flex;
                   align-items: center;
                   justify-content: center;
@@ -124,10 +127,10 @@ const baseUrl = import.meta.env.BASE_URL;
                 "
               >
                 <img
-                  :src="`${baseUrl}/${model.texture}`"
-                  alt=""
-                  height=""
-                  width="512"
+                    :src="`${baseUrl}/${model.texture}`"
+                    alt=""
+                    height=""
+                    width="512"
                 />
               </div>
             </div>
