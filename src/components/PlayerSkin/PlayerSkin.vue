@@ -103,7 +103,6 @@ onMounted(() => {
   playerCanvas = document.getElementById("PlayerCanvas") as HTMLCanvasElement;
   ctx = playerCanvas.getContext("2d");
   playerCanvasBoundingBox = playerCanvas.getBoundingClientRect();
-  renderPlayerSkinToCanvas();
 });
 
 // new position from mouse event
@@ -180,6 +179,7 @@ const clearCanvasDrawing = () => {
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
               rotation-per-second="5deg"
+              @load="renderPlayerSkinToCanvas"
             >
             </model-viewer>
           </div>
