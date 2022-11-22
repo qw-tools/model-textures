@@ -8,19 +8,33 @@ const store = reactive({
     g: 0,
     b: 0,
     a: 0,
-  }
+  },
 });
 </script>
 <script setup>
-
-
 import { onMounted } from "vue";
 
 const models = [
-  { id: "armor1", filename: "armor", texture: "/assets/models/armorout0_tex00.png" },
-  { id: "armor2", filename: "armor", texture: "/assets/models/armorout0_tex01.png" },
-  { id: "armor3", filename: "armor", texture: "/assets/models/armorout0_tex02.png" },
-  { id: "backpack", filename: "backpack", texture: "/assets/models/backpackout0_tex00.png" },
+  {
+    id: "armor1",
+    filename: "armor",
+    texture: "/assets/models/armorout0_tex00.png",
+  },
+  {
+    id: "armor2",
+    filename: "armor",
+    texture: "/assets/models/armorout0_tex01.png",
+  },
+  {
+    id: "armor3",
+    filename: "armor",
+    texture: "/assets/models/armorout0_tex02.png",
+  },
+  {
+    id: "backpack",
+    filename: "backpack",
+    texture: "/assets/models/backpackout0_tex00.png",
+  },
   { id: "player", filename: "player" },
   { id: "g_shot", filename: "g_shot" },
   { id: "g_nail", filename: "g_nail" },
@@ -32,59 +46,96 @@ const models = [
   { id: "missile", filename: "missile" },
   { id: "quaddama", filename: "quaddama" },
   { id: "invulner", filename: "invulner" },
-]
+];
 
 onMounted(() => {
   const viewers = document.querySelectorAll("model-viewer");
 
-  viewers.forEach(el => {
+  viewers.forEach((el) => {
     el.addEventListener("load", async () => {
       const textureSource = el.getAttribute("data-texture");
 
       if (!textureSource) {
-        return
+        return;
       }
 
       const texture = await el.createTexture(textureSource);
-      el.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(texture);
+      el.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
+        texture
+      );
     });
-  })
-
+  });
 });
 
 const baseUrl = import.meta.env.BASE_URL;
-
 </script>
 
 <template>
-
-  <div style="display: grid; grid-template-rows: 60px auto; height: 95vh">
-    <div style="display: flex; align-items: center;">
-      <div>
-        HUE
-        <input type="range" min="0" max="360" style="width: 200px" v-model="store.color.r" />
+  <div class="bg-gray-100 border-b border-gray-300">
+    <div class="bg-white shadow">
+      <div class="container">
+        <div class="font-bold text-xl py-4">Player Skin Editor</div>
       </div>
-
     </div>
-    <div>
-      <div class="grid" :style="`filter: hue-rotate(${store.color.r}deg)`">
-        <div v-for="model in models" class="container" style="display: flex;">
-          <model-viewer :src="`${baseUrl}/assets/models/${model.filename}out.gltf`" orientation="270deg 270deg 45deg" interaction-prompt="none"
-                        disable-zoom camera-controls
-                        min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 360deg 100"
-                        :auto-rotate="store.rotate" auto-rotate-delay="0" rotation-per-second="10deg"
-                        :data-texture="`${baseUrl}/${model.texture}`"
-                        :id="model.id">
 
-          </model-viewer>
-          <div style="display: flex; align-items: center; justify-content: center; width: 50%;" v-if="model.texture">
-            <img :src="`${baseUrl}/${model.texture}`" alt="" width="512" height="" />
+    <div class="container fadeIn">
+      <div style="display: grid; grid-template-rows: 60px auto; height: 95vh">
+        <div style="display: flex; align-items: center">
+          <div>
+            HUE
+            <input
+              v-model="store.color.r"
+              max="360"
+              min="0"
+              style="width: 200px"
+              type="range"
+            />
+          </div>
+        </div>
+        <div>
+          <div :style="`filter: hue-rotate(${store.color.r}deg)`" class="grid">
+            <div
+              v-for="model in models"
+              class="container"
+              style="display: flex"
+            >
+              <model-viewer
+                :id="model.id"
+                :auto-rotate="store.rotate"
+                :data-texture="`${baseUrl}/${model.texture}`"
+                :src="`${baseUrl}/assets/models/${model.filename}out.gltf`"
+                auto-rotate-delay="0"
+                camera-controls
+                disable-zoom
+                interaction-prompt="none"
+                max-camera-orbit="auto 360deg 100"
+                min-camera-orbit="auto 0deg auto"
+                orientation="270deg 270deg 45deg"
+                rotation-per-second="10deg"
+              >
+              </model-viewer>
+              <div
+                v-if="model.texture"
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 50%;
+                "
+              >
+                <img
+                  :src="`${baseUrl}/${model.texture}`"
+                  alt=""
+                  height=""
+                  width="512"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -93,17 +144,6 @@ const baseUrl = import.meta.env.BASE_URL;
   grid-template-columns: repeat(auto-fit, minmax(320px, auto));
   grid-template-rows: repeat(auto-fill, 300px);
   grid-gap: 1px;
-  height: 100%;
-}
-
-.container {
-  border: 1px solid #ddd;
-  background-color: #fff;
-  box-shadow: rgba(0, 0, 0, .2) 2px 2px 5px;
-}
-
-model-viewer {
-  width: 100%;
   height: 100%;
 }
 </style>
