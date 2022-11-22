@@ -157,6 +157,19 @@ const clearCanvasDrawing = () => {
     await setPlayerTextureByCanvas(playerCanvas);
   }, 40);
 };
+
+const parts = [
+  "Helmet",
+  "Face",
+  "Shoulders",
+  "Arms",
+  "Gloves",
+  "Axe",
+  "Weapon",
+  "Pants",
+  "Flame",
+  "Boots",
+];
 </script>
 
 <template>
@@ -234,11 +247,52 @@ const clearCanvasDrawing = () => {
                 />
               </div>
               <hr />
-              <div>foo</div>
+              <div class="flex items-center">
+                <div class="w-32"><strong>Quake Colors</strong></div>
+                <input
+                  class="w-10 text-center"
+                  type="number"
+                  value="0"
+                  disabled
+                />
+                <input
+                  class="w-10 text-center"
+                  type="number"
+                  value="0"
+                  disabled
+                />
+              </div>
               <hr />
-              <div>foo</div>
+              <div class="flex items-center">
+                <div class="">
+                  <strong><input type="checkbox" /> Fine tune regions</strong>
+                </div>
+              </div>
               <hr />
-              <div>foo</div>
+              <div class="grid grid-cols-2 gap-4">
+                <div v-for="part in parts" class="flex items-center opacity-25">
+                  <div class="w-32">
+                    <strong>{{ part }}</strong>
+                  </div>
+                  <input type="color" disabled />
+                </div>
+              </div>
+              <hr />
+              <div class="flex items-center">
+                <div class="w-32"><strong>Brightness</strong></div>
+                <input type="range" disabled />
+              </div>
+              <hr />
+              <div class="flex items-center">
+                <div class="w-32"><strong>HUE</strong></div>
+                <input type="range" disabled />
+              </div>
+              <hr />
+              <div class="flex items-center">
+                <div class="w-32">
+                  <strong><input type="checkbox" disabled /> Colorize</strong>
+                </div>
+              </div>
             </div>
           </div>
         </div>
