@@ -1,9 +1,68 @@
-html {
-  background-color: #eee;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* main */
+@layer base {
+  html {
+    font-family: Roboto, sans-serif;
+  }
+
+  code {
+    font-family: monospace;
+  }
 }
+
+/* forms */
+select,
+input[type="number"],
+input[type="text"] {
+  @apply border rounded border-gray-300 mx-1 px-1 py-0.5 bg-white shadow;
+}
+
+input[type="checkbox"] {
+  @apply mr-1.5;
+}
+
+label,
+input[type="color"],
+select {
+  @apply cursor-pointer;
+}
+
+input[type="color"] {
+  @apply w-8 h-8;
+}
+
+label:hover {
+  @apply text-sky-600;
+}
+
+label:hover code {
+  font-weight: bold;
+}
+
+/* debug */
 .debug {
   border: 1px solid red;
 }
+
 .debug > * {
   border: 1px solid blue;
+}
+
+/* animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-duration: 500ms;
+  animation-name: fadeIn;
 }
