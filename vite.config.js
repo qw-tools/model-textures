@@ -11,6 +11,7 @@ const vuePlugin = vue({
 });
 
 export default defineConfig({
+  base: "https://vikpe.org/qw-gfx/",
   define: {
     'process.env': process.env,
   },
