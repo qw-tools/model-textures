@@ -4,10 +4,11 @@ import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import PlayerBrushSettings from "./PlayerBrushSettings.vue";
 import { BrushSettings } from "./types";
+import Conva from "./Conva.vue";
 
 const baseUrl = import.meta.env.BASE_URL;
 
-interface PStore {
+interface PlayerSkinStore {
   skinTextureURI: string;
   brushSettings: BrushSettings;
 }
