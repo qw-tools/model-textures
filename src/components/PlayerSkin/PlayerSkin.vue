@@ -284,12 +284,6 @@ const resetPlayerCanvas = () => {
                   @change="onCustomSkinChange"
                 />
               </div>
-              <hr />
-              <div>foo</div>
-              <hr />
-              <div>foo</div>
-              <hr />
-              <div>foo</div>
             </div>
           </div>
         </div>
