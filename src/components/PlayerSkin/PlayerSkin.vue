@@ -81,7 +81,6 @@ const setPlayerViewerModelTextureByCanvas = async (
 let viewer: ModelViewerElement;
 let playerCanvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D | null;
-let playerCanvasBoundingBox: DOMRect;
 let playerImage: HTMLImageElement;
 
 const drawImageOnCanvas = (
@@ -115,15 +114,15 @@ onMounted(() => {
   playerImage = document.getElementById("PlayerImage") as HTMLImageElement;
   playerCanvas = document.getElementById("PlayerCanvas") as HTMLCanvasElement;
   ctx = playerCanvas.getContext("2d");
-  playerCanvasBoundingBox = playerCanvas.getBoundingClientRect();
 });
 
 // new position from mouse event
 let canvasPos = { x: 0, y: 0 };
 
 const updatePlayerCanvasPosition = (event: MouseEvent) => {
-  canvasPos.x = event.clientX - playerCanvasBoundingBox.x;
-  canvasPos.y = event.clientY - playerCanvasBoundingBox.y;
+  const boundingBox = playerCanvas.getBoundingClientRect();
+  canvasPos.x = event.clientX - boundingBox.x;
+  canvasPos.y = event.clientY - boundingBox.y;
 };
 
 const drawLineOnPlayerCanvas = (event: MouseEvent) => {
