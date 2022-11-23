@@ -263,7 +263,7 @@ const resetPlayerCanvas = () => {
               height="386"
               width="512"
               @mousedown="drawDotOnPlayerCanvas"
-              @mouseenter="updatePlayerCanvasPosition"
+              @mouseenter="drawDotOnPlayerCanvas"
               @mousemove="drawLineOnPlayerCanvas"
               @mouseup="updatePlayerTexture"
             ></canvas>
