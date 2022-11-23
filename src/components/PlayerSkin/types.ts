@@ -1,5 +1,7 @@
+export type BrushShape = "round" | "square";
+
 export interface BrushSettings {
-  size: number;
   color: string;
-  shape: CanvasLineCap;
+  shape: BrushShape;
+  size: number;
 }

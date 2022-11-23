@@ -7,8 +7,18 @@ import { BrushSettings } from "./types";
 
 const baseUrl = import.meta.env.BASE_URL;
 
-const store = reactive({
+interface PStore {
+  skinTextureURI: string;
+  brushSettings: BrushSettings;
+}
+
+const store: PStore = reactive({
   skinTextureURI: `${baseUrl}/assets/models/playerout0_tex00.png`,
+  brushSettings: {
+    color: "#ff0000",
+    size: 24,
+    shape: "round",
+  },
 });
 
 const onFileDrop = (event: DragEvent) => {
@@ -99,7 +109,6 @@ let viewer: ModelViewerElement;
 let playerCanvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D | null;
 let playerImage: HTMLImageElement;
-let brushSettings: BrushSettings;
 
 const drawImageOnCanvas = (
   img: HTMLImageElement,
@@ -131,11 +140,6 @@ onMounted(() => {
   viewer = document.getElementById("PlayerViewer") as ModelViewerElement;
   playerImage = document.getElementById("PlayerImage") as HTMLImageElement;
   playerCanvas = document.getElementById("PlayerCanvas") as HTMLCanvasElement;
-  brushSettings = {
-    size: 4,
-    shape: "round",
-    color: "#ff0000",
-  };
   ctx = playerCanvas.getContext("2d");
 });
 
@@ -180,18 +184,21 @@ const drawOnPlayerCanvas = async (
     return;
   }
 
-  ctx.lineWidth = brushSettings.size;
-  ctx.lineCap = brushSettings.shape;
-  ctx.strokeStyle = brushSettings.color;
-
+  applyBrushSettings();
   ctx.beginPath();
   ctx.moveTo(x0, y0);
   ctx.lineTo(x1, y1);
   ctx.stroke();
 };
 
-const onBrushSettingsChange = (settings: BrushSettings) => {
-  brushSettings = settings;
+const applyBrushSettings = () => {
+  if (!ctx) {
+    return;
+  }
+
+  ctx.lineCap = store.brushSettings.shape;
+  ctx.lineWidth = store.brushSettings.size;
+  ctx.strokeStyle = store.brushSettings.color;
 };
 
 const clearPlayerCanvas = () => {
@@ -266,7 +273,7 @@ const resetPlayerCanvas = () => {
               >
                 Clear drawing
               </button>
-              <PlayerBrushSettings :on-change="onBrushSettingsChange" />
+              <PlayerBrushSettings v-model="store.brushSettings" />
             </div>
           </div>
 
