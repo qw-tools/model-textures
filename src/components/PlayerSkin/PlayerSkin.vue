@@ -9,7 +9,7 @@ const store = reactive({
   skinTextureURI: `${baseUrl}/assets/models/playerout0_tex00.png`,
 });
 
-const handleDrop = (event: DragEvent) => {
+const onFileDrop = (event: DragEvent) => {
   // prevent opening image in browser
   event.stopPropagation();
   event.preventDefault();
@@ -21,7 +21,7 @@ const handleDrop = (event: DragEvent) => {
   setPlayerTextureByFile(event.dataTransfer.files[0]);
 };
 
-const handleCustomSkinChange = (event: Event) => {
+const onCustomSkinChange = (event: Event) => {
   const files = (event.target as HTMLInputElement).files;
 
   if (!files) {
@@ -31,20 +31,28 @@ const handleCustomSkinChange = (event: Event) => {
   setPlayerTextureByFile(files[0]);
 };
 
-const setPlayerTextureByFile = (file: File) => {
-  const reader = new FileReader();
+const setPlayerTextureByFile = async (file: File) => {
+  const texture = await textureFromFile(file);
 
-  reader.addEventListener("load", async () => {
-    const texture = await viewer.createTexture(reader.result as string);
+  if (!texture) {
+    return;
+  }
 
-    if (!texture) {
-      return;
-    }
+  setPlayerTexture(texture);
+};
 
-    setPlayerTexture(texture);
+const textureFromFile = async (file: File): Promise<Texture | null> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+
+    reader.addEventListener("load", async () => {
+      const texture = await viewer.createTexture(reader.result as string);
+
+      resolve(texture);
+    });
+
+    reader.readAsDataURL(file);
   });
-
-  reader.readAsDataURL(file);
 };
 
 const setPlayerTexture = (texture: Texture) => {
@@ -213,7 +221,7 @@ const resetPlayerCanvas = () => {
           <div
             class="col-span-4 self-center"
             style="width: 512px"
-            @drop="handleDrop"
+            @drop="onFileDrop"
             @dragover.prevent
           >
             <canvas
@@ -254,7 +262,7 @@ const resetPlayerCanvas = () => {
                 <input
                   id="custom_skin"
                   type="file"
-                  @change="handleCustomSkinChange"
+                  @change="onCustomSkinChange"
                 />
               </div>
               <hr />
