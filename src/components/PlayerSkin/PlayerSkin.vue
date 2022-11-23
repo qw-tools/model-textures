@@ -68,7 +68,11 @@ const dataUriFromFile = async (file: File): Promise<string> => {
       resolve(reader.result as string);
     });
 
-    reader.readAsDataURL(file);
+    try {
+      reader.readAsDataURL(file);
+    } catch (e) {
+      console.log("error during reader.readAsDataURL", e);
+    }
   });
 };
 
