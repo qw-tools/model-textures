@@ -2,7 +2,8 @@
 import { onMounted, reactive } from "vue";
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
-import Palette from "./ColorPalette.vue";
+import PlayerBrushSettings from "./PlayerBrushSettings.vue";
+import { BrushSettings } from "./types";
 
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -98,7 +99,7 @@ let viewer: ModelViewerElement;
 let playerCanvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D | null;
 let playerImage: HTMLImageElement;
-let paintColor: string = "#ff0000";
+let brushSettings: BrushSettings;
 
 const drawImageOnCanvas = (
   img: HTMLImageElement,
@@ -130,6 +131,11 @@ onMounted(() => {
   viewer = document.getElementById("PlayerViewer") as ModelViewerElement;
   playerImage = document.getElementById("PlayerImage") as HTMLImageElement;
   playerCanvas = document.getElementById("PlayerCanvas") as HTMLCanvasElement;
+  brushSettings = {
+    size: 4,
+    shape: "round",
+    color: "#ff0000",
+  };
   ctx = playerCanvas.getContext("2d");
 });
 
@@ -174,9 +180,9 @@ const drawOnPlayerCanvas = async (
     return;
   }
 
-  ctx.lineWidth = 5;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = paintColor;
+  ctx.lineWidth = brushSettings.size;
+  ctx.lineCap = brushSettings.shape;
+  ctx.strokeStyle = brushSettings.color;
 
   ctx.beginPath();
   ctx.moveTo(x0, y0);
@@ -184,8 +190,8 @@ const drawOnPlayerCanvas = async (
   ctx.stroke();
 };
 
-const onPaletteColorChange = (color: string) => {
-  paintColor = color;
+const onBrushSettingsChange = (settings: BrushSettings) => {
+  brushSettings = settings;
 };
 
 const clearPlayerCanvas = () => {
@@ -255,12 +261,12 @@ const resetPlayerCanvas = () => {
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button
-                class="border border-gray-400 hover:bg-red-100 rounded p-2 bg-gray-100 shadow"
+                class="block border border-gray-400 hover:bg-red-100 rounded py-2 bg-gray-100 shadow w-40 text-sm"
                 @click="resetPlayerCanvas"
               >
                 Clear drawing
               </button>
-              <Palette :on-color-change="onPaletteColorChange" />
+              <PlayerBrushSettings :on-change="onBrushSettingsChange" />
             </div>
           </div>
 

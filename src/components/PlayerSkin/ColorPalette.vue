@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 
 interface PaletteProps {
-  onColorChange: (color: string) => void;
+  onChange: (color: string) => void;
 }
 
 const props = defineProps<PaletteProps>();
@@ -26,18 +26,18 @@ const store = reactive({
 
 const onChange = (color: string) => {
   store.currentColor = color;
-  props.onColorChange(color);
+  props.onChange(color);
 };
 </script>
 <template>
   <div class="flex gap-1 items-center">
     <div
       v-for="color in colors"
-      class="w-8 h-8 border border-black hover:border-4 cursor-pointer transition shadow flex items-center justify-center"
+      class="w-6 h-6 border border-black hover:border-4 cursor-pointer transition shadow flex items-center justify-center"
       :style="{ backgroundColor: color }"
       @click="() => onChange(color)"
       :class="
-        color === store.currentColor ? 'w-10 h-10 border-black border-4' : ''
+        color === store.currentColor ? 'w-8 h-8 border-black border-4' : ''
       "
     ></div>
   </div>
