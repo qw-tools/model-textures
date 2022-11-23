@@ -42,13 +42,16 @@ const setPlayerTextureByFile = async (file: File) => {
 };
 
 const textureFromFile = async (file: File): Promise<Texture | null> => {
+  const fileDataUri = await dataUriFromFile(file);
+  return viewer.createTexture(fileDataUri);
+};
+
+const dataUriFromFile = async (file: File): Promise<string> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
 
     reader.addEventListener("load", async () => {
-      const texture = await viewer.createTexture(reader.result as string);
-
-      resolve(texture);
+      resolve(reader.result as string);
     });
 
     reader.readAsDataURL(file);
