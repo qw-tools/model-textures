@@ -5,8 +5,6 @@ import { ModelViewerElement } from "@google/model-viewer";
 const baseUrl = import.meta.env.BASE_URL;
 
 const store = reactive({
-  rotate: true,
-  color: { r: 0, g: 0, b: 0, a: 0 },
   skinTextureURI: `${baseUrl}/assets/models/playerout0_tex00.png`,
 });
 
