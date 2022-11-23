@@ -152,9 +152,9 @@ const updatePlayerCanvasPosition = (event: MouseEvent) => {
   canvasPos.y = event.clientY - boundingBox.y;
 };
 
-const drawLineOnPlayerCanvas = (event: MouseEvent) => {
-  const MOUSE_PRIMARY_BUTTON = 1;
+const MOUSE_PRIMARY_BUTTON = 1;
 
+const drawLineOnPlayerCanvas = (event: MouseEvent) => {
   if (event.buttons !== MOUSE_PRIMARY_BUTTON) {
     return;
   }
@@ -170,6 +170,10 @@ const drawLineOnPlayerCanvas = (event: MouseEvent) => {
 };
 
 const drawDotOnPlayerCanvas = (event: MouseEvent) => {
+  if (event.buttons !== MOUSE_PRIMARY_BUTTON) {
+    return;
+  }
+
   updatePlayerCanvasPosition(event);
   drawOnPlayerCanvas(canvasPos.x, canvasPos.y, canvasPos.x, canvasPos.y);
 };
