@@ -17,6 +17,7 @@ const colors = [
   "#ffff00",
   "#ff00ff",
   "#00ffff",
+  "#ff7700",
 ];
 
 const store = reactive({
