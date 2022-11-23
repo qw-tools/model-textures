@@ -51,15 +51,18 @@ const setPlayerTextureByFile = (file: File) => {
     );
     store.skinTextureURI = reader.result as string;
     clearCanvas();
-    renderPlayerSkinToCanvas();
+    drawPlayerImageOnPlayerCanvas();
   });
 
   reader.readAsDataURL(file);
 };
 
-const updatePlayerTexture = () => setPlayerTextureByCanvas(playerCanvas);
+const updatePlayerTexture = () =>
+  setPlayerViewerModelTextureByCanvas(playerCanvas);
 
-const setPlayerTextureByCanvas = async (canvas: HTMLCanvasElement) => {
+const setPlayerViewerModelTextureByCanvas = async (
+  canvas: HTMLCanvasElement
+) => {
   if (!viewer.model || 0 === viewer.model.materials.length) {
     return;
   }
@@ -81,21 +84,30 @@ let ctx: CanvasRenderingContext2D | null;
 let playerCanvasBoundingBox: DOMRect;
 let playerImage: HTMLImageElement;
 
-const renderPlayerSkinToCanvas = () => {
+const drawImageOnCanvas = (
+  img: HTMLImageElement,
+  canvas: HTMLCanvasElement
+) => {
+  const ctx = canvas.getContext("2d");
+  ctx?.drawImage(
+    img,
+    0,
+    0,
+    img.width,
+    img.height,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+};
+
+const drawPlayerImageOnPlayerCanvas = () => {
   const canvasDrawTimeout = 40;
-  window.setTimeout(() => {
-    ctx?.drawImage(
-      playerImage,
-      0,
-      0,
-      playerImage.width,
-      playerImage.height,
-      0,
-      0,
-      playerCanvas.width,
-      playerCanvas.height
-    );
-  }, canvasDrawTimeout);
+  window.setTimeout(
+    () => drawImageOnCanvas(playerImage, playerCanvas),
+    canvasDrawTimeout
+  );
 };
 
 onMounted(() => {
@@ -109,12 +121,12 @@ onMounted(() => {
 // new position from mouse event
 let canvasPos = { x: 0, y: 0 };
 
-const updateCanvasPosition = (event: MouseEvent) => {
+const updatePlayerCanvasPosition = (event: MouseEvent) => {
   canvasPos.x = event.clientX - playerCanvasBoundingBox.x;
   canvasPos.y = event.clientY - playerCanvasBoundingBox.y;
 };
 
-const drawLineOnCanvas = (event: MouseEvent) => {
+const drawLineOnPlayerCanvas = (event: MouseEvent) => {
   const MOUSE_PRIMARY_BUTTON = 1;
 
   if (event.buttons !== MOUSE_PRIMARY_BUTTON) {
@@ -122,16 +134,26 @@ const drawLineOnCanvas = (event: MouseEvent) => {
   }
 
   let lastCanvasPos = Object.assign({}, { ...canvasPos });
-  updateCanvasPosition(event);
-  drawOnCanvas(lastCanvasPos.x, lastCanvasPos.y, canvasPos.x, canvasPos.y);
+  updatePlayerCanvasPosition(event);
+  drawOnPlayerCanvas(
+    lastCanvasPos.x,
+    lastCanvasPos.y,
+    canvasPos.x,
+    canvasPos.y
+  );
 };
 
-const drawDotOnCanvas = (event: MouseEvent) => {
-  updateCanvasPosition(event);
-  drawOnCanvas(canvasPos.x, canvasPos.y, canvasPos.x, canvasPos.y);
+const drawDotOnPlayerCanvas = (event: MouseEvent) => {
+  updatePlayerCanvasPosition(event);
+  drawOnPlayerCanvas(canvasPos.x, canvasPos.y, canvasPos.x, canvasPos.y);
 };
 
-const drawOnCanvas = async (x0: number, y0: number, x1: number, y1: number) => {
+const drawOnPlayerCanvas = async (
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number
+) => {
   if (!ctx) {
     return;
   }
@@ -151,10 +173,10 @@ const clearCanvas = () => {
 };
 
 const clearCanvasDrawing = () => {
-  renderPlayerSkinToCanvas();
+  drawPlayerImageOnPlayerCanvas();
 
   setTimeout(async () => {
-    await setPlayerTextureByCanvas(playerCanvas);
+    await setPlayerViewerModelTextureByCanvas(playerCanvas);
   }, 40);
 };
 </script>
@@ -182,7 +204,7 @@ const clearCanvasDrawing = () => {
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
               rotation-per-second="5deg"
-              @load="renderPlayerSkinToCanvas"
+              @load="drawPlayerImageOnPlayerCanvas"
             >
             </model-viewer>
           </div>
@@ -197,9 +219,9 @@ const clearCanvasDrawing = () => {
               class="border bg-white cursor-crosshair"
               height="386"
               width="512"
-              @mousedown="drawDotOnCanvas"
-              @mouseenter="updateCanvasPosition"
-              @mousemove="drawLineOnCanvas"
+              @mousedown="drawDotOnPlayerCanvas"
+              @mouseenter="updatePlayerCanvasPosition"
+              @mousemove="drawLineOnPlayerCanvas"
               @mouseup="updatePlayerTexture"
             ></canvas>
             <img
