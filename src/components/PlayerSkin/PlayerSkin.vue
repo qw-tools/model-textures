@@ -28,6 +28,7 @@ const onCustomSkinChange = (event: Event) => {
     return;
   }
 
+  clearPlayerCanvas();
   setPlayerTextureByFile(files[0]);
 };
 
@@ -38,6 +39,7 @@ const setPlayerTextureByFile = async (file: File) => {
     return;
   }
 
+  clearPlayerCanvas();
   setPlayerTexture(texture);
 };
 
