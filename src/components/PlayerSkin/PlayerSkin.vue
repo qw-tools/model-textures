@@ -2,6 +2,7 @@
 import { onMounted, reactive } from "vue";
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
+import Palette from "./ColorPalette.vue";
 
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -97,6 +98,7 @@ let viewer: ModelViewerElement;
 let playerCanvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D | null;
 let playerImage: HTMLImageElement;
+let paintColor: string = "#ff0000";
 
 const drawImageOnCanvas = (
   img: HTMLImageElement,
@@ -174,12 +176,16 @@ const drawOnPlayerCanvas = async (
 
   ctx.lineWidth = 5;
   ctx.lineCap = "round";
-  ctx.strokeStyle = "#ff0000";
+  ctx.strokeStyle = paintColor;
 
   ctx.beginPath();
   ctx.moveTo(x0, y0);
   ctx.lineTo(x1, y1);
   ctx.stroke();
+};
+
+const onPaletteColorChange = (color: string) => {
+  paintColor = color;
 };
 
 const clearPlayerCanvas = () => {
@@ -247,13 +253,14 @@ const resetPlayerCanvas = () => {
               class="hidden"
             />
 
-            <div class="p-2 bg-gray-300">
+            <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button
                 class="border border-gray-400 hover:bg-red-100 rounded p-2 bg-gray-100 shadow"
                 @click="resetPlayerCanvas"
               >
                 Clear drawing
               </button>
+              <Palette :on-color-change="onPaletteColorChange" />
             </div>
           </div>
 
