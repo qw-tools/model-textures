@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive } from "vue";
 import { ModelViewerElement } from "@google/model-viewer";
+import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -34,25 +35,28 @@ const setPlayerTextureByFile = (file: File) => {
   const reader = new FileReader();
 
   reader.addEventListener("load", async () => {
-    if (!viewer.model || 0 === viewer.model.materials.length) {
-      return;
-    }
-
     const texture = await viewer.createTexture(reader.result as string);
 
     if (!texture) {
       return;
     }
 
-    viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-      texture
-    );
-    store.skinTextureURI = reader.result as string;
-    clearCanvas();
-    drawPlayerImageOnPlayerCanvas();
+    setPlayerTexture(texture);
   });
 
   reader.readAsDataURL(file);
+};
+
+const setPlayerTexture = (texture: Texture) => {
+  if (!viewer.model || 0 === viewer.model.materials.length) {
+    return;
+  }
+
+  viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
+    texture
+  );
+  store.skinTextureURI = texture.source.uri as string;
+  drawPlayerImageOnPlayerCanvas();
 };
 
 const updatePlayerTexture = () =>
@@ -165,11 +169,12 @@ const drawOnPlayerCanvas = async (
   ctx.stroke();
 };
 
-const clearCanvas = () => {
+const clearPlayerCanvas = () => {
   ctx?.clearRect(0, 0, playerCanvas.width, playerCanvas.height);
 };
 
-const clearCanvasDrawing = () => {
+const resetPlayerCanvas = () => {
+  clearPlayerCanvas();
   drawPlayerImageOnPlayerCanvas();
 
   setTimeout(async () => {
@@ -231,7 +236,7 @@ const clearCanvasDrawing = () => {
             <div class="p-2 bg-gray-300">
               <button
                 class="border border-gray-400 hover:bg-red-100 rounded p-2 bg-gray-100 shadow"
-                @click="clearCanvasDrawing"
+                @click="resetPlayerCanvas"
               >
                 Clear drawing
               </button>
