@@ -69,6 +69,7 @@ export class PlayerTextureEditor {
       fill: "red",
       radius: 10,
       listening: false,
+      perfectDrawEnabled: false,
     };
     const circle = new Konva.Circle(props);
     this.paintLayer.add(circle);
