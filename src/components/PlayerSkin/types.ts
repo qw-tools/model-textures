@@ -1,4 +1,7 @@
-import Konva from "konva";
+import { Stage } from "konva/lib/Stage";
+import { Layer } from "konva/lib/Layer";
+import { Image } from "konva/lib/shapes/Image";
+import { Circle } from "konva/lib/shapes/Circle";
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import { dataUriFromFile } from "../util";
@@ -20,23 +23,23 @@ export interface PlayerTextureEditorSettings {
 }
 
 export class PlayerTextureEditor {
-  public readonly stage: Konva.Stage;
-  private readonly paintLayer: Konva.Layer;
-  private readonly textureLayer: Konva.Layer;
-  private readonly textureImage: Konva.Image;
+  public readonly stage: Stage;
+  private readonly paintLayer: Layer;
+  private readonly textureLayer: Layer;
+  private readonly textureImage: Image;
   public onChange: () => void;
 
   constructor(settings: PlayerTextureEditorSettings) {
     // paint layer
-    this.paintLayer = new Konva.Layer({ listening: false });
+    this.paintLayer = new Layer({ listening: false });
 
     // texture
-    this.textureImage = new Konva.Image({ image: undefined });
-    this.textureLayer = new Konva.Layer({ listening: false });
+    this.textureImage = new Image({ image: undefined });
+    this.textureLayer = new Layer({ listening: false });
     this.textureLayer.add(this.textureImage);
 
     // stage
-    this.stage = new Konva.Stage({
+    this.stage = new Stage({
       container: settings.containerID,
       width: settings.width,
       height: settings.height,
@@ -71,7 +74,7 @@ export class PlayerTextureEditor {
       listening: false,
       perfectDrawEnabled: false,
     };
-    const circle = new Konva.Circle(props);
+    const circle = new Circle(props);
     this.paintLayer.add(circle);
     circle.cache();
     this.onChange();
@@ -86,7 +89,7 @@ export class PlayerTextureEditor {
     const layer = this.textureLayer;
 
     return new Promise((resolve) => {
-      Konva.Image.fromURL(textureURI, function (img: any) {
+      Image.fromURL(textureURI, function (img: any) {
         layer.destroyChildren();
         img.setWidth(layer.width());
         img.setHeight(layer.height());
