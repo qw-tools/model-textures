@@ -28,7 +28,7 @@ const props = defineProps<Props>();
     <div class="text-xs">
       <label
         ><input type="radio" value="round" v-model="props.modelValue.shape" />
-        Rounded</label
+        Circle</label
       ><br />
       <label
         ><input type="radio" value="square" v-model="props.modelValue.shape" />
