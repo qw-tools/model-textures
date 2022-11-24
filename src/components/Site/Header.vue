@@ -1,15 +1,33 @@
+<script lang="ts" setup>
+const props = defineProps<{
+  currentPage: string;
+}>();
+
+const pages = [
+  { url: "index", title: "Player Skin" },
+  { url: "weapon_models", title: "Weapon model textures" },
+  { url: "item_models", title: "Item Models" },
+];
+</script>
+
 <template>
   <div class="bg-gray-800">
-    <div class="container flex h-12 items-center text-white text-sm space-x-4">
-      <span class="font-bold">QuakeWorld Graphics</span>
-      <span class="text-gray-500">|</span>
-      <a href="./index.html" class="text-amber-200 font-bold"
-        >Player Skin Editor</a
-      >
-      <span class="text-gray-500">|</span>
-      <a href="./item_models.html" class="text-amber-200 font-bold"
-        >Item Models</a
-      >
+    <div class="container h-12 items-center text-white text-sm">
+      <div class="flex items-center h-12 space-x-2">
+        <div class="font-bold">QuakeWorld Graphics</div>
+
+        <a
+          v-for="page in pages"
+          :href="`./${page.url}.html`"
+          class="px-4 opacity-80 h-full items-center flex hover:text-white hover:opacity-100 transition-colors"
+          :class="
+            page.url === props.currentPage
+              ? 'font-bold text-green-300 opacity-100'
+              : ''
+          "
+          >{{ page.title }}</a
+        >
+      </div>
     </div>
   </div>
 </template>

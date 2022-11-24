@@ -5,7 +5,7 @@ import PlayerSkin from "../PlayerSkin/PlayerSkin.vue";
 </script>
 
 <template>
-  <SiteHeader />
+  <SiteHeader current-page="index" />
   <PlayerSkin />
   <SiteFooter />
 </template>
