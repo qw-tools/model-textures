@@ -37,7 +37,7 @@ const props = defineProps<Props>();
     </div>
 
     <div
-      class="flex items-center justify-center border border-gray-400 w-10 h-10 ml-auto"
+      class="flex items-center justify-center border border-gray-400 w-10 h-10 ml-4"
     >
       <div
         :class="props.modelValue.shape === 'round' ? 'rounded-full' : ''"
