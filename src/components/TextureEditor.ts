@@ -10,7 +10,7 @@ import {
 } from "./domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { Shape } from "konva/lib/Shape";
-import { BrushSettings, getDefaultBrushSettings } from "./PlayerSkin/Brush";
+import { BrushSettings, getDefaultBrushSettings } from "./Brush";
 import { Filter } from "konva/lib/Node";
 
 export interface TextureEditorSettings {
