@@ -5,20 +5,13 @@ import { Circle } from "konva/lib/shapes/Circle";
 import { Rect } from "konva/lib/shapes/Rect";
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
-import { dataUriFromFile } from "../util";
+import {
+  createImageFromURI,
+  createImageOutline,
+  dataUriFromFile,
+} from "../domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { Shape } from "konva/lib/Shape";
-
-// @ts-ignore
-import ImageStroke from "image-stroke";
-
-// @ts-ignore
-import rotate from "image-stroke/lib/method-rotate";
-
-const imageStroke = new ImageStroke();
-
-// Just use it
-imageStroke.use(rotate);
 
 export type BrushShape = "round" | "square";
 
@@ -217,46 +210,4 @@ export class QuakeModelViewer {
     const textureURI = await dataUriFromFile(textureFile);
     return this.setTextureByURI(textureURI);
   }
-}
-
-async function createImageOutline(
-  sourceImage: HTMLImageElement,
-  options: {
-    thickness: number;
-    color: string;
-  }
-): Promise<HTMLCanvasElement> {
-  return new Promise((resolve) => {
-    const strokeCanvas: HTMLCanvasElement = imageStroke.make(
-      sourceImage,
-      options
-    );
-    const strokeContext = strokeCanvas.getContext("2d");
-
-    if (!strokeContext) {
-      return resolve(strokeCanvas);
-    }
-
-    // clip by source image to only get the stroke
-    const offset = {
-      x: (strokeCanvas.width - sourceImage.width) / 2,
-      y: (strokeCanvas.height - sourceImage.height) / 2,
-    };
-    strokeContext.globalCompositeOperation = "destination-out";
-    strokeContext.drawImage(sourceImage, offset.x, offset.y);
-
-    return resolve(strokeCanvas);
-  });
-}
-
-async function createImageFromURI(imageURI: string): Promise<HTMLImageElement> {
-  return new Promise((resolve) => {
-    const img = new Image();
-
-    img.onload = function () {
-      resolve(img);
-    };
-
-    img.src = imageURI;
-  });
 }
