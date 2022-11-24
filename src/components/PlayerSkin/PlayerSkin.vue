@@ -1,20 +1,17 @@
 <script lang="ts" setup>
 import { onMounted, reactive } from "vue";
-import { ModelViewerElement } from "@google/model-viewer";
-import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import PlayerBrushSettings from "./PlayerBrushSettings.vue";
-import { BrushSettings } from "./types";
-import Conva from "./Conva.vue";
+import { BrushSettings, PlayerTextureEditor, QuakeModelViewer } from "./types";
 
 const baseUrl = import.meta.env.BASE_URL;
+const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
+const defaultTextureURI = `${baseUrl}/assets/models/playerout0_tex00.png`;
 
 interface PlayerSkinStore {
-  skinTextureURI: string;
   brushSettings: BrushSettings;
 }
 
-const store: PStore = reactive({
-  skinTextureURI: `${baseUrl}/assets/models/playerout0_tex00.png`,
+const store: PlayerSkinStore = reactive({
   brushSettings: {
     color: "#ff0000",
     size: 24,
@@ -22,7 +19,7 @@ const store: PStore = reactive({
   },
 });
 
-const onFileDrop = (event: DragEvent) => {
+async function onTextureFileDrop(event: DragEvent): Promise<void> {
   // prevent opening image in browser
   event.stopPropagation();
   event.preventDefault();
@@ -31,197 +28,45 @@ const onFileDrop = (event: DragEvent) => {
     return;
   }
 
-  setPlayerTextureByFile(event.dataTransfer.files[0]);
-};
+  await editor.setTextureByFile(event.dataTransfer.files[0]);
+}
 
-const onCustomSkinChange = (event: Event) => {
+async function onTextureFileUpload(event: Event): Promise<void> {
   const files = (event.target as HTMLInputElement).files;
 
   if (!files) {
     return;
   }
 
-  clearPlayerCanvas();
-  setPlayerTextureByFile(files[0]);
-};
+  await editor.setTextureByFile(files[0]);
+}
 
-const setPlayerTextureByFile = async (file: File) => {
-  const texture = await textureFromFile(file);
+let viewer: QuakeModelViewer;
+let editor: PlayerTextureEditor;
 
-  if (!texture) {
+async function onEditorChange(): Promise<void> {
+  if (!viewer) {
+    console.log("onchange: not ready");
     return;
   }
 
-  clearPlayerCanvas();
-  setPlayerTexture(texture);
-};
+  await viewer.setTextureByURI(editor.toURI());
+}
 
-const textureFromFile = async (file: File): Promise<Texture | null> => {
-  const fileDataUri = await dataUriFromFile(file);
-  return viewer.createTexture(fileDataUri);
-};
-
-const dataUriFromFile = async (file: File): Promise<string> => {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-
-    reader.addEventListener("load", async () => {
-      resolve(reader.result as string);
-    });
-
-    try {
-      reader.readAsDataURL(file);
-    } catch (e) {
-      console.log("error during reader.readAsDataURL", e);
-    }
+onMounted(async () => {
+  editor = new PlayerTextureEditor({
+    containerID: "PlayerTextureEditor",
+    width: 512,
+    height: 336,
+    onChange: onEditorChange,
   });
-};
-
-const setPlayerTexture = (texture: Texture) => {
-  if (!viewer.model || 0 === viewer.model.materials.length) {
-    return;
-  }
-
-  viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-    texture
-  );
-  store.skinTextureURI = texture.source.uri as string;
-  drawPlayerImageOnPlayerCanvas();
-};
-
-const updatePlayerTexture = () =>
-  setPlayerViewerModelTextureByCanvas(playerCanvas);
-
-const setPlayerViewerModelTextureByCanvas = async (
-  canvas: HTMLCanvasElement
-) => {
-  if (!viewer.model || 0 === viewer.model.materials.length) {
-    return;
-  }
-
-  const texture = await viewer.createTexture(canvas.toDataURL());
-
-  if (!texture) {
-    return;
-  }
-
-  viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-    texture
-  );
-};
-
-let viewer: ModelViewerElement;
-let playerCanvas: HTMLCanvasElement;
-let ctx: CanvasRenderingContext2D | null;
-let playerImage: HTMLImageElement;
-
-const drawImageOnCanvas = (
-  img: HTMLImageElement,
-  canvas: HTMLCanvasElement
-) => {
-  const ctx = canvas.getContext("2d");
-  ctx?.drawImage(
-    img,
-    0,
-    0,
-    img.width,
-    img.height,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-};
-
-const drawPlayerImageOnPlayerCanvas = () => {
-  const canvasDrawTimeout = 40;
-  window.setTimeout(
-    () => drawImageOnCanvas(playerImage, playerCanvas),
-    canvasDrawTimeout
-  );
-};
-
-onMounted(() => {
-  viewer = document.getElementById("PlayerViewer") as ModelViewerElement;
-  playerImage = document.getElementById("PlayerImage") as HTMLImageElement;
-  playerCanvas = document.getElementById("PlayerCanvas") as HTMLCanvasElement;
-  ctx = playerCanvas.getContext("2d");
+  await editor.setTextureByURI(defaultTextureURI);
 });
 
-// new position from mouse event
-let canvasPos = { x: 0, y: 0 };
-
-const updatePlayerCanvasPosition = (event: MouseEvent) => {
-  const boundingBox = playerCanvas.getBoundingClientRect();
-  canvasPos.x = event.clientX - boundingBox.x;
-  canvasPos.y = event.clientY - boundingBox.y;
-};
-
-const MOUSE_PRIMARY_BUTTON = 1;
-
-const drawLineOnPlayerCanvas = (event: MouseEvent) => {
-  if (event.buttons !== MOUSE_PRIMARY_BUTTON) {
-    return;
-  }
-
-  let lastCanvasPos = Object.assign({}, { ...canvasPos });
-  updatePlayerCanvasPosition(event);
-  drawOnPlayerCanvas(
-    lastCanvasPos.x,
-    lastCanvasPos.y,
-    canvasPos.x,
-    canvasPos.y
-  );
-};
-
-const drawDotOnPlayerCanvas = (event: MouseEvent) => {
-  if (event.buttons !== MOUSE_PRIMARY_BUTTON) {
-    return;
-  }
-
-  updatePlayerCanvasPosition(event);
-  drawOnPlayerCanvas(canvasPos.x, canvasPos.y, canvasPos.x, canvasPos.y);
-};
-
-const drawOnPlayerCanvas = async (
-  x0: number,
-  y0: number,
-  x1: number,
-  y1: number
-) => {
-  if (!ctx) {
-    return;
-  }
-
-  applyBrushSettings();
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.lineTo(x1, y1);
-  ctx.stroke();
-};
-
-const applyBrushSettings = () => {
-  if (!ctx) {
-    return;
-  }
-
-  ctx.lineCap = store.brushSettings.shape;
-  ctx.lineWidth = store.brushSettings.size;
-  ctx.strokeStyle = store.brushSettings.color;
-};
-
-const clearPlayerCanvas = () => {
-  ctx?.clearRect(0, 0, playerCanvas.width, playerCanvas.height);
-};
-
-const resetPlayerCanvas = () => {
-  clearPlayerCanvas();
-  drawPlayerImageOnPlayerCanvas();
-
-  setTimeout(async () => {
-    await setPlayerViewerModelTextureByCanvas(playerCanvas);
-  }, 40);
-};
+async function onViewerLoaded(): Promise<void> {
+  viewer = new QuakeModelViewer("PlayerModelViewer");
+  await onEditorChange();
+}
 </script>
 
 <template>
@@ -239,8 +84,8 @@ const resetPlayerCanvas = () => {
             class="bg-gradient-to-b from-transparent via-white border-2 col-span-3"
           >
             <model-viewer
-              id="PlayerViewer"
-              :src="`${baseUrl}/assets/models/playerout.gltf`"
+              id="PlayerModelViewer"
+              :src="defaultModel"
               camera-controls
               disable-zoom
               disable-tap
@@ -248,37 +93,24 @@ const resetPlayerCanvas = () => {
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
               rotation-per-second="5deg"
-              @load="drawPlayerImageOnPlayerCanvas"
+              @load="onViewerLoaded"
             >
             </model-viewer>
           </div>
           <div
             class="col-span-4 self-center"
             style="width: 512px"
-            @drop="onFileDrop"
+            @drop="onTextureFileDrop"
             @dragover.prevent
           >
-            <canvas
-              id="PlayerCanvas"
-              class="border bg-white cursor-crosshair"
-              height="386"
-              width="512"
-              @mousedown="drawDotOnPlayerCanvas"
-              @mouseenter="drawDotOnPlayerCanvas"
-              @mousemove="drawLineOnPlayerCanvas"
-              @mouseup="updatePlayerTexture"
-            ></canvas>
-            <img
-              id="PlayerImage"
-              :src="store.skinTextureURI"
-              alt="Player Skin"
-              class="hidden"
-            />
+            <div class="border bg-white">
+              <div id="PlayerTextureEditor" />
+            </div>
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button
                 class="block border border-gray-400 hover:bg-red-100 rounded py-2 bg-gray-100 shadow w-40 text-sm"
-                @click="resetPlayerCanvas"
+                @click="editor.clearPainting"
               >
                 Clear drawing
               </button>
@@ -297,7 +129,7 @@ const resetPlayerCanvas = () => {
                 <input
                   id="custom_skin"
                   type="file"
-                  @change="onCustomSkinChange"
+                  @change="onTextureFileUpload"
                 />
               </div>
             </div>
