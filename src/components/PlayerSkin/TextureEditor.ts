@@ -22,10 +22,10 @@ export interface TextureEditorSettings {
 export class TextureEditor {
   public readonly stage: Stage;
   private readonly helperLayer: Layer;
-  private outlineImage: KonvaImage;
+  private readonly outlineImage: KonvaImage;
   private readonly paintLayer: Layer;
   private readonly textureLayer: Layer;
-  private textureImage: KonvaImage;
+  private readonly textureImage: KonvaImage;
   public brush: BrushSettings;
   public onChange: () => void;
 
