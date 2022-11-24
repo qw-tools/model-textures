@@ -1,6 +1,6 @@
 import { Stage } from "konva/lib/Stage";
 import { Layer } from "konva/lib/Layer";
-import { Image } from "konva/lib/shapes/Image";
+import { Image as KonvaImage } from "konva/lib/shapes/Image";
 import { Circle } from "konva/lib/shapes/Circle";
 import { Rect } from "konva/lib/shapes/Rect";
 import { ModelViewerElement } from "@google/model-viewer";
@@ -8,6 +8,17 @@ import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import { dataUriFromFile } from "../util";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { Shape } from "konva/lib/Shape";
+
+// @ts-ignore
+import ImageStroke from "image-stroke";
+
+// @ts-ignore
+import rotate from "image-stroke/lib/method-rotate";
+
+const imageStroke = new ImageStroke();
+
+// Just use it
+imageStroke.use(rotate);
 
 export type BrushShape = "round" | "square";
 
@@ -32,21 +43,36 @@ export interface PlayerTextureEditorSettings {
 
 export class PlayerTextureEditor {
   public readonly stage: Stage;
+  private readonly helperLayer: Layer;
+  private outlineImage: KonvaImage;
   private readonly paintLayer: Layer;
   private readonly textureLayer: Layer;
-  private readonly textureImage: Image;
+  private textureImage: KonvaImage;
   public brush: BrushSettings;
   public onChange: () => void;
 
   constructor(settings: PlayerTextureEditorSettings) {
-    // paint layer
-    this.paintLayer = new Layer({ listening: false });
-
     // brush settings
     this.brush = defaultBrushSettings;
 
-    // texture
-    this.textureImage = new Image({ image: undefined });
+    // helper layer
+    this.outlineImage = new KonvaImage({
+      image: undefined,
+      // width: settings.width,
+      // height: settings.height,
+    });
+    this.helperLayer = new Layer({ listening: false });
+    this.helperLayer.add(this.outlineImage);
+
+    // paint layer
+    this.paintLayer = new Layer({ listening: false });
+
+    // texture layer/img
+    this.textureImage = new KonvaImage({
+      image: undefined,
+      width: settings.width,
+      height: settings.height,
+    });
     this.textureLayer = new Layer({ listening: false });
     this.textureLayer.add(this.textureImage);
 
@@ -56,7 +82,7 @@ export class PlayerTextureEditor {
       width: settings.width,
       height: settings.height,
     });
-    this.stage.add(this.textureLayer, this.paintLayer);
+    this.stage.add(this.textureLayer, this.paintLayer, this.helperLayer);
 
     // change callback (throttle for performance)
     const throttleLimit = 15; // at most one call per x ms
@@ -107,26 +133,42 @@ export class PlayerTextureEditor {
   }
 
   public toURI(): string {
-    return this.stage.toDataURL();
+    this.helperLayer.hide();
+    const dataURL = this.stage.toDataURL();
+    this.helperLayer.show();
+    return dataURL;
   }
 
   public async setTextureByURI(textureURI: string): Promise<void> {
-    const onChange = this.onChange;
-    const layer = this.textureLayer;
+    const newTextureImage = await createImageFromURI(textureURI);
+    this.textureImage.image(newTextureImage);
+    await this.updateOutline(newTextureImage);
+    this.onChange();
+  }
 
-    return new Promise((resolve) => {
-      Image.fromURL(textureURI, function (img: any) {
-        layer.destroyChildren();
-        img.setAttrs({
-          width: layer.width(),
-          height: layer.height(),
-        });
-        img.cache();
-        layer.add(img);
-        onChange();
-        resolve();
-      });
+  public async updateOutline(textureImage: HTMLImageElement): Promise<void> {
+    const strokeOptions = {
+      thickness: 1,
+      color: "#000000",
+    };
+    const newOutlineImage = await createImageOutline(
+      textureImage,
+      strokeOptions
+    );
+
+    this.outlineImage.image(newOutlineImage);
+
+    const textureScale = {
+      x: this.stage.width() / textureImage.width,
+      y: this.stage.height() / textureImage.height,
+    };
+
+    this.outlineImage.offset({
+      x: strokeOptions.thickness * textureScale.x,
+      y: strokeOptions.thickness * textureScale.y,
     });
+    this.outlineImage.width(textureScale.x * newOutlineImage.width);
+    this.outlineImage.height(textureScale.y * newOutlineImage.height);
   }
 
   public async setTextureByFile(textureFile: File): Promise<void> {
@@ -137,6 +179,12 @@ export class PlayerTextureEditor {
   public clearPainting(): void {
     this.paintLayer.destroyChildren();
     this.onChange();
+  }
+
+  public toggleTextureOutline(): void {
+    this.outlineImage.isVisible()
+      ? this.outlineImage.hide()
+      : this.outlineImage.show();
   }
 }
 
@@ -171,12 +219,44 @@ export class QuakeModelViewer {
   }
 }
 
-// helpers
-// - texture outline
-// texture
-// - effects
-// - drawing
-// - regions
-// ---- helmet
-// ---- etc
-// - skin
+async function createImageOutline(
+  sourceImage: HTMLImageElement,
+  options: {
+    thickness: number;
+    color: string;
+  }
+): Promise<HTMLCanvasElement> {
+  return new Promise((resolve) => {
+    const strokeCanvas: HTMLCanvasElement = imageStroke.make(
+      sourceImage,
+      options
+    );
+    const strokeContext = strokeCanvas.getContext("2d");
+
+    if (!strokeContext) {
+      return resolve(strokeCanvas);
+    }
+
+    // clip by source image to only get the stroke
+    const offset = {
+      x: (strokeCanvas.width - sourceImage.width) / 2,
+      y: (strokeCanvas.height - sourceImage.height) / 2,
+    };
+    strokeContext.globalCompositeOperation = "destination-out";
+    strokeContext.drawImage(sourceImage, offset.x, offset.y);
+
+    return resolve(strokeCanvas);
+  });
+}
+
+async function createImageFromURI(imageURI: string): Promise<HTMLImageElement> {
+  return new Promise((resolve) => {
+    const img = new Image();
+
+    img.onload = function () {
+      resolve(img);
+    };
+
+    img.src = imageURI;
+  });
+}

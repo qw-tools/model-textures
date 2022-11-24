@@ -136,6 +136,17 @@ async function onViewerLoaded(): Promise<void> {
                   @change="onTextureFileUpload"
                 />
               </div>
+              <hr />
+              <div class="">
+                <label class="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked
+                    @click="editor.toggleTextureOutline"
+                  />
+                  <strong>Show model outline</strong>
+                </label>
+              </div>
             </div>
           </div>
         </div>
