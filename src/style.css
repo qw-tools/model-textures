@@ -68,6 +68,7 @@ label:hover code {
 }
 
 model-viewer {
+  min-width: 120px;
   width: 100%;
   height: 100%;
 }
