@@ -50,20 +50,20 @@ export class PlayerTextureEditor {
     this.onChange = throttle(settings.onChange, throttleLimit);
 
     // events
-    const handleMouseEvent = (e: Event) => this.onMouseMove(e as MouseEvent);
+    const handleMouseEvent = (e: Event) => this.onMouseEvent(e as MouseEvent);
     this.stage.addEventListener("mousemove", handleMouseEvent);
     this.stage.addEventListener("mousedown", handleMouseEvent);
   }
 
-  private onMouseMove(event: MouseEvent): void {
+  private onMouseEvent(event: MouseEvent): void {
     if (event.buttons !== MOUSE_BUTTON_PRIMARY) {
       return;
     }
 
-    this.paintPosition(this.stage.getRelativePointerPosition());
+    this.paintByPosition(this.stage.getRelativePointerPosition());
   }
 
-  private paintPosition(pos: { x: number; y: number }): void {
+  private paintByPosition(pos: { x: number; y: number }): void {
     const props = {
       x: pos.x,
       y: pos.y,
