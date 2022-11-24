@@ -92,6 +92,7 @@ watch(store.brushSettings, onBrushSettingsChange);
               disable-pan
               disable-tap
               disable-zoom
+              :interaction-prompt="0 === index ? 'auto' : 'none'"
               max-camera-orbit="auto 360deg 100"
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
