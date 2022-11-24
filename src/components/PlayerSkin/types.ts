@@ -44,7 +44,7 @@ export class PlayerTextureEditor {
     this.stage.add(this.textureLayer, this.paintLayer);
 
     // change callback (throttle for performance)
-    const throttleLimit = 50; // x ms per call
+    const throttleLimit = 15; // x ms per call
     this.onChange = throttle(settings.onChange, throttleLimit);
 
     // events
@@ -69,7 +69,9 @@ export class PlayerTextureEditor {
       fill: "red",
       radius: 10,
     };
-    this.paintLayer.add(new Konva.Circle(props));
+    const circle = new Konva.Circle(props);
+    this.paintLayer.add(circle);
+    circle.cache();
     this.onChange();
   }
 
