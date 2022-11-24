@@ -8,7 +8,7 @@ interface Props {
 const props = defineProps<Props>();
 </script>
 <template>
-  <div class="flex items-center w-full">
+  <div class="flex items-center">
     <strong class="mr-2">Brush</strong>
     <div class="flex space-x-4 mr-4">
       <input type="color" v-model="props.modelValue.color" />

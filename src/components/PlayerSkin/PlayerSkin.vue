@@ -115,7 +115,10 @@ async function onViewerLoaded(): Promise<void> {
               >
                 Clear drawing
               </button>
-              <PlayerBrushSettings v-model="store.brushSettings" />
+              <PlayerBrushSettings
+                class="w-full"
+                v-model="store.brushSettings"
+              />
             </div>
           </div>
 
