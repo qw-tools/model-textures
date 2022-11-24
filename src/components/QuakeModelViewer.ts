@@ -1,6 +1,6 @@
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
-import { dataUriFromFile } from "../domutil";
+import { dataUriFromFile } from "./domutil";
 
 export class QuakeModelViewer {
   private readonly viewer: ModelViewerElement;

@@ -7,10 +7,11 @@ import {
   createImageFromURI,
   createImageOutline,
   dataUriFromFile,
-} from "../domutil";
+} from "./domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { Shape } from "konva/lib/Shape";
-import { BrushSettings, getDefaultBrushSettings } from "./Brush";
+import { BrushSettings, getDefaultBrushSettings } from "./PlayerSkin/Brush";
+import { Filter } from "konva/lib/Node";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -108,6 +109,10 @@ export class TextureEditor {
     this.paintLayer.add(shape);
     shape.cache();
     this.onChange();
+  }
+
+  set setFilters(filters: Filter[]) {
+    this.textureLayer.filters(filters);
   }
 
   public toURI(): string {
