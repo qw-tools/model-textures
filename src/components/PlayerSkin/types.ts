@@ -44,7 +44,7 @@ export class PlayerTextureEditor {
     this.stage.add(this.textureLayer, this.paintLayer);
 
     // change callback (throttle for performance)
-    const throttleLimit = 15; // x ms per call
+    const throttleLimit = 15; // at most one call per x ms
     this.onChange = throttle(settings.onChange, throttleLimit);
 
     // events
