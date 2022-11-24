@@ -91,8 +91,11 @@ export class PlayerTextureEditor {
     return new Promise((resolve) => {
       Image.fromURL(textureURI, function (img: any) {
         layer.destroyChildren();
-        img.setWidth(layer.width());
-        img.setHeight(layer.height());
+        img.setAttrs({
+          width: layer.width(),
+          height: layer.height(),
+        });
+        img.cache();
         layer.add(img);
         onChange();
         resolve();
