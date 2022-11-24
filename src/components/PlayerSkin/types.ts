@@ -2,10 +2,12 @@ import { Stage } from "konva/lib/Stage";
 import { Layer } from "konva/lib/Layer";
 import { Image } from "konva/lib/shapes/Image";
 import { Circle } from "konva/lib/shapes/Circle";
+import { Rect } from "konva/lib/shapes/Rect";
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import { dataUriFromFile } from "../util";
 import { throttle } from "@google/model-viewer/lib/utilities";
+import { Shape } from "konva/lib/Shape";
 
 export type BrushShape = "round" | "square";
 
@@ -14,6 +16,12 @@ export interface BrushSettings {
   shape: BrushShape;
   size: number;
 }
+
+export const defaultBrushSettings: BrushSettings = {
+  color: "#ff0000",
+  size: 24,
+  shape: "round",
+};
 
 export interface PlayerTextureEditorSettings {
   containerID: string;
@@ -27,11 +35,15 @@ export class PlayerTextureEditor {
   private readonly paintLayer: Layer;
   private readonly textureLayer: Layer;
   private readonly textureImage: Image;
+  public brush: BrushSettings;
   public onChange: () => void;
 
   constructor(settings: PlayerTextureEditorSettings) {
     // paint layer
     this.paintLayer = new Layer({ listening: false });
+
+    // brush settings
+    this.brush = defaultBrushSettings;
 
     // texture
     this.textureImage = new Image({ image: undefined });
@@ -69,14 +81,28 @@ export class PlayerTextureEditor {
   private paintByPosition(pos: { x: number; y: number }): void {
     const props = {
       ...pos,
-      fill: "red",
-      radius: 10,
+      fill: this.brush.color,
       listening: false,
       perfectDrawEnabled: false,
     };
-    const circle = new Circle(props);
-    this.paintLayer.add(circle);
-    circle.cache();
+
+    let shape: Shape;
+
+    if ("square" === this.brush.shape) {
+      shape = new Rect({
+        ...props,
+        width: this.brush.size,
+        height: this.brush.size,
+      });
+    } else {
+      shape = new Circle({
+        ...props,
+        radius: this.brush.size / 2,
+      });
+    }
+
+    this.paintLayer.add(shape);
+    shape.cache();
     this.onChange();
   }
 

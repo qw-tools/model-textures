@@ -1,7 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, watch } from "vue";
 import PlayerBrushSettings from "./PlayerBrushSettings.vue";
-import { BrushSettings, PlayerTextureEditor, QuakeModelViewer } from "./types";
+import {
+  BrushSettings,
+  defaultBrushSettings,
+  PlayerTextureEditor,
+  QuakeModelViewer,
+} from "./types";
 
 const baseUrl = import.meta.env.BASE_URL;
 const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
@@ -12,11 +17,7 @@ interface PlayerSkinStore {
 }
 
 const store: PlayerSkinStore = reactive({
-  brushSettings: {
-    color: "#ff0000",
-    size: 24,
-    shape: "round",
-  },
+  brushSettings: defaultBrushSettings,
 });
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
@@ -57,6 +58,14 @@ onMounted(async () => {
   });
   await editor.setTextureByURI(defaultTextureURI);
 });
+
+async function onBrushSettingsChange(
+  newSettings: BrushSettings
+): Promise<void> {
+  editor.brush = newSettings;
+}
+
+watch(store.brushSettings, onBrushSettingsChange);
 
 async function onViewerLoaded(): Promise<void> {
   viewer = new QuakeModelViewer("PlayerModelViewer");

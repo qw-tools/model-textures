@@ -20,7 +20,7 @@ const props = defineProps<Props>();
         min="1"
         max="32"
         class="w-20"
-        v-model="props.modelValue.size"
+        v-model.number="props.modelValue.size"
       />
       <span class="text-sm ml-2">{{ props.modelValue.size }}px</span>
     </div>
