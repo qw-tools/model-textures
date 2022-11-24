@@ -3,7 +3,7 @@ import { onMounted, reactive, watch } from "vue";
 import PlayerBrushSettings from "./PlayerBrushSettings.vue";
 import { TextureEditor } from "./TextureEditor";
 import { QuakeModelViewer } from "./QuakeModelViewer";
-import { BrushSettings, defaultBrushSettings } from "./Brush";
+import { BrushSettings, getDefaultBrushSettings } from "./Brush";
 
 const baseUrl = import.meta.env.BASE_URL;
 const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
@@ -14,7 +14,7 @@ interface PlayerSkinStore {
 }
 
 const store: PlayerSkinStore = reactive({
-  brushSettings: defaultBrushSettings,
+  brushSettings: getDefaultBrushSettings(),
 });
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {

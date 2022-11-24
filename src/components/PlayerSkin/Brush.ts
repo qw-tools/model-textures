@@ -6,8 +6,10 @@ export interface BrushSettings {
   size: number;
 }
 
-export const defaultBrushSettings: BrushSettings = {
-  color: "#ff0000",
-  size: 24,
-  shape: "round",
-};
+export function getDefaultBrushSettings(): BrushSettings {
+  return {
+    color: "#ff0000",
+    size: 24,
+    shape: "round",
+  };
+}

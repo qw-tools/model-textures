@@ -10,7 +10,7 @@ import {
 } from "../domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { Shape } from "konva/lib/Shape";
-import { BrushSettings, defaultBrushSettings } from "./Brush";
+import { BrushSettings, getDefaultBrushSettings } from "./Brush";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -31,7 +31,7 @@ export class TextureEditor {
 
   constructor(settings: TextureEditorSettings) {
     // brush settings
-    this.brush = defaultBrushSettings;
+    this.brush = getDefaultBrushSettings();
 
     // helper layer
     this.outlineImage = new KonvaImage({
