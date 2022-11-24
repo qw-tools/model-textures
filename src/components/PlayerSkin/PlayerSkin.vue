@@ -45,12 +45,7 @@ let viewer: QuakeModelViewer;
 let editor: PlayerTextureEditor;
 
 async function onEditorChange(): Promise<void> {
-  if (!viewer) {
-    console.log("onchange: not ready");
-    return;
-  }
-
-  await viewer.setTextureByURI(editor.toURI());
+  await viewer?.setTextureByURI(editor.toURI());
 }
 
 onMounted(async () => {

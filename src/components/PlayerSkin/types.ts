@@ -12,8 +12,6 @@ export interface BrushSettings {
   size: number;
 }
 
-const MOUSE_BUTTON_PRIMARY = 1;
-
 export interface PlayerTextureEditorSettings {
   containerID: string;
   width: number;
@@ -56,6 +54,8 @@ export class PlayerTextureEditor {
   }
 
   private onMouseEvent(event: MouseEvent): void {
+    const MOUSE_BUTTON_PRIMARY = 1;
+
     if (event.buttons !== MOUSE_BUTTON_PRIMARY) {
       return;
     }
@@ -65,8 +65,7 @@ export class PlayerTextureEditor {
 
   private paintByPosition(pos: { x: number; y: number }): void {
     const props = {
-      x: pos.x,
-      y: pos.y,
+      ...pos,
       fill: "red",
       radius: 10,
     };
