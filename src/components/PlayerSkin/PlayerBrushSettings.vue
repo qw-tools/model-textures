@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BrushSettings } from "./types";
+import { BrushSettings } from "./Brush";
 
 interface Props {
   modelValue: BrushSettings;

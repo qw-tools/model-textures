@@ -3,8 +3,6 @@ import { Layer } from "konva/lib/Layer";
 import { Image as KonvaImage } from "konva/lib/shapes/Image";
 import { Circle } from "konva/lib/shapes/Circle";
 import { Rect } from "konva/lib/shapes/Rect";
-import { ModelViewerElement } from "@google/model-viewer";
-import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import {
   createImageFromURI,
   createImageOutline,
@@ -12,29 +10,16 @@ import {
 } from "../domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { Shape } from "konva/lib/Shape";
+import { BrushSettings, defaultBrushSettings } from "./Brush";
 
-export type BrushShape = "round" | "square";
-
-export interface BrushSettings {
-  color: string;
-  shape: BrushShape;
-  size: number;
-}
-
-export const defaultBrushSettings: BrushSettings = {
-  color: "#ff0000",
-  size: 24,
-  shape: "round",
-};
-
-export interface PlayerTextureEditorSettings {
+export interface TextureEditorSettings {
   containerID: string;
   width: number;
   height: number;
   onChange: () => void;
 }
 
-export class PlayerTextureEditor {
+export class TextureEditor {
   public readonly stage: Stage;
   private readonly helperLayer: Layer;
   private outlineImage: KonvaImage;
@@ -44,7 +29,7 @@ export class PlayerTextureEditor {
   public brush: BrushSettings;
   public onChange: () => void;
 
-  constructor(settings: PlayerTextureEditorSettings) {
+  constructor(settings: TextureEditorSettings) {
     // brush settings
     this.brush = defaultBrushSettings;
 
@@ -178,36 +163,5 @@ export class PlayerTextureEditor {
     this.outlineImage.isVisible()
       ? this.outlineImage.hide()
       : this.outlineImage.show();
-  }
-}
-
-export class QuakeModelViewer {
-  private readonly viewer: ModelViewerElement;
-
-  constructor(containerID: string) {
-    this.viewer = document.getElementById(containerID) as ModelViewerElement;
-  }
-
-  public setTexture(texture: Texture): void {
-    if (!this.viewer.model || 0 === this.viewer.model.materials.length) {
-      return;
-    }
-
-    this.viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-      texture
-    );
-  }
-
-  public async setTextureByURI(textureURI: string): Promise<void> {
-    const texture = await this.viewer.createTexture(textureURI);
-
-    if (texture) {
-      this.setTexture(texture);
-    }
-  }
-
-  public async setTextureByFile(textureFile: File): Promise<void> {
-    const textureURI = await dataUriFromFile(textureFile);
-    return this.setTextureByURI(textureURI);
   }
 }

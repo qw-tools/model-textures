@@ -1,12 +1,9 @@
 <script lang="ts" setup>
 import { onMounted, reactive, watch } from "vue";
 import PlayerBrushSettings from "./PlayerBrushSettings.vue";
-import {
-  BrushSettings,
-  defaultBrushSettings,
-  PlayerTextureEditor,
-  QuakeModelViewer,
-} from "./types";
+import { TextureEditor } from "./TextureEditor";
+import { QuakeModelViewer } from "./QuakeModelViewer";
+import { BrushSettings, defaultBrushSettings } from "./Brush";
 
 const baseUrl = import.meta.env.BASE_URL;
 const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
@@ -43,14 +40,14 @@ async function onTextureFileUpload(event: Event): Promise<void> {
 }
 
 let viewer: QuakeModelViewer;
-let editor: PlayerTextureEditor;
+let editor: TextureEditor;
 
 async function onEditorChange(): Promise<void> {
   await viewer?.setTextureByURI(editor.toURI());
 }
 
 onMounted(async () => {
-  editor = new PlayerTextureEditor({
+  editor = new TextureEditor({
     containerID: "PlayerTextureEditor",
     width: 512,
     height: 336,
