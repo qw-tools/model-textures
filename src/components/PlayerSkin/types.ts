@@ -28,11 +28,11 @@ export class PlayerTextureEditor {
 
   constructor(settings: PlayerTextureEditorSettings) {
     // paint layer
-    this.paintLayer = new Konva.Layer();
+    this.paintLayer = new Konva.Layer({ listening: false });
 
     // texture
     this.textureImage = new Konva.Image({ image: undefined });
-    this.textureLayer = new Konva.Layer();
+    this.textureLayer = new Konva.Layer({ listening: false });
     this.textureLayer.add(this.textureImage);
 
     // stage
@@ -68,6 +68,7 @@ export class PlayerTextureEditor {
       ...pos,
       fill: "red",
       radius: 10,
+      listening: false,
     };
     const circle = new Konva.Circle(props);
     this.paintLayer.add(circle);
