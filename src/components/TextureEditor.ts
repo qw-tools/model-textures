@@ -1,18 +1,27 @@
 import { Stage } from "konva/lib/Stage";
 import { Layer } from "konva/lib/Layer";
 import { Image as KonvaImage } from "konva/lib/shapes/Image";
-import { Circle } from "konva/lib/shapes/Circle";
-import { Rect } from "konva/lib/shapes/Rect";
 import {
   createImageFromURI,
   createImageOutline,
   dataUriFromFile,
 } from "./domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
-import { Shape } from "konva/lib/Shape";
 import { BrushSettings, getDefaultBrushSettings } from "./Brush";
 import { FilterSettings } from "./Filter";
 import { Filter } from "konva/lib/Node";
+import { Line } from "konva/lib/shapes/Line";
+
+enum MouseButton {
+  Primary = 1,
+  Secondary = 2,
+}
+
+enum MouseEventType {
+  Move = "mousemove",
+  Down = "mousedown",
+  Enter = "mouseenter",
+}
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -27,6 +36,7 @@ export class TextureEditor {
   private readonly textureLayer: Layer;
   private readonly textureImage: KonvaImage;
   private readonly stage: Stage;
+  private paintLastLine: Line;
   public readonly textureOutline: KonvaImage;
   public brush: BrushSettings;
   public onChange: () => void;
@@ -45,6 +55,7 @@ export class TextureEditor {
     this.helperLayer.add(this.textureOutline);
 
     // paint layer
+    this.paintLastLine = new Line();
     this.paintLayer = new Layer({ listening: false });
 
     // texture layer/img
@@ -69,46 +80,56 @@ export class TextureEditor {
     this.onChange = throttle(settings.onChange, throttleLimit);
 
     // events
+    this.stage.on("contextmenu", (e) => {
+      e.evt.preventDefault();
+    });
+
     const handleMouseEvent = (e: Event) => this.onMouseEvent(e as MouseEvent);
-    this.stage.addEventListener("mousemove", handleMouseEvent);
-    this.stage.addEventListener("mousedown", handleMouseEvent);
+
+    this.stage.addEventListener(MouseEventType.Move, handleMouseEvent);
+    this.stage.addEventListener(MouseEventType.Down, handleMouseEvent);
+    this.stage.addEventListener(MouseEventType.Enter, handleMouseEvent);
   }
 
   private onMouseEvent(event: MouseEvent): void {
-    const MOUSE_BUTTON_PRIMARY = 1;
+    const isPrimary = event.buttons === MouseButton.Primary;
+    const isSecondary = event.buttons === MouseButton.Secondary;
 
-    if (event.buttons !== MOUSE_BUTTON_PRIMARY) {
+    if (!(isPrimary || isSecondary)) {
       return;
     }
 
-    this.paintByPosition(this.stage.getRelativePointerPosition());
+    const pos = this.stage.getRelativePointerPosition();
+
+    if (MouseEventType.Move === event.type) {
+      this.paintExtend(pos);
+    } else {
+      const paintType = isPrimary ? "add" : "erase";
+      this.paintNew(pos, paintType);
+    }
   }
 
-  private paintByPosition(pos: { x: number; y: number }): void {
-    const props = {
-      ...pos,
-      fill: this.brush.color,
+  private paintNew(pos: { x: number; y: number }, paintType: string): void {
+    const globalCompositeOperation =
+      paintType === "add" ? "source-over" : "destination-out";
+
+    this.paintLastLine = new Line({
+      stroke: this.brush.color,
+      strokeWidth: this.brush.size,
+      globalCompositeOperation,
+      lineCap: this.brush.shape,
+      lineJoin: "round", // round join for smoother lines
+      // add point twice, so we have some drawings even on a simple click
+      points: [pos.x, pos.y, pos.x, pos.y],
       listening: false,
-      perfectDrawEnabled: false,
-    };
+    });
+    this.paintLayer.add(this.paintLastLine);
+    this.onChange();
+  }
 
-    let shape: Shape;
-
-    if ("square" === this.brush.shape) {
-      shape = new Rect({
-        ...props,
-        width: this.brush.size,
-        height: this.brush.size,
-      });
-    } else {
-      shape = new Circle({
-        ...props,
-        radius: this.brush.size / 2,
-      });
-    }
-
-    this.paintLayer.add(shape);
-    shape.cache();
+  private paintExtend(pos: { x: number; y: number }): void {
+    const newPoints = this.paintLastLine.points().concat([pos.x, pos.y]);
+    this.paintLastLine.points(newPoints);
     this.onChange();
   }
 
