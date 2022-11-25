@@ -223,7 +223,7 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
                   type="checkbox"
                   @click="editors[index]?.toggleTextureOutline()"
                 />
-                <strong class="text-sm">Draw outline</strong>
+                <strong class="text-sm">Show texture outline</strong>
               </label>
             </div>
           </div>
