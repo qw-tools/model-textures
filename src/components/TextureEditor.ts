@@ -193,7 +193,15 @@ export class TextureEditor {
 
   public toggleTextureOutline(): void {
     this.outlineImage.isVisible()
-      ? this.outlineImage.hide()
-      : this.outlineImage.show();
+      ? this.hideTextureOutline()
+      : this.showTextureOutline();
+  }
+
+  public hideTextureOutline(): void {
+    this.outlineImage.hide();
+  }
+
+  public showTextureOutline(): void {
+    this.outlineImage.show();
   }
 }
