@@ -69,6 +69,7 @@ onMounted(() => {
       },
     });
     editor.setTextureByURI(model.defaultTexturePath);
+    editor.hideTextureOutline();
 
     viewers.push(viewer);
     editors.push(editor);
@@ -206,7 +207,7 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
             </model-viewer>
           </div>
 
-          <div class="border bg-white">
+          <div class="border bg-gray-200">
             <div :id="m.editorID" />
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
@@ -216,6 +217,14 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
               >
                 Clear drawing
               </button>
+
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  @click="editors[index]?.toggleTextureOutline()"
+                />
+                <strong class="text-sm">Draw outline</strong>
+              </label>
             </div>
           </div>
         </div>
