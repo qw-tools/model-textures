@@ -11,6 +11,7 @@ import {
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { Shape } from "konva/lib/Shape";
 import { BrushSettings, getDefaultBrushSettings } from "./Brush";
+import { FilterSettings } from "./Filter";
 import { Filter } from "konva/lib/Node";
 
 export interface TextureEditorSettings {
@@ -111,8 +112,34 @@ export class TextureEditor {
     this.onChange();
   }
 
-  set setFilters(filters: Filter[]) {
-    this.textureLayer.filters(filters);
+  public setFilterSettings(settings: FilterSettings) {
+    this.textureImage.cache();
+    const enabledFilters: Filter[] = Object.values(settings)
+      .filter((s) => s.enabled)
+      .map((s) => s.filter);
+    this.textureImage.filters(enabledFilters);
+
+    if (settings.hue.enabled) {
+      this.textureImage.hue(settings.hue.value);
+    }
+
+    if (settings.saturation.enabled) {
+      this.textureImage.saturation(settings.saturation.value);
+    }
+
+    if (settings.contrast.enabled) {
+      this.textureImage.contrast(settings.contrast.value);
+    }
+
+    if (settings.brightness.enabled) {
+      this.textureImage.brightness(settings.brightness.value);
+    }
+
+    if (settings.blur.enabled) {
+      this.textureImage.blurRadius(settings.blur.value);
+    }
+
+    this.onChange();
   }
 
   public toURI(): string {

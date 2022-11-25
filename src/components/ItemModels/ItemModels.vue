@@ -87,7 +87,7 @@ const baseUrl = import.meta.env.BASE_URL;
       <div style="display: grid; grid-template-rows: 60px auto; height: 95vh">
         <div style="display: flex; align-items: center">
           <div>
-            HUE
+            HUEFilterSetting
             <input
               v-model="store.color.r"
               max="360"
