@@ -186,12 +186,13 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
         </div>
       </div>
 
-      <div class="grid grid-cols-3">
+      <div class="grid lg:grid-cols-2 xl:grid-cols-3">
         <div v-for="(m, index) in models" class="border bg-white shadow flex">
           <div style="width: 50%; height: 240px">
             <model-viewer
               :id="m.viewerID"
               :src="m.modelPath"
+              auto-rotate
               camera-controls
               disable-pan
               disable-tap
@@ -199,8 +200,8 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
               :interaction-prompt="0 === index ? 'auto' : 'none'"
               max-camera-orbit="auto 360deg 100"
               min-camera-orbit="auto 0deg auto"
-              orientation="270deg 270deg 0deg"
-              rotation-per-second="5deg"
+              orientation="0deg 270deg -45deg"
+              rotation-per-second="7deg"
             >
             </model-viewer>
           </div>
