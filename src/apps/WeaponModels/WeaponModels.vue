@@ -69,7 +69,7 @@ onMounted(() => {
       },
     });
     editor.setTextureByURI(model.defaultTexturePath);
-    editor.hideTextureOutline();
+    editor.textureOutline.hide();
 
     viewers.push(viewer);
     editors.push(editor);

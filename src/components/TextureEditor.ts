@@ -22,12 +22,12 @@ export interface TextureEditorSettings {
 }
 
 export class TextureEditor {
-  public readonly stage: Stage;
   private readonly helperLayer: Layer;
-  private readonly outlineImage: KonvaImage;
   private readonly paintLayer: Layer;
   private readonly textureLayer: Layer;
   private readonly textureImage: KonvaImage;
+  private readonly stage: Stage;
+  public readonly textureOutline: KonvaImage;
   public brush: BrushSettings;
   public onChange: () => void;
 
@@ -36,13 +36,13 @@ export class TextureEditor {
     this.brush = getDefaultBrushSettings();
 
     // helper layer
-    this.outlineImage = new KonvaImage({
+    this.textureOutline = new KonvaImage({
       image: undefined,
       // width: settings.width,
       // height: settings.height,
     });
     this.helperLayer = new Layer({ listening: false });
-    this.helperLayer.add(this.outlineImage);
+    this.helperLayer.add(this.textureOutline);
 
     // paint layer
     this.paintLayer = new Layer({ listening: false });
@@ -166,19 +166,19 @@ export class TextureEditor {
       strokeOptions
     );
 
-    this.outlineImage.image(newOutlineImage);
+    this.textureOutline.image(newOutlineImage);
 
     const textureScale = {
       x: this.stage.width() / textureImage.width,
       y: this.stage.height() / textureImage.height,
     };
 
-    this.outlineImage.offset({
+    this.textureOutline.offset({
       x: strokeOptions.thickness * textureScale.x,
       y: strokeOptions.thickness * textureScale.y,
     });
-    this.outlineImage.width(textureScale.x * newOutlineImage.width);
-    this.outlineImage.height(textureScale.y * newOutlineImage.height);
+    this.textureOutline.width(textureScale.x * newOutlineImage.width);
+    this.textureOutline.height(textureScale.y * newOutlineImage.height);
   }
 
   public async setTextureByFile(textureFile: File): Promise<void> {
@@ -192,16 +192,8 @@ export class TextureEditor {
   }
 
   public toggleTextureOutline(): void {
-    this.outlineImage.isVisible()
-      ? this.hideTextureOutline()
-      : this.showTextureOutline();
-  }
-
-  public hideTextureOutline(): void {
-    this.outlineImage.hide();
-  }
-
-  public showTextureOutline(): void {
-    this.outlineImage.show();
+    this.textureOutline.isVisible()
+      ? this.textureOutline.hide()
+      : this.textureOutline.show();
   }
 }
