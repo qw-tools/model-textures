@@ -144,7 +144,7 @@ async function onViewerLoaded(): Promise<void> {
                     checked
                     @click="editor.toggleTextureOutline"
                   />
-                  <strong>Show model outline</strong>
+                  <strong>Show texture outline</strong>
                 </label>
               </div>
             </div>
