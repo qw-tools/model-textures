@@ -156,7 +156,7 @@ export class TextureEditor {
     this.onChange();
   }
 
-  public async updateOutline(textureImage: HTMLImageElement): Promise<void> {
+  private async updateOutline(textureImage: HTMLImageElement): Promise<void> {
     const strokeOptions = {
       thickness: 1,
       color: "#000000",
