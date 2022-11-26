@@ -1,3 +1,6 @@
+const ESLINT_WARNING = 1;
+const ESLINT_ERROR = 1;
+
 module.exports = {
   root: true,
   parser: "vue-eslint-parser",
@@ -12,11 +15,11 @@ module.exports = {
   ],
   plugins: ["@typescript-eslint", "prettier"],
   rules: {
-    "prettier/prettier": "error",
-    // not needed for vue 3
-    "vue/no-multiple-template-root": "off"
+    "prettier/prettier": ESLINT_ERROR,
+    "vue/no-multiple-template-root": "off", // not needed for vue 3
+    "@typescript-eslint/ban-ts-comment": ESLINT_WARNING
   },
   ignorePatterns: [
-    "vite-env.d.ts",
+    "vite-env.d.ts"
   ]
 };
