@@ -90,22 +90,6 @@ const baseUrl = import.meta.env.BASE_URL;
                 rotation-per-second="10deg"
               >
               </model-viewer>
-              <div
-                v-if="model.texture"
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  width: 50%;
-                "
-              >
-                <img
-                  :src="`${baseUrl}/${model.texture}`"
-                  alt=""
-                  height=""
-                  width="512"
-                />
-              </div>
             </div>
           </div>
         </div>
