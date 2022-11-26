@@ -6,7 +6,8 @@ const props = defineProps<{
 const pages = [
   { url: "index", title: "Player Skin" },
   { url: "weapon_models", title: "Weapon models" },
-  { url: "item_models", title: "Item Models" },
+  { url: "armor_models", title: "Armor Models" },
+  { url: "item_models", title: "Item Models (TODO)" },
 ];
 </script>
 
