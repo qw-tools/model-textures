@@ -117,7 +117,8 @@ async function onViewerLoaded(): Promise<void> {
               </button>
               <PlayerBrushSettings
                 class="w-full"
-                v-model="store.brushSettings"
+                :settings="store.brushSettings"
+                :on-change="onBrushSettingsChange"
               />
             </div>
           </div>

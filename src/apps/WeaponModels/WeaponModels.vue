@@ -105,7 +105,10 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
       <div
         class="flex px-4 py-3 my-4 items-center rounded border shadow bg-white space-x-8"
       >
-        <PlayerBrushSettings v-model="store.brushSettings" />
+        <PlayerBrushSettings
+          :settings="store.brushSettings"
+          :on-change="onBrushSettingsChange"
+        />
 
         <div class="flex items-center space-x-2">
           <label>
