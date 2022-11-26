@@ -52,8 +52,8 @@ const store: PlayerSkinStore = reactive({
   },
 });
 
-let viewers: QuakeModelViewer[] = [];
-let editors: TextureEditor[] = [];
+const viewers: QuakeModelViewer[] = [];
+const editors: TextureEditor[] = [];
 
 onMounted(() => {
   for (let i = 0; i < models.length; i++) {
@@ -191,7 +191,11 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
       </div>
 
       <div class="grid lg:grid-cols-2 xl:grid-cols-3">
-        <div v-for="(m, index) in models" class="border bg-white shadow flex">
+        <div
+          v-for="(m, index) in models"
+          class="border bg-white shadow flex"
+          :key="m.id"
+        >
           <div style="width: 50%; height: 240px">
             <model-viewer
               :id="m.viewerID"

@@ -33,6 +33,7 @@ const onChange = (color: string) => {
   <div class="flex gap-1 items-center">
     <div
       v-for="color in colors"
+      :key="color"
       class="w-6 h-6 border border-black hover:border-4 cursor-pointer transition shadow flex items-center justify-center"
       :style="{ backgroundColor: color }"
       @click="() => onChange(color)"

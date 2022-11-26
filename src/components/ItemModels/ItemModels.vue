@@ -47,11 +47,9 @@ const models = [
 ];
 
 onMounted(() => {
-  const viewers = document.querySelectorAll(
-    "model-viewer"
-  ) as NodeListOf<ModelViewerElement>;
+  const viewers = document.querySelectorAll("model-viewer");
 
-  viewers.forEach((el) => {
+  viewers.forEach((el: ModelViewerElement) => {
     el.addEventListener("load", async () => {
       const textureSource = el.getAttribute("data-texture");
 
@@ -101,6 +99,7 @@ const baseUrl = import.meta.env.BASE_URL;
           <div :style="`filter: hue-rotate(${store.color.r}deg)`" class="grid">
             <div
               v-for="model in models"
+              :key="model.filename"
               class="container"
               style="display: flex"
             >
