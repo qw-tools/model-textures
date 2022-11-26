@@ -27,7 +27,7 @@ watch(store, throttle(props.onChange, 50));
       <input
         type="range"
         min="1"
-        max="32"
+        max="48"
         class="w-20"
         v-model.number="store.size"
       />
@@ -46,7 +46,7 @@ watch(store, throttle(props.onChange, 50));
     </div>
 
     <div
-      class="flex items-center justify-center border border-gray-400 w-10 h-10 ml-4"
+      class="flex items-center justify-center border border-gray-400 w-12 h-12 ml-4"
     >
       <div
         :class="store.shape === 'round' ? 'rounded-full' : ''"
