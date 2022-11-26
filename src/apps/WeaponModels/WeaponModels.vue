@@ -190,13 +190,12 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
         </div>
       </div>
 
-      <div class="grid lg:grid-cols-2 xl:grid-cols-3">
-        <div
-          v-for="(m, index) in models"
-          class="border bg-white shadow flex"
-          :key="m.id"
-        >
-          <div style="width: 50%; height: 240px">
+      <div class="grid gap-2 lg:grid-cols-2 xl:grid-cols-3">
+        <div v-for="(m, index) in models" class="flex" :key="m.id">
+          <div
+            style="width: 50%; height: 240px"
+            class="border-2 border-dashed border-black/20"
+          >
             <model-viewer
               :id="m.viewerID"
               :src="m.modelPath"

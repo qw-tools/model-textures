@@ -81,9 +81,7 @@ async function onViewerLoaded(): Promise<void> {
     <div class="container fadeIn my-4">
       <div class="flex grow">
         <div class="grid grid-cols-10 gap-4 w-full">
-          <div
-            class="bg-gradient-to-b from-transparent via-white border-2 col-span-3"
-          >
+          <div class="col-span-3 border-2 border-dashed border-black/20">
             <model-viewer
               id="PlayerModelViewer"
               :src="defaultModel"
