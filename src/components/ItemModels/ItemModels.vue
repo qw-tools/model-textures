@@ -79,7 +79,6 @@ const baseUrl = import.meta.env.BASE_URL;
               <model-viewer
                 :id="model.id"
                 :auto-rotate="store.rotate"
-                :data-texture="`${baseUrl}/${model.texture}`"
                 :src="`${baseUrl}/assets/models/${model.filename}out.gltf`"
                 auto-rotate-delay="0"
                 camera-controls
