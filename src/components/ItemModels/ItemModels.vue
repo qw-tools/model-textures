@@ -13,33 +13,6 @@ const store = reactive({
 });
 
 const models = [
-  {
-    id: "armor1",
-    filename: "armor",
-    texture: "/assets/models/armorout0_tex00.png",
-  },
-  {
-    id: "armor2",
-    filename: "armor",
-    texture: "/assets/models/armorout0_tex01.png",
-  },
-  {
-    id: "armor3",
-    filename: "armor",
-    texture: "/assets/models/armorout0_tex02.png",
-  },
-  {
-    id: "backpack",
-    filename: "backpack",
-    texture: "/assets/models/backpackout0_tex00.png",
-  },
-  { id: "player", filename: "player" },
-  { id: "g_shot", filename: "g_shot" },
-  { id: "g_nail", filename: "g_nail" },
-  { id: "g_nail2", filename: "g_nail2" },
-  { id: "g_rock", filename: "g_rock" },
-  { id: "g_rock2", filename: "g_rock2" },
-  { id: "g_light", filename: "g_light" },
   { id: "grenade", filename: "grenade" },
   { id: "missile", filename: "missile" },
   { id: "quaddama", filename: "quaddama" },
@@ -77,7 +50,7 @@ const baseUrl = import.meta.env.BASE_URL;
   <div class="bg-gray-100 border-b border-gray-300">
     <div class="bg-white shadow">
       <div class="container">
-        <div class="font-bold text-xl py-4">Item Models</div>
+        <div class="font-bold text-xl py-4">Item Models (TODO)</div>
       </div>
     </div>
 
@@ -85,7 +58,7 @@ const baseUrl = import.meta.env.BASE_URL;
       <div style="display: grid; grid-template-rows: 60px auto; height: 95vh">
         <div style="display: flex; align-items: center">
           <div>
-            HUEFilterSetting
+            HUE
             <input
               v-model="store.color.r"
               max="360"
