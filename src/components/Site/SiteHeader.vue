@@ -18,6 +18,7 @@ const pages = [
 
         <a
           v-for="page in pages"
+          :key="page.url"
           :href="`./${page.url}.html`"
           class="px-4 opacity-80 h-full items-center flex hover:text-white hover:opacity-100 transition-colors"
           :class="
