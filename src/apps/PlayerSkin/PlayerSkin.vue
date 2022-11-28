@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { onMounted, reactive, watch } from "vue";
-import BrushSettings from "./BrushSettings.vue";
-import { TextureEditor } from "../TextureEditor";
-import { QuakeModelViewer } from "../QuakeModelViewer";
-import { Brush, getDefaultBrush } from "../Brush";
+import BrushSettings from "../../components/BrushSettings.vue";
+import { TextureEditor } from "../../konva/TextureEditor";
+import { QuakeModelViewer } from "../../components/QuakeModelViewer";
+import { Brush, getDefaultBrush } from "../../konva/Brush";
 
 const baseUrl = import.meta.env.BASE_URL;
 const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
@@ -43,7 +43,7 @@ let viewer: QuakeModelViewer;
 let editor: TextureEditor;
 
 onMounted(async () => {
-  const viewer = new QuakeModelViewer("PlayerModelViewer");
+  viewer = new QuakeModelViewer("PlayerModelViewer");
   editor = new TextureEditor({
     containerID: "PlayerTextureEditor",
     width: 512,
@@ -52,7 +52,6 @@ onMounted(async () => {
       viewer.setTextureByURI(editor.toURI());
     },
   });
-  await editor.setTextureByURI(defaultTextureURI);
 });
 
 function onBrushChange(newSettings: Brush): void {
