@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, reactive, watch } from "vue";
+import { onMounted } from "vue";
 import BrushSettings from "../../components/BrushSettings.vue";
 import { TextureEditor } from "../../konva/TextureEditor";
 import { QuakeModelViewer } from "../../components/QuakeModelViewer";
@@ -8,14 +8,6 @@ import { Brush, getDefaultBrush } from "../../konva/Brush";
 const baseUrl = import.meta.env.BASE_URL;
 const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
 const defaultTextureURI = `${baseUrl}/assets/models/playerout0_tex00.png`;
-
-interface Store {
-  brush: Brush;
-}
-
-const store: Store = reactive({
-  brush: getDefaultBrush(),
-});
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
   // prevent opening image in browser
@@ -58,12 +50,10 @@ function onBrushChange(newSettings: Brush): void {
   editor.brush = newSettings;
 }
 
-watch(store.brush, onBrushChange);
-
 function onViewerLoaded(): void {
   editor.setTextureByURI(defaultTextureURI);
   editor.modelTextureOutline.hide();
-  editor.brush = store.brush;
+  editor.brush = getDefaultBrush();
 }
 </script>
 
@@ -112,7 +102,7 @@ function onViewerLoaded(): void {
                 Clear drawing
               </button>
               <BrushSettings
-                :brush="store.brush"
+                :brush="getDefaultBrush()"
                 :on-change="onBrushChange"
                 class="w-full"
               />
