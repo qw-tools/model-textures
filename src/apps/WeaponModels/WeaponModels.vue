@@ -6,52 +6,47 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import FilterToolbar from "../../components/FilterToolbar.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { FilterSettings } from "../../konva/Filter";
-import { publicUrl } from "../../components/viteutil";
+import { publicUrl } from "../../components/util";
+import { EditorAndViewerSettings } from "../ArmorModels/EditorAndViewer";
 
-interface Model {
-  id: string;
-  editorID: string;
-  viewerID: string;
-  modelPath: string;
-  defaultTexturePath: string;
-}
-
-const models: Model[] = [
+const setups: EditorAndViewerSettings[] = [
   "g_shot",
   "g_nail",
   "g_nail2",
   "g_rock",
   "g_rock2",
   "g_light",
-].map((name) => ({
-  id: name,
-  editorID: `Editor_${name}`,
-  viewerID: `Viewer_${name}`,
-  modelPath: publicUrl(`/assets/models/${name}out.gltf`),
-  defaultTexturePath: publicUrl(`/assets/models/${name}out0_tex00.png`),
+].map((modelName) => ({
+  editor: {
+    containerID: `Editor_${modelName}`,
+    texturePath: publicUrl(`/assets/models/${modelName}out0_tex00.png`),
+    width: 320,
+    height: 240,
+  },
+  viewer: {
+    containerID: `Viewer_${modelName}`,
+    modelPath: publicUrl(`/assets/models/${modelName}out.gltf`),
+  },
 }));
 
 const viewers: QuakeModelViewer[] = [];
 const editors: TextureEditor[] = [];
 
 onMounted(() => {
-  for (let i = 0; i < models.length; i++) {
-    const model = models[i];
+  for (let i = 0; i < setups.length; i++) {
+    const setup = setups[i];
+
+    const viewer = new QuakeModelViewer(setup.viewer);
+    viewers.push(viewer);
 
     const editor = new TextureEditor({
-      containerID: model.editorID,
-      defaultTexture: model.defaultTexturePath,
-      width: 320,
-      height: 240,
+      ...setup.editor,
       onChange: () => {
         viewer.setTextureByURI(editor.toURI());
       },
     });
     editor.modelTextureOutline.hide();
     editors.push(editor);
-
-    const viewer = new QuakeModelViewer(model.viewerID);
-    viewers.push(viewer);
   }
 });
 
@@ -84,15 +79,18 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
       </div>
 
       <div class="grid gap-2 lg:grid-cols-2 xl:grid-cols-3">
-        <div v-for="(m, index) in models" :key="m.id" class="flex">
+        <div
+          v-for="(setup, index) in setups"
+          :key="setup.viewer.modelPath"
+          class="flex"
+        >
           <div
             class="border-2 border-dashed border-black/20"
             style="width: 50%; height: 240px"
           >
             <model-viewer
-              :id="m.viewerID"
+              :id="setup.viewer.containerID"
               :interaction-prompt="0 === index ? 'auto' : 'none'"
-              :src="m.modelPath"
               auto-rotate
               camera-controls
               disable-pan
@@ -107,7 +105,7 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
           </div>
 
           <div class="border bg-gray-200">
-            <div :id="m.editorID" />
+            <div :id="setup.editor.containerID" />
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button

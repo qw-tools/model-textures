@@ -4,7 +4,7 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import { TextureEditor } from "../../konva/TextureEditor";
 import { QuakeModelViewer } from "../../components/QuakeModelViewer";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
-import { publicUrl } from "../../components/viteutil";
+import { publicUrl } from "../../components/util";
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
   // prevent opening image in browser
@@ -31,16 +31,14 @@ async function onTextureFileUpload(event: Event): Promise<void> {
 let viewer: QuakeModelViewer;
 let editor: TextureEditor;
 
-const modelPath = publicUrl("/assets/models/playerout.gltf");
-const texturePath = publicUrl("/assets/models/playerout0_tex00.png");
-
 onMounted(async () => {
   viewer = new QuakeModelViewer({
     containerID: "PlayerModelViewer",
+    modelPath: publicUrl("/assets/models/playerout.gltf"),
   });
   editor = new TextureEditor({
     containerID: "PlayerTextureEditor",
-    texture: texturePath,
+    texturePath: publicUrl("/assets/models/playerout0_tex00.png"),
     width: 512,
     height: 336,
     onChange: function () {
@@ -69,7 +67,6 @@ function onBrushChange(newSettings: Brush): void {
           <div class="col-span-3 border-2 border-dashed border-black/20">
             <model-viewer
               id="PlayerModelViewer"
-              :src="modelPath"
               camera-controls
               disable-pan
               disable-tap

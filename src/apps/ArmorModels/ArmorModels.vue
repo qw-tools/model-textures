@@ -1,39 +1,40 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
-import {
-  QuakeModel,
-  QuakeModelViewer,
-} from "../../components/QuakeModelViewer";
+import { QuakeModelViewer } from "../../components/QuakeModelViewer";
 import { TextureEditor } from "../../konva/TextureEditor";
 import BrushSettings from "../../components/BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { FilterSettings } from "../../konva/Filter";
 import FilterToolbar from "../../components/FilterToolbar.vue";
-import { publicUrl } from "../../components/viteutil";
+import { publicUrl } from "../../components/util";
+import { EditorAndViewerSettings } from "./EditorAndViewer";
 
 const textures = ["armorout0_tex00", "armorout0_tex01", "armorout0_tex02"];
-const models: QuakeModel[] = textures.map((texture) => ({
-  id: texture,
-  editorID: `Editor_${texture}`,
-  viewerID: `Viewer_${texture}`,
-  modelPath: publicUrl("/assets/models/armorout.gltf"),
-  defaultTexturePath: publicUrl(`/assets/models/${texture}.png`),
+const setups: EditorAndViewerSettings[] = textures.map((texture) => ({
+  editor: {
+    containerID: `Editor_${texture}`,
+    texturePath: publicUrl(`/assets/models/${texture}.png`),
+    width: 368,
+    height: 152,
+  },
+  viewer: {
+    containerID: `Viewer_${texture}`,
+    modelPath: publicUrl("/assets/models/armorout.gltf"),
+    texturePath: publicUrl(`/assets/models/${texture}.png`),
+  },
 }));
 
 const viewers: QuakeModelViewer[] = [];
 const editors: TextureEditor[] = [];
 
 onMounted(() => {
-  for (let i = 0; i < models.length; i++) {
-    const model = models[i];
-    const viewer = new QuakeModelViewer(model.viewerID);
+  for (let i = 0; i < setups.length; i++) {
+    const setup = setups[i];
+    const viewer = new QuakeModelViewer(setup.viewer);
     viewers.push(viewer);
 
     const editor = new TextureEditor({
-      containerID: model.editorID,
-      defaultTexture: model.defaultTexturePath,
-      width: 368,
-      height: 152,
+      ...setup.editor,
       onChange: () => {
         viewer.setTextureByURI(editor.toURI());
       },
@@ -72,16 +73,18 @@ function onFiltersChange(newFilters: FilterSettings): void {
       </div>
 
       <div class="grid gap-2 grid-cols-1">
-        <div v-for="(m, index) in models" :key="m.id" class="flex">
+        <div
+          v-for="(setup, index) in setups"
+          :key="`${setup.viewer.modelPath}-${setup.viewer.texturePath}`"
+          class="flex"
+        >
           <div
             class="border-2 border-dashed border-black/20"
             style="width: 50%; height: 240px"
           >
             <model-viewer
-              :id="m.viewerID"
-              :data-default-texture="m.defaultTexturePath"
+              :id="setup.viewer.containerID"
               :interaction-prompt="0 === index ? 'auto' : 'none'"
-              :src="m.modelPath"
               auto-rotate
               camera-controls
               disable-pan
@@ -96,7 +99,7 @@ function onFiltersChange(newFilters: FilterSettings): void {
           </div>
 
           <div class="border bg-gray-200">
-            <div :id="m.editorID" />
+            <div :id="setup.editor.containerID" />
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button

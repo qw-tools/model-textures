@@ -12,13 +12,14 @@ import { Filter } from "konva/lib/Node";
 import { PaintLayer } from "./PaintLayer";
 import { CursorLayer } from "./CursorLayer";
 import { Brush, getDefaultBrush } from "./Brush";
+import { nullOperation } from "../components/util";
 
 export interface TextureEditorSettings {
   containerID: string;
   width: number;
   height: number;
-  defaultTexture: string;
-  onChange: () => void;
+  texturePath: string;
+  onChange?: () => void;
 }
 
 export class TextureEditor {
@@ -30,12 +31,13 @@ export class TextureEditor {
   private readonly stage: Stage;
   public readonly modelTextureOutline: KonvaImage;
   private _brush: Brush = getDefaultBrush();
-  public onChange: () => void;
+  private _onChange: () => void = nullOperation;
 
   constructor(settings: TextureEditorSettings) {
-    // change callback (throttle for performance)
-    const throttleLimit = 15; // at most one call per x ms
-    this.onChange = throttle(settings.onChange, throttleLimit);
+    // change callback
+    if (settings.onChange) {
+      this.onChange = settings.onChange;
+    }
 
     // cursor
     this.cursorLayer = new CursorLayer();
@@ -92,8 +94,17 @@ export class TextureEditor {
     this.stage.addEventListener("mouseleave", handleMouseEvent);
 
     // init
-    this.setTextureByURI(settings.defaultTexture);
+    this.setTextureByURI(settings.texturePath);
     this.brush = getDefaultBrush();
+  }
+
+  get onChange(): () => void {
+    return this._onChange;
+  }
+
+  set onChange(callback: () => void) {
+    const throttleLimit = 15; // at most one call per x ms
+    this._onChange = throttle(callback, throttleLimit);
   }
 
   get brush(): Brush {
@@ -133,7 +144,7 @@ export class TextureEditor {
       this.modelTexture.blurRadius(filters.blur.value);
     }
 
-    this.onChange();
+    this._onChange();
   }
 
   public toURI(): string {
@@ -149,7 +160,7 @@ export class TextureEditor {
     const newTextureImage = await createImageFromURI(textureURI);
     this.modelTexture.image(newTextureImage);
     await this.updateOutline(newTextureImage);
-    this.onChange();
+    this._onChange();
   }
 
   private async updateOutline(textureImage: HTMLImageElement): Promise<void> {
@@ -184,7 +195,7 @@ export class TextureEditor {
 
   public clearPaint(): void {
     this.paintLayer.destroyChildren();
-    this.onChange();
+    this._onChange();
   }
 
   public toggleTextureOutline(): void {
