@@ -38,6 +38,7 @@ onMounted(async () => {
   viewer = new QuakeModelViewer("PlayerModelViewer");
   editor = new TextureEditor({
     containerID: "PlayerTextureEditor",
+    defaultTexture: defaultTextureURI,
     width: 512,
     height: 336,
     onChange: function () {
@@ -48,12 +49,6 @@ onMounted(async () => {
 
 function onBrushChange(newSettings: Brush): void {
   editor.brush = newSettings;
-}
-
-function onViewerLoaded(): void {
-  editor.setTextureByURI(defaultTextureURI);
-  editor.modelTextureOutline.hide();
-  editor.brush = getDefaultBrush();
 }
 </script>
 
@@ -80,7 +75,6 @@ function onViewerLoaded(): void {
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
               rotation-per-second="5deg"
-              @load="onViewerLoaded"
             >
             </model-viewer>
           </div>

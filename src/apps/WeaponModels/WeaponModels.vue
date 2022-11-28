@@ -42,6 +42,7 @@ onMounted(() => {
 
     const editor = new TextureEditor({
       containerID: model.editorID,
+      defaultTexture: model.defaultTexturePath,
       width: 320,
       height: 240,
       onChange: () => {
@@ -64,12 +65,6 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
   for (let i = 0; i < editors.length; i++) {
     editors[i].applyFilters(newFilterSettings);
   }
-}
-
-function onViewerLoaded(viewerIndex: number, model: Model) {
-  editors[viewerIndex].setTextureByURI(model.defaultTexturePath);
-  editors[viewerIndex].modelTextureOutline.hide();
-  editors[viewerIndex].brush = getDefaultBrush();
 }
 </script>
 <template>

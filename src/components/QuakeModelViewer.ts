@@ -7,6 +7,15 @@ export class QuakeModelViewer {
 
   constructor(containerID: string) {
     this.viewer = document.getElementById(containerID) as ModelViewerElement;
+    this.viewer.addEventListener("load", () => this.onViewerLoaded());
+  }
+
+  public async onViewerLoaded(): Promise<void> {
+    const defaultTexture = this.viewer.dataset.defaultTexture || null;
+
+    if (defaultTexture) {
+      await this.setTextureByURI(defaultTexture);
+    }
   }
 
   public setTexture(texture: Texture): void {

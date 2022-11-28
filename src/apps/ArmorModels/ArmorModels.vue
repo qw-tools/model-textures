@@ -27,6 +27,7 @@ onMounted(() => {
 
     const editor = new TextureEditor({
       containerID: model.editorID,
+      defaultTexture: model.defaultTexturePath,
       width: 368,
       height: 152,
       onChange: () => {
@@ -50,11 +51,6 @@ function onFiltersChange(newFilters: FilterSettings): void {
   for (let i = 0; i < editors.length; i++) {
     editors[i].applyFilters(newFilters);
   }
-}
-
-function onViewerLoaded(viewerIndex: number, model: Model) {
-  editors[viewerIndex].setTextureByURI(model.defaultTexturePath);
-  editors[viewerIndex].brush = getDefaultBrush();
 }
 </script>
 <template>
@@ -81,6 +77,7 @@ function onViewerLoaded(viewerIndex: number, model: Model) {
           >
             <model-viewer
               :id="m.viewerID"
+              :data-default-texture="m.defaultTexturePath"
               :interaction-prompt="0 === index ? 'auto' : 'none'"
               :src="m.modelPath"
               auto-rotate
@@ -92,7 +89,6 @@ function onViewerLoaded(viewerIndex: number, model: Model) {
               min-camera-orbit="auto 0deg auto"
               orientation="0deg 270deg -45deg"
               rotation-per-second="7deg"
-              @load="() => onViewerLoaded(index, m)"
             >
             </model-viewer>
           </div>
