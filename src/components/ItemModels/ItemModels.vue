@@ -13,33 +13,6 @@ const store = reactive({
 });
 
 const models = [
-  {
-    id: "armor1",
-    filename: "armor",
-    texture: "/assets/models/armorout0_tex00.png",
-  },
-  {
-    id: "armor2",
-    filename: "armor",
-    texture: "/assets/models/armorout0_tex01.png",
-  },
-  {
-    id: "armor3",
-    filename: "armor",
-    texture: "/assets/models/armorout0_tex02.png",
-  },
-  {
-    id: "backpack",
-    filename: "backpack",
-    texture: "/assets/models/backpackout0_tex00.png",
-  },
-  { id: "player", filename: "player" },
-  { id: "g_shot", filename: "g_shot" },
-  { id: "g_nail", filename: "g_nail" },
-  { id: "g_nail2", filename: "g_nail2" },
-  { id: "g_rock", filename: "g_rock" },
-  { id: "g_rock2", filename: "g_rock2" },
-  { id: "g_light", filename: "g_light" },
   { id: "grenade", filename: "grenade" },
   { id: "missile", filename: "missile" },
   { id: "quaddama", filename: "quaddama" },
@@ -47,11 +20,9 @@ const models = [
 ];
 
 onMounted(() => {
-  const viewers = document.querySelectorAll(
-    "model-viewer"
-  ) as NodeListOf<ModelViewerElement>;
+  const viewers = document.querySelectorAll("model-viewer");
 
-  viewers.forEach((el) => {
+  viewers.forEach((el: ModelViewerElement) => {
     el.addEventListener("load", async () => {
       const textureSource = el.getAttribute("data-texture");
 
@@ -79,7 +50,7 @@ const baseUrl = import.meta.env.BASE_URL;
   <div class="bg-gray-100 border-b border-gray-300">
     <div class="bg-white shadow">
       <div class="container">
-        <div class="font-bold text-xl py-4">Item Models</div>
+        <div class="font-bold text-xl py-4">Item Models (TODO)</div>
       </div>
     </div>
 
@@ -101,13 +72,13 @@ const baseUrl = import.meta.env.BASE_URL;
           <div :style="`filter: hue-rotate(${store.color.r}deg)`" class="grid">
             <div
               v-for="model in models"
+              :key="model.filename"
               class="container"
               style="display: flex"
             >
               <model-viewer
                 :id="model.id"
                 :auto-rotate="store.rotate"
-                :data-texture="`${baseUrl}/${model.texture}`"
                 :src="`${baseUrl}/assets/models/${model.filename}out.gltf`"
                 auto-rotate-delay="0"
                 camera-controls
@@ -119,22 +90,6 @@ const baseUrl = import.meta.env.BASE_URL;
                 rotation-per-second="10deg"
               >
               </model-viewer>
-              <div
-                v-if="model.texture"
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  width: 50%;
-                "
-              >
-                <img
-                  :src="`${baseUrl}/${model.texture}`"
-                  alt=""
-                  height=""
-                  width="512"
-                />
-              </div>
             </div>
           </div>
         </div>

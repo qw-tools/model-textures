@@ -31,7 +31,7 @@ select {
 }
 
 input[type="color"] {
-  @apply w-8 h-8;
+  @apply w-8 h-8 border-0 bg-transparent;
 }
 
 label:hover {
@@ -68,6 +68,7 @@ label:hover code {
 }
 
 model-viewer {
+  min-width: 120px;
   width: 100%;
   height: 100%;
 }

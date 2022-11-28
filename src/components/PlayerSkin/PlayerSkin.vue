@@ -1,16 +1,23 @@
 <script lang="ts" setup>
-import { onMounted, reactive } from "vue";
-import { ModelViewerElement } from "@google/model-viewer";
+import { onMounted, reactive, watch } from "vue";
+import PlayerBrushSettings from "./PlayerBrushSettings.vue";
+import { TextureEditor } from "../TextureEditor";
+import { QuakeModelViewer } from "../QuakeModelViewer";
+import { BrushSettings, getDefaultBrushSettings } from "../Brush";
 
 const baseUrl = import.meta.env.BASE_URL;
+const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
+const defaultTextureURI = `${baseUrl}/assets/models/playerout0_tex00.png`;
 
-const store = reactive({
-  rotate: true,
-  color: { r: 0, g: 0, b: 0, a: 0 },
-  skinTextureURI: `${baseUrl}/assets/models/playerout0_tex00.png`,
+interface PlayerSkinStore {
+  brushSettings: BrushSettings;
+}
+
+const store: PlayerSkinStore = reactive({
+  brushSettings: getDefaultBrushSettings(),
 });
 
-const handleDrop = (event: DragEvent) => {
+async function onTextureFileDrop(event: DragEvent): Promise<void> {
   // prevent opening image in browser
   event.stopPropagation();
   event.preventDefault();
@@ -19,157 +26,48 @@ const handleDrop = (event: DragEvent) => {
     return;
   }
 
-  setPlayerTextureByFile(event.dataTransfer.files[0]);
-};
+  await editor.setTextureByFile(event.dataTransfer.files[0]);
+}
 
-const handleCustomSkinChange = (event: Event) => {
+async function onTextureFileUpload(event: Event): Promise<void> {
   const files = (event.target as HTMLInputElement).files;
 
   if (!files) {
     return;
   }
 
-  setPlayerTextureByFile(files[0]);
-};
+  await editor.setTextureByFile(files[0]);
+}
 
-const setPlayerTextureByFile = (file: File) => {
-  const reader = new FileReader();
+let viewer: QuakeModelViewer;
+let editor: TextureEditor;
 
-  reader.addEventListener("load", async () => {
-    if (!viewer.model || 0 === viewer.model.materials.length) {
-      return;
-    }
+async function onEditorChange(): Promise<void> {
+  await viewer?.setTextureByURI(editor.toURI());
+}
 
-    const texture = await viewer.createTexture(reader.result as string);
-
-    if (!texture) {
-      return;
-    }
-
-    viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-      texture
-    );
-    store.skinTextureURI = reader.result as string;
-    clearCanvas();
-    renderPlayerSkinToCanvas();
+onMounted(async () => {
+  editor = new TextureEditor({
+    containerID: "PlayerTextureEditor",
+    width: 512,
+    height: 336,
+    onChange: onEditorChange,
   });
-
-  reader.readAsDataURL(file);
-};
-
-const updatePlayerTexture = () => setPlayerTextureByCanvas(playerCanvas);
-
-const setPlayerTextureByCanvas = async (canvas: HTMLCanvasElement) => {
-  if (!viewer.model || 0 === viewer.model.materials.length) {
-    return;
-  }
-
-  const texture = await viewer.createTexture(canvas.toDataURL());
-
-  if (!texture) {
-    return;
-  }
-
-  viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-    texture
-  );
-};
-
-let viewer: ModelViewerElement;
-let playerCanvas: HTMLCanvasElement;
-let ctx: CanvasRenderingContext2D | null;
-let playerCanvasBoundingBox: DOMRect;
-let playerImage: HTMLImageElement;
-
-const renderPlayerSkinToCanvas = () => {
-  const canvasDrawTimeout = 40;
-  window.setTimeout(() => {
-    ctx?.drawImage(
-      playerImage,
-      0,
-      0,
-      playerImage.width,
-      playerImage.height,
-      0,
-      0,
-      playerCanvas.width,
-      playerCanvas.height
-    );
-  }, canvasDrawTimeout);
-};
-
-onMounted(() => {
-  viewer = document.getElementById("PlayerViewer") as ModelViewerElement;
-  playerImage = document.getElementById("PlayerImage") as HTMLImageElement;
-  playerCanvas = document.getElementById("PlayerCanvas") as HTMLCanvasElement;
-  ctx = playerCanvas.getContext("2d");
-  playerCanvasBoundingBox = playerCanvas.getBoundingClientRect();
+  await editor.setTextureByURI(defaultTextureURI);
 });
 
-// new position from mouse event
-let canvasPos = { x: 0, y: 0 };
+async function onBrushSettingsChange(
+  newSettings: BrushSettings
+): Promise<void> {
+  editor.brush = newSettings;
+}
 
-const updateCanvasPosition = (event: MouseEvent) => {
-  canvasPos.x = event.clientX - playerCanvasBoundingBox.x;
-  canvasPos.y = event.clientY - playerCanvasBoundingBox.y;
-};
+watch(store.brushSettings, onBrushSettingsChange);
 
-const drawLineOnCanvas = (event: MouseEvent) => {
-  const MOUSE_PRIMARY_BUTTON = 1;
-
-  if (event.buttons !== MOUSE_PRIMARY_BUTTON) {
-    return;
-  }
-
-  let lastCanvasPos = Object.assign({}, { ...canvasPos });
-  updateCanvasPosition(event);
-  drawOnCanvas(lastCanvasPos.x, lastCanvasPos.y, canvasPos.x, canvasPos.y);
-};
-
-const drawDotOnCanvas = (event: MouseEvent) => {
-  updateCanvasPosition(event);
-  drawOnCanvas(canvasPos.x, canvasPos.y, canvasPos.x, canvasPos.y);
-};
-
-const drawOnCanvas = async (x0: number, y0: number, x1: number, y1: number) => {
-  if (!ctx) {
-    return;
-  }
-
-  ctx.lineWidth = 5;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#ff0000";
-
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.lineTo(x1, y1);
-  ctx.stroke();
-};
-
-const clearCanvas = () => {
-  ctx?.clearRect(0, 0, playerCanvas.width, playerCanvas.height);
-};
-
-const clearCanvasDrawing = () => {
-  renderPlayerSkinToCanvas();
-
-  setTimeout(async () => {
-    await setPlayerTextureByCanvas(playerCanvas);
-  }, 40);
-};
-
-const parts = [
-  "Helmet",
-  "Face",
-  "Shoulders",
-  "Arms",
-  "Gloves",
-  "Axe",
-  "Weapon",
-  "Pants",
-  "Flame",
-  "Boots",
-];
+async function onViewerLoaded(): Promise<void> {
+  viewer = new QuakeModelViewer("PlayerModelViewer");
+  await onEditorChange();
+}
 </script>
 
 <template>
@@ -183,52 +81,43 @@ const parts = [
     <div class="container fadeIn my-4">
       <div class="flex grow">
         <div class="grid grid-cols-10 gap-4 w-full">
-          <div
-            class="bg-gradient-to-b from-transparent via-white border-2 col-span-3"
-          >
+          <div class="col-span-3 border-2 border-dashed border-black/20">
             <model-viewer
-              id="PlayerViewer"
-              :src="`${baseUrl}/assets/models/playerout.gltf`"
+              id="PlayerModelViewer"
+              :src="defaultModel"
               camera-controls
               disable-zoom
+              disable-tap
               max-camera-orbit="auto 360deg 100"
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
               rotation-per-second="5deg"
-              @load="renderPlayerSkinToCanvas"
+              @load="onViewerLoaded"
             >
             </model-viewer>
           </div>
           <div
             class="col-span-4 self-center"
             style="width: 512px"
-            @drop="handleDrop"
+            @drop="onTextureFileDrop"
             @dragover.prevent
           >
-            <canvas
-              id="PlayerCanvas"
-              class="border bg-white cursor-crosshair"
-              height="386"
-              width="512"
-              @mousedown="drawDotOnCanvas"
-              @mouseenter="updateCanvasPosition"
-              @mousemove="drawLineOnCanvas"
-              @mouseup="updatePlayerTexture"
-            ></canvas>
-            <img
-              id="PlayerImage"
-              :src="store.skinTextureURI"
-              alt="Player Skin"
-              class="hidden"
-            />
+            <div class="border bg-white">
+              <div id="PlayerTextureEditor" />
+            </div>
 
-            <div class="p-2 bg-gray-300">
+            <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button
-                class="border border-gray-400 hover:bg-red-100 rounded p-2 bg-gray-100 shadow"
-                @click="clearCanvasDrawing"
+                class="block border border-gray-400 hover:bg-red-100 rounded py-2 bg-gray-100 shadow w-40 text-sm"
+                @click="editor.clearPainting"
               >
                 Clear drawing
               </button>
+              <PlayerBrushSettings
+                class="w-full"
+                :settings="store.brushSettings"
+                :on-change="onBrushSettingsChange"
+              />
             </div>
           </div>
 
@@ -243,55 +132,19 @@ const parts = [
                 <input
                   id="custom_skin"
                   type="file"
-                  @change="handleCustomSkinChange"
+                  @change="onTextureFileUpload"
                 />
               </div>
               <hr />
-              <div class="flex items-center">
-                <div class="w-32"><strong>Quake Colors</strong></div>
-                <input
-                  class="w-10 text-center"
-                  type="number"
-                  value="0"
-                  disabled
-                />
-                <input
-                  class="w-10 text-center"
-                  type="number"
-                  value="0"
-                  disabled
-                />
-              </div>
-              <hr />
-              <div class="flex items-center">
-                <div class="">
-                  <strong><input type="checkbox" /> Fine tune regions</strong>
-                </div>
-              </div>
-              <hr />
-              <div class="grid grid-cols-2 gap-4">
-                <div v-for="part in parts" class="flex items-center opacity-25">
-                  <div class="w-32">
-                    <strong>{{ part }}</strong>
-                  </div>
-                  <input type="color" disabled />
-                </div>
-              </div>
-              <hr />
-              <div class="flex items-center">
-                <div class="w-32"><strong>Brightness</strong></div>
-                <input type="range" disabled />
-              </div>
-              <hr />
-              <div class="flex items-center">
-                <div class="w-32"><strong>HUE</strong></div>
-                <input type="range" disabled />
-              </div>
-              <hr />
-              <div class="flex items-center">
-                <div class="w-32">
-                  <strong><input type="checkbox" disabled /> Colorize</strong>
-                </div>
+              <div class="">
+                <label class="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked
+                    @click="editor.toggleTextureOutline"
+                  />
+                  <strong>Show texture outline</strong>
+                </label>
               </div>
             </div>
           </div>

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import Header from "../Site/Header.vue";
-import Footer from "../Site/Footer.vue";
+import SiteHeader from "../Site/SiteHeader.vue";
+import SiteFooter from "../Site/SiteFooter.vue";
 import ItemModels from "../ItemModels/ItemModels.vue";
 </script>
 
 <template>
-  <Header />
+  <SiteHeader current-page="item_models" />
   <ItemModels />
-  <Footer />
+  <SiteFooter />
 </template>

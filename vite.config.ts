@@ -22,6 +22,8 @@ export default defineConfig({
       input: {
         playerSkin: resolve(__dirname, "index.html"),
         itemModels: resolve(__dirname, "item_models.html"),
+        weaponModels: resolve(__dirname, "weapon_models.html"),
+        armorModels: resolve(__dirname, "armor_models.html"),
       },
     },
   },
