@@ -108,7 +108,7 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
         >
           <div
             class="border-2 border-dashed border-black/20"
-            style="width: 50%; height: 240px"
+            style="width: 480px; height: 240px"
           >
             <model-viewer
               :id="setup.viewer.containerID"
