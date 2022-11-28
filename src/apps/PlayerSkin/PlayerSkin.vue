@@ -45,6 +45,7 @@ onMounted(async () => {
       viewer.setTextureByURI(editor.toURI());
     },
   });
+  editor.modelTextureOutline.hide();
 });
 
 function onBrushChange(newSettings: Brush): void {
@@ -120,11 +121,7 @@ function onBrushChange(newSettings: Brush): void {
               <hr />
               <div class="">
                 <label class="flex items-center">
-                  <input
-                    checked
-                    type="checkbox"
-                    @click="editor.toggleTextureOutline"
-                  />
+                  <input type="checkbox" @click="editor.toggleTextureOutline" />
                   <strong>Show texture outline</strong>
                 </label>
               </div>

@@ -16,7 +16,6 @@ interface Model {
   defaultTexturePath: string;
 }
 
-const baseUrl = stripTrailingSlash(import.meta.env.BASE_URL);
 const models: Model[] = [
   "g_shot",
   "g_nail",
@@ -38,7 +37,6 @@ const editors: TextureEditor[] = [];
 onMounted(() => {
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
-    const viewer = new QuakeModelViewer(model.viewerID);
 
     const editor = new TextureEditor({
       containerID: model.editorID,
@@ -49,9 +47,11 @@ onMounted(() => {
         viewer.setTextureByURI(editor.toURI());
       },
     });
-
-    viewers.push(viewer);
+    editor.modelTextureOutline.hide();
     editors.push(editor);
+
+    const viewer = new QuakeModelViewer(model.viewerID);
+    viewers.push(viewer);
   }
 });
 
@@ -102,7 +102,6 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
               min-camera-orbit="auto 0deg auto"
               orientation="0deg 270deg -45deg"
               rotation-per-second="7deg"
-              @load="() => onViewerLoaded(index, m)"
             >
             </model-viewer>
           </div>

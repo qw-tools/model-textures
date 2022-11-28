@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
-import { QuakeModelViewer } from "../../components/QuakeModelViewer";
+import {
+  QuakeModel,
+  QuakeModelViewer,
+} from "../../components/QuakeModelViewer";
 import { TextureEditor } from "../../konva/TextureEditor";
 import BrushSettings from "../../components/BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
@@ -9,7 +12,7 @@ import FilterToolbar from "../../components/FilterToolbar.vue";
 import { publicUrl } from "../../components/viteutil";
 
 const textures = ["armorout0_tex00", "armorout0_tex01", "armorout0_tex02"];
-const models: Model[] = textures.map((texture) => ({
+const models: QuakeModel[] = textures.map((texture) => ({
   id: texture,
   editorID: `Editor_${texture}`,
   viewerID: `Viewer_${texture}`,
@@ -24,6 +27,7 @@ onMounted(() => {
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
     const viewer = new QuakeModelViewer(model.viewerID);
+    viewers.push(viewer);
 
     const editor = new TextureEditor({
       containerID: model.editorID,
@@ -35,8 +39,6 @@ onMounted(() => {
       },
     });
     editor.modelTextureOutline.hide();
-
-    viewers.push(viewer);
     editors.push(editor);
   }
 });
