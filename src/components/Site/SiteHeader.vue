@@ -7,7 +7,7 @@ const pages = [
   { url: "index", title: "Player Skin" },
   { url: "weapon_models", title: "Weapon models" },
   { url: "armor_models", title: "Armor Models" },
-  { url: "item_models", title: "Item Models (TODO)" },
+  { url: "misc_models", title: "Misc Models" },
 ];
 </script>
 
