@@ -6,10 +6,7 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import FilterToolbar from "../../components/FilterToolbar.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { FilterSettings } from "../../konva/Filter";
-
-function stripTrailingSlash(str: string): string {
-  return str.endsWith("/") ? str.slice(0, -1) : str;
-}
+import { publicUrl } from "../../components/viteutil";
 
 interface Model {
   id: string;
@@ -31,8 +28,8 @@ const models: Model[] = [
   id: name,
   editorID: `Editor_${name}`,
   viewerID: `Viewer_${name}`,
-  modelPath: `${baseUrl}/assets/models/${name}out.gltf`,
-  defaultTexturePath: `${baseUrl}/assets/models/${name}out0_tex00.png`,
+  modelPath: publicUrl(`/assets/models/${name}out.gltf`),
+  defaultTexturePath: publicUrl(`/assets/models/${name}out0_tex00.png`),
 }));
 
 const viewers: QuakeModelViewer[] = [];

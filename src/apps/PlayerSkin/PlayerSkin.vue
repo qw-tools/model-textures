@@ -4,10 +4,10 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import { TextureEditor } from "../../konva/TextureEditor";
 import { QuakeModelViewer } from "../../components/QuakeModelViewer";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
+import { publicUrl } from "../../components/viteutil";
 
-const baseUrl = import.meta.env.BASE_URL;
-const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
-const defaultTextureURI = `${baseUrl}/assets/models/playerout0_tex00.png`;
+const defaultModel = publicUrl("/assets/models/playerout.gltf");
+const defaultTextureURI = publicUrl("/assets/models/playerout0_tex00.png");
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
   // prevent opening image in browser

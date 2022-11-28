@@ -6,27 +6,15 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { FilterSettings } from "../../konva/Filter";
 import FilterToolbar from "../../components/FilterToolbar.vue";
+import { publicUrl } from "../../components/viteutil";
 
-function stripTrailingSlash(str: string): string {
-  return str.endsWith("/") ? str.slice(0, -1) : str;
-}
-
-interface Model {
-  id: string;
-  editorID: string;
-  viewerID: string;
-  modelPath: string;
-  defaultTexturePath: string;
-}
-
-const baseUrl = stripTrailingSlash(import.meta.env.BASE_URL);
 const textures = ["armorout0_tex00", "armorout0_tex01", "armorout0_tex02"];
 const models: Model[] = textures.map((texture) => ({
   id: texture,
   editorID: `Editor_${texture}`,
   viewerID: `Viewer_${texture}`,
-  modelPath: `${baseUrl}/assets/models/armorout.gltf`,
-  defaultTexturePath: `${baseUrl}/assets/models/${texture}.png`,
+  modelPath: publicUrl("/assets/models/armorout.gltf"),
+  defaultTexturePath: publicUrl(`/assets/models/${texture}.png`),
 }));
 
 const viewers: QuakeModelViewer[] = [];
