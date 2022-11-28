@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Brush } from "../Brush";
+import { Brush } from "../konva/Brush";
 import { reactive, watch } from "vue";
 import { throttle } from "@google/model-viewer/lib/utilities";
 
