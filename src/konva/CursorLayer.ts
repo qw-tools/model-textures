@@ -1,6 +1,6 @@
 import { Brush } from "./Brush";
 import { Layer } from "konva/lib/Layer";
-import { MouseEventType } from "./Event";
+import { MouseEventType } from "../components/Event";
 import { Circle } from "konva/lib/shapes/Circle";
 import { Rect } from "konva/lib/shapes/Rect";
 
@@ -27,10 +27,8 @@ export class CursorLayer extends Layer {
   }
 
   private onBrushChange(newBrush: Brush): void {
-    console.log("onBrushChange");
     if (newBrush.shape !== this.brush.shape) {
       const wasVisible = this.cursor.isVisible();
-      console.log(wasVisible);
       this.cursor = createCursorFromBrush(newBrush);
       this.cursor.visible(wasVisible);
       this.destroyChildren();

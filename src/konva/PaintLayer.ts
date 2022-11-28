@@ -2,7 +2,7 @@ import { Line } from "konva/lib/shapes/Line";
 import { Brush, getDefaultBrush } from "./Brush";
 import { Layer } from "konva/lib/Layer";
 import { Group } from "konva/lib/Group";
-import { MouseEventButton, MouseEventType } from "./Event";
+import { MouseEventButton, MouseEventType } from "../components/Event";
 
 export class PaintLayer extends Layer {
   public onPaint: () => void = function (): void {

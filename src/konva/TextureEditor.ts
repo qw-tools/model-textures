@@ -5,7 +5,7 @@ import {
   createImageFromURI,
   createImageOutline,
   dataUriFromFile,
-} from "./domutil";
+} from "../components/domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { FilterSettings } from "./Filter";
 import { Filter } from "konva/lib/Node";
