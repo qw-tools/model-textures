@@ -17,6 +17,7 @@ export interface TextureEditorSettings {
   containerID: string;
   width: number;
   height: number;
+  defaultTexture: string;
   onChange: () => void;
 }
 
@@ -89,6 +90,10 @@ export class TextureEditor {
     this.stage.addEventListener("mousedown", handleMouseEvent);
     this.stage.addEventListener("mouseenter", handleMouseEvent);
     this.stage.addEventListener("mouseleave", handleMouseEvent);
+
+    // init
+    this.setTextureByURI(settings.defaultTexture);
+    this.brush = getDefaultBrush();
   }
 
   get brush(): Brush {
