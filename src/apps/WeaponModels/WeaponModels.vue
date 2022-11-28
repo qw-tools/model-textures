@@ -1,26 +1,26 @@
 <script lang="ts" setup>
-import { onMounted, reactive, watch } from "vue";
+import { onMounted } from "vue";
 import { QuakeModelViewer } from "../../components/QuakeModelViewer";
-import { TextureEditor } from "../../components/TextureEditor";
-import BrushSettings from "../../components/PlayerSkin/BrushSettings.vue";
-import { Brush, getDefaultBrush } from "../../components/Brush";
-import {
-  BlurFilterSetting,
-  BrightnessFilterSetting,
-  ContrastFilterSetting,
-  FilterSettings,
-  GrayscaleFilterSetting,
-  HUEFilterSetting,
-  SaturationFilterSetting,
-} from "../../components/Filter";
-import { throttle } from "@google/model-viewer/lib/utilities";
+import { TextureEditor } from "../../konva/TextureEditor";
+import BrushSettings from "../../components/BrushSettings.vue";
+import FilterToolbar from "../../components/FilterToolbar.vue";
+import { Brush, getDefaultBrush } from "../../konva/Brush";
+import { FilterSettings } from "../../konva/Filter";
 
 function stripTrailingSlash(str: string): string {
   return str.endsWith("/") ? str.slice(0, -1) : str;
 }
 
+interface Model {
+  id: string;
+  editorID: string;
+  viewerID: string;
+  modelPath: string;
+  defaultTexturePath: string;
+}
+
 const baseUrl = stripTrailingSlash(import.meta.env.BASE_URL);
-const models = [
+const models: Model[] = [
   "g_shot",
   "g_nail",
   "g_nail2",
@@ -34,23 +34,6 @@ const models = [
   modelPath: `${baseUrl}/assets/models/${name}out.gltf`,
   defaultTexturePath: `${baseUrl}/assets/models/${name}out0_tex00.png`,
 }));
-
-interface PlayerSkinStore {
-  brush: Brush;
-  filterSettings: FilterSettings;
-}
-
-const store: PlayerSkinStore = reactive({
-  brush: getDefaultBrush(),
-  filterSettings: {
-    blur: new BlurFilterSetting(),
-    grayscale: new GrayscaleFilterSetting(),
-    hue: new HUEFilterSetting(),
-    saturation: new SaturationFilterSetting(),
-    brightness: new BrightnessFilterSetting(),
-    contrast: new ContrastFilterSetting(),
-  },
-});
 
 const viewers: QuakeModelViewer[] = [];
 const editors: TextureEditor[] = [];
@@ -76,11 +59,11 @@ onMounted(() => {
 
 function onBrushChange(newSettings: Brush): void {
   for (let i = 0; i < editors.length; i++) {
-    editors[i].paintLayer.brush = newSettings;
+    editors[i].brush = newSettings;
   }
 }
 
-function onFilterSettingsChange(newFilterSettings: FilterSettings): void {
+function onFiltersChange(newFilterSettings: FilterSettings): void {
   for (let i = 0; i < editors.length; i++) {
     editors[i].applyFilters(newFilterSettings);
   }
@@ -89,11 +72,8 @@ function onFilterSettingsChange(newFilterSettings: FilterSettings): void {
 function onViewerLoaded(viewerIndex: number, model: Model) {
   editors[viewerIndex].setTextureByURI(model.defaultTexturePath);
   editors[viewerIndex].modelTextureOutline.hide();
-  editors[viewerIndex].brush = store.brush;
+  editors[viewerIndex].brush = getDefaultBrush();
 }
-
-watch(store.brush, onBrushChange);
-watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
 </script>
 <template>
   <div class="bg-gray-100 border-b border-gray-300">
@@ -107,79 +87,8 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
       <div
         class="flex px-4 py-3 my-4 items-center rounded border shadow bg-white space-x-8"
       >
-        <BrushSettings :brush="store.brush" :on-change="onBrushChange" />
-
-        <div class="flex items-center space-x-2">
-          <label>
-            <input v-model="store.filterSettings.hue.enabled" type="checkbox" />
-            <strong>HUE</strong>
-          </label>
-          <input
-            v-model.number="store.filterSettings.hue.value"
-            :disabled="!store.filterSettings.hue.enabled"
-            :max="store.filterSettings.hue.max"
-            :min="store.filterSettings.hue.min"
-            class="w-24"
-            type="range"
-          />
-        </div>
-
-        <div class="flex items-center space-x-2">
-          <label>
-            <input
-              v-model="store.filterSettings.saturation.enabled"
-              type="checkbox"
-            />
-            <strong>Saturation</strong>
-          </label>
-          <input
-            v-model.number="store.filterSettings.saturation.value"
-            :disabled="!store.filterSettings.saturation.enabled"
-            :max="store.filterSettings.saturation.max"
-            :min="store.filterSettings.saturation.min"
-            :step="store.filterSettings.saturation.max / 100"
-            class="w-24"
-            type="range"
-          />
-        </div>
-
-        <div class="flex items-center space-x-2">
-          <label>
-            <input
-              v-model="store.filterSettings.brightness.enabled"
-              type="checkbox"
-            />
-            <strong>Brightness</strong>
-          </label>
-          <input
-            v-model.number="store.filterSettings.brightness.value"
-            :disabled="!store.filterSettings.brightness.enabled"
-            :max="store.filterSettings.brightness.max"
-            :min="store.filterSettings.brightness.min"
-            :step="0.1"
-            class="w-24"
-            type="range"
-          />
-        </div>
-
-        <div class="flex items-center space-x-2">
-          <label>
-            <input
-              v-model="store.filterSettings.blur.enabled"
-              type="checkbox"
-            />
-            <strong>Blur</strong>
-          </label>
-          <input
-            v-model.number="store.filterSettings.blur.value"
-            :disabled="!store.filterSettings.blur.enabled"
-            :max="store.filterSettings.blur.max"
-            :min="store.filterSettings.blur.min"
-            :step="1"
-            class="w-24"
-            type="range"
-          />
-        </div>
+        <BrushSettings :brush="getDefaultBrush()" :on-change="onBrushChange" />
+        <FilterToolbar :on-change="onFiltersChange" />
       </div>
 
       <div class="grid gap-2 lg:grid-cols-2 xl:grid-cols-3">
