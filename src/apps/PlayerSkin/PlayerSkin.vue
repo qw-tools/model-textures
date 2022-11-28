@@ -4,7 +4,7 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import { TextureEditor } from "../../konva/TextureEditor";
 import { QuakeModelViewer } from "../../components/QuakeModelViewer";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
-import { publicUrl } from "../../components/util";
+import { player } from "../../quake/Item";
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
   // prevent opening image in browser
@@ -34,13 +34,13 @@ let editor: TextureEditor;
 onMounted(async () => {
   viewer = new QuakeModelViewer({
     containerID: "PlayerModelViewer",
-    modelPath: publicUrl("/assets/models/playerout.gltf"),
+    modelPath: player.model.path,
   });
   editor = new TextureEditor({
     containerID: "PlayerTextureEditor",
-    texturePath: publicUrl("/assets/models/playerout0_tex00.png"),
-    width: 512,
-    height: 336,
+    texturePath: player.model.texture.path,
+    width: 2 * player.model.texture.width,
+    height: 2 * player.model.texture.height,
     onChange: function () {
       viewer.setTextureByURI(editor.toURI());
     },
@@ -80,11 +80,10 @@ function onBrushChange(newSettings: Brush): void {
           </div>
           <div
             class="col-span-4 self-center"
-            style="width: 512px"
             @drop="onTextureFileDrop"
             @dragover.prevent
           >
-            <div class="border bg-white">
+            <div class="border border-dashed border-black">
               <div id="PlayerTextureEditor" />
             </div>
 

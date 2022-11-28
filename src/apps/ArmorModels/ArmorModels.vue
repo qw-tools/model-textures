@@ -6,23 +6,24 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { FilterSettings } from "../../konva/Filter";
 import FilterToolbar from "../../components/FilterToolbar.vue";
-import { publicUrl } from "../../components/util";
 import { EditorAndViewerSettings } from "./EditorAndViewer";
+import { armors } from "../../quake/Item";
 
-const textures = ["armorout0_tex00", "armorout0_tex01", "armorout0_tex02"];
-const setups: EditorAndViewerSettings[] = textures.map((texture) => ({
-  editor: {
-    containerID: `Editor_${texture}`,
-    texturePath: publicUrl(`/assets/models/${texture}.png`),
-    width: 368,
-    height: 152,
-  },
-  viewer: {
-    containerID: `Viewer_${texture}`,
-    modelPath: publicUrl("/assets/models/armorout.gltf"),
-    texturePath: publicUrl(`/assets/models/${texture}.png`),
-  },
-}));
+const setups: EditorAndViewerSettings[] = armors.map((item) => {
+  return {
+    editor: {
+      containerID: `Editor_${item.id}`,
+      texturePath: item.model.texture.path,
+      width: 2 * item.model.texture.width,
+      height: 2 * item.model.texture.height,
+    },
+    viewer: {
+      containerID: `Viewer_${item.id}`,
+      modelPath: item.model.path,
+      texturePath: item.model.texture.path,
+    },
+  };
+});
 
 const viewers: QuakeModelViewer[] = [];
 const editors: TextureEditor[] = [];
@@ -72,15 +73,15 @@ function onFiltersChange(newFilters: FilterSettings): void {
         <FilterToolbar :on-change="onFiltersChange" />
       </div>
 
-      <div class="grid gap-2 grid-cols-1">
+      <div class="grid gap-4 grid-cols-1">
         <div
           v-for="(setup, index) in setups"
           :key="`${setup.viewer.modelPath}-${setup.viewer.texturePath}`"
           class="flex"
         >
           <div
-            class="border-2 border-dashed border-black/20"
-            style="width: 50%; height: 240px"
+            class="border-2 border-dashed border-black/20 mr-4"
+            style="min-width: 320px; height: 240px"
           >
             <model-viewer
               :id="setup.viewer.containerID"
