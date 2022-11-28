@@ -82,7 +82,7 @@ async function onBrushSettingsChange(
   newSettings: BrushSettings
 ): Promise<void> {
   for (let i = 0; i < editors.length; i++) {
-    editors[i].brush = newSettings;
+    editors[i].paintLayer.brush = newSettings;
   }
 }
 

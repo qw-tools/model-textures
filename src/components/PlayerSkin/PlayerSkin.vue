@@ -59,7 +59,7 @@ onMounted(async () => {
 async function onBrushSettingsChange(
   newSettings: BrushSettings
 ): Promise<void> {
-  editor.brush = newSettings;
+  editor.paintLayer.brush = newSettings;
 }
 
 watch(store.brushSettings, onBrushSettingsChange);

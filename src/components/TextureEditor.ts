@@ -7,21 +7,9 @@ import {
   dataUriFromFile,
 } from "./domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
-import { BrushSettings, getDefaultBrushSettings } from "./Brush";
 import { FilterSettings } from "./Filter";
 import { Filter } from "konva/lib/Node";
-import { Line } from "konva/lib/shapes/Line";
-
-enum MouseButton {
-  Primary = 1,
-  Secondary = 2,
-}
-
-enum MouseEventType {
-  Move = "mousemove",
-  Down = "mousedown",
-  Enter = "mouseenter",
-}
+import { PaintLayer } from "./Konva/paintLayer";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -30,21 +18,22 @@ export interface TextureEditorSettings {
   onChange: () => void;
 }
 
+class CircleCursor {}
+
+class RectangleCursor {}
+
+// TODO: cursorLayer ?????
+
 export class TextureEditor {
   private readonly helperLayer: Layer;
-  private readonly paintLayer: Layer;
+  public readonly paintLayer: PaintLayer = new PaintLayer();
   private readonly textureLayer: Layer;
   private readonly textureImage: KonvaImage;
   private readonly stage: Stage;
-  private paintLastLine: Line;
   public readonly textureOutline: KonvaImage;
-  public brush: BrushSettings;
   public onChange: () => void;
 
   constructor(settings: TextureEditorSettings) {
-    // brush settings
-    this.brush = getDefaultBrushSettings();
-
     // helper layer
     this.textureOutline = new KonvaImage({
       image: undefined,
@@ -54,10 +43,6 @@ export class TextureEditor {
     this.helperLayer = new Layer({ listening: false });
     this.helperLayer.add(this.textureOutline);
 
-    // paint layer
-    this.paintLastLine = new Line();
-    this.paintLayer = new Layer({ listening: false });
-
     // texture layer/img
     this.textureImage = new KonvaImage({
       image: undefined,
@@ -66,6 +51,12 @@ export class TextureEditor {
     });
     this.textureLayer = new Layer({ listening: false });
     this.textureLayer.add(this.textureImage);
+
+    // paint layer
+    this.paintLayer.size({
+      width: settings.width,
+      height: settings.height,
+    });
 
     // stage
     this.stage = new Stage({
@@ -84,53 +75,12 @@ export class TextureEditor {
       e.evt.preventDefault();
     });
 
-    const handleMouseEvent = (e: Event) => this.onMouseEvent(e as MouseEvent);
-
-    this.stage.addEventListener(MouseEventType.Move, handleMouseEvent);
-    this.stage.addEventListener(MouseEventType.Down, handleMouseEvent);
-    this.stage.addEventListener(MouseEventType.Enter, handleMouseEvent);
-  }
-
-  private onMouseEvent(event: MouseEvent): void {
-    const isPrimary = event.buttons === MouseButton.Primary;
-    const isSecondary = event.buttons === MouseButton.Secondary;
-
-    if (!(isPrimary || isSecondary)) {
-      return;
-    }
-
-    const pos = this.stage.getRelativePointerPosition();
-
-    if (MouseEventType.Move === event.type) {
-      this.paintExtend(pos);
-    } else {
-      const paintType = isPrimary ? "add" : "erase";
-      this.paintNew(pos, paintType);
-    }
-  }
-
-  private paintNew(pos: { x: number; y: number }, paintType: string): void {
-    const globalCompositeOperation =
-      paintType === "add" ? "source-over" : "destination-out";
-
-    this.paintLastLine = new Line({
-      stroke: this.brush.color,
-      strokeWidth: this.brush.size,
-      globalCompositeOperation,
-      lineCap: this.brush.shape,
-      lineJoin: "round", // round join for smoother lines
-      // add point twice, so we have some drawings even on a simple click
-      points: [pos.x, pos.y, pos.x, pos.y],
-      listening: false,
-    });
-    this.paintLayer.add(this.paintLastLine);
-    this.onChange();
-  }
-
-  private paintExtend(pos: { x: number; y: number }): void {
-    const newPoints = this.paintLastLine.points().concat([pos.x, pos.y]);
-    this.paintLastLine.points(newPoints);
-    this.onChange();
+    const handleMouseEvent = (e: Event) =>
+      this.paintLayer.onMouseEvent(e as MouseEvent);
+    this.stage.addEventListener("mousemove", throttle(handleMouseEvent, 5));
+    this.stage.addEventListener("mousedown", handleMouseEvent);
+    this.stage.addEventListener("mouseenter", handleMouseEvent);
+    this.stage.addEventListener("mouseleave", handleMouseEvent);
   }
 
   public setFilterSettings(settings: FilterSettings) {
@@ -208,7 +158,7 @@ export class TextureEditor {
   }
 
   public clearPainting(): void {
-    this.paintLayer.destroyChildren();
+    this.paintLayer.paint.destroyChildren();
     this.onChange();
   }
 
