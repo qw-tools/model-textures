@@ -12,11 +12,6 @@ export class CursorLayer extends Layer {
   };
   private cursor: Circle | Rect = new Rect({ visible: false });
 
-  constructor() {
-    super();
-    this.add(this.cursor);
-  }
-
   get brush(): Brush {
     return this._brush;
   }
