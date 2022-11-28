@@ -97,7 +97,7 @@ function onViewerLoaded(): void {
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button
                 class="block border border-gray-400 hover:bg-red-100 rounded py-2 bg-gray-100 shadow w-40 text-sm"
-                @click="editor.clearPainting"
+                @click="editor.clearPaint"
               >
                 Clear drawing
               </button>

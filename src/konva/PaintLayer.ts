@@ -1,20 +1,17 @@
-import { Line } from "konva/lib/shapes/Line";
 import { Brush, getDefaultBrush } from "./Brush";
+import { Line } from "konva/lib/shapes/Line";
 import { Layer } from "konva/lib/Layer";
-import { Group } from "konva/lib/Group";
 import { MouseEventButton, MouseEventType } from "../components/Event";
 
 export class PaintLayer extends Layer {
   public onPaint: () => void = function (): void {
     // do nothing
   };
-  public readonly paint: Group = new Group();
   private lastLine: Line = new Line();
   public brush: Brush = getDefaultBrush();
 
   constructor() {
     super({ listening: false });
-    this.add(this.paint);
   }
 
   public onMouseEvent(event: MouseEvent): void {
@@ -50,7 +47,7 @@ export class PaintLayer extends Layer {
       points: [pos.x, pos.y, pos.x, pos.y],
       listening: false,
     });
-    this.paint.add(this.lastLine);
+    this.add(this.lastLine);
   }
 
   private paintExtend(pos: { x: number; y: number }): void {

@@ -177,8 +177,8 @@ export class TextureEditor {
     return this.setTextureByURI(textureURI);
   }
 
-  public clearPainting(): void {
-    this.paintLayer.paint.destroyChildren();
+  public clearPaint(): void {
+    this.paintLayer.destroyChildren();
     this.onChange();
   }
 
