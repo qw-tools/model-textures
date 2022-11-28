@@ -41,11 +41,11 @@ export class PaintLayer extends Layer {
       paintType === "add" ? "source-over" : "destination-out";
 
     this.lastLine = new Line({
-      stroke: this.brush.color,
-      strokeWidth: this.brush.size,
       globalCompositeOperation,
       lineCap: this.brush.shape || "round",
       lineJoin: "round", // round join for smoother lines
+      stroke: this.brush.color,
+      strokeWidth: this.brush.size,
       // add point twice, so we have some drawings even on a simple click
       points: [pos.x, pos.y, pos.x, pos.y],
       listening: false,
