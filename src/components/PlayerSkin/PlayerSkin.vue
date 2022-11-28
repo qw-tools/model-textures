@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import { onMounted, reactive, watch } from "vue";
-import PlayerBrushSettings from "./PlayerBrushSettings.vue";
+import BrushSettings from "./BrushSettings.vue";
 import { TextureEditor } from "../TextureEditor";
 import { QuakeModelViewer } from "../QuakeModelViewer";
-import { BrushSettings, getDefaultBrushSettings } from "../Brush";
+import { Brush, getDefaultBrush } from "../Brush";
 
 const baseUrl = import.meta.env.BASE_URL;
 const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
 const defaultTextureURI = `${baseUrl}/assets/models/playerout0_tex00.png`;
 
-interface PlayerSkinStore {
-  brushSettings: BrushSettings;
+interface Store {
+  brush: Brush;
 }
 
-const store: PlayerSkinStore = reactive({
-  brushSettings: getDefaultBrushSettings(),
+const store: Store = reactive({
+  brush: getDefaultBrush(),
 });
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
@@ -42,31 +42,29 @@ async function onTextureFileUpload(event: Event): Promise<void> {
 let viewer: QuakeModelViewer;
 let editor: TextureEditor;
 
-async function onEditorChange(): Promise<void> {
-  await viewer?.setTextureByURI(editor.toURI());
-}
-
 onMounted(async () => {
+  const viewer = new QuakeModelViewer("PlayerModelViewer");
   editor = new TextureEditor({
     containerID: "PlayerTextureEditor",
     width: 512,
     height: 336,
-    onChange: onEditorChange,
+    onChange: function () {
+      viewer.setTextureByURI(editor.toURI());
+    },
   });
   await editor.setTextureByURI(defaultTextureURI);
 });
 
-async function onBrushSettingsChange(
-  newSettings: BrushSettings
-): Promise<void> {
-  editor.paintLayer.brush = newSettings;
+function onBrushChange(newSettings: Brush): void {
+  editor.brush = newSettings;
 }
 
-watch(store.brushSettings, onBrushSettingsChange);
+watch(store.brush, onBrushChange);
 
-async function onViewerLoaded(): Promise<void> {
-  viewer = new QuakeModelViewer("PlayerModelViewer");
-  await onEditorChange();
+function onViewerLoaded(): void {
+  editor.setTextureByURI(defaultTextureURI);
+  editor.modelTextureOutline.hide();
+  editor.brush = store.brush;
 }
 </script>
 
@@ -86,8 +84,9 @@ async function onViewerLoaded(): Promise<void> {
               id="PlayerModelViewer"
               :src="defaultModel"
               camera-controls
-              disable-zoom
+              disable-pan
               disable-tap
+              disable-zoom
               max-camera-orbit="auto 360deg 100"
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
@@ -113,10 +112,10 @@ async function onViewerLoaded(): Promise<void> {
               >
                 Clear drawing
               </button>
-              <PlayerBrushSettings
+              <BrushSettings
+                :brush="store.brush"
+                :on-change="onBrushChange"
                 class="w-full"
-                :settings="store.brushSettings"
-                :on-change="onBrushSettingsChange"
               />
             </div>
           </div>
@@ -139,8 +138,8 @@ async function onViewerLoaded(): Promise<void> {
               <div class="">
                 <label class="flex items-center">
                   <input
-                    type="checkbox"
                     checked
+                    type="checkbox"
                     @click="editor.toggleTextureOutline"
                   />
                   <strong>Show texture outline</strong>

@@ -9,7 +9,9 @@ import {
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { FilterSettings } from "./Filter";
 import { Filter } from "konva/lib/Node";
-import { PaintLayer } from "./Konva/paintLayer";
+import { PaintLayer } from "./PaintLayer";
+import { CursorLayer } from "./CursorLayer";
+import { Brush, getDefaultBrush } from "./Brush";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -18,96 +20,112 @@ export interface TextureEditorSettings {
   onChange: () => void;
 }
 
-class CircleCursor {}
-
-class RectangleCursor {}
-
-// TODO: cursorLayer ?????
-
 export class TextureEditor {
   private readonly helperLayer: Layer;
-  public readonly paintLayer: PaintLayer = new PaintLayer();
-  private readonly textureLayer: Layer;
-  private readonly textureImage: KonvaImage;
+  private readonly cursorLayer: CursorLayer;
+  public readonly paintLayer: PaintLayer;
+  private readonly modelTextureLayer: Layer;
+  private readonly modelTexture: KonvaImage;
   private readonly stage: Stage;
-  public readonly textureOutline: KonvaImage;
+  public readonly modelTextureOutline: KonvaImage;
+  private _brush: Brush = getDefaultBrush();
   public onChange: () => void;
 
   constructor(settings: TextureEditorSettings) {
+    // change callback (throttle for performance)
+    const throttleLimit = 15; // at most one call per x ms
+    this.onChange = throttle(settings.onChange, throttleLimit);
+
+    // cursor
+    this.cursorLayer = new CursorLayer();
+
     // helper layer
-    this.textureOutline = new KonvaImage({
-      image: undefined,
-      // width: settings.width,
-      // height: settings.height,
-    });
+    this.modelTextureOutline = new KonvaImage({ image: undefined });
     this.helperLayer = new Layer({ listening: false });
-    this.helperLayer.add(this.textureOutline);
+    this.helperLayer.add(this.modelTextureOutline);
+
+    // shared properties
+    const editorSize = {
+      width: settings.width,
+      height: settings.height,
+    };
 
     // texture layer/img
-    this.textureImage = new KonvaImage({
+    this.modelTexture = new KonvaImage({
       image: undefined,
-      width: settings.width,
-      height: settings.height,
+      ...editorSize,
     });
-    this.textureLayer = new Layer({ listening: false });
-    this.textureLayer.add(this.textureImage);
+    this.modelTextureLayer = new Layer({ listening: false });
+    this.modelTextureLayer.add(this.modelTexture);
 
     // paint layer
-    this.paintLayer.size({
-      width: settings.width,
-      height: settings.height,
-    });
+    this.paintLayer = new PaintLayer();
+    this.paintLayer.onPaint = this.onChange;
+    this.paintLayer.size(editorSize);
 
     // stage
     this.stage = new Stage({
       container: settings.containerID,
-      width: settings.width,
-      height: settings.height,
+      ...editorSize,
     });
-    this.stage.add(this.textureLayer, this.paintLayer, this.helperLayer);
-
-    // change callback (throttle for performance)
-    const throttleLimit = 15; // at most one call per x ms
-    this.onChange = throttle(settings.onChange, throttleLimit);
+    this.stage.add(
+      this.modelTextureLayer,
+      this.paintLayer,
+      this.helperLayer,
+      this.cursorLayer
+    );
 
     // events
     this.stage.on("contextmenu", (e) => {
       e.evt.preventDefault();
     });
 
-    const handleMouseEvent = (e: Event) =>
+    const handleMouseEvent = (e: Event): void => {
       this.paintLayer.onMouseEvent(e as MouseEvent);
+      this.cursorLayer.onMouseEvent(e as MouseEvent);
+    };
+
     this.stage.addEventListener("mousemove", throttle(handleMouseEvent, 5));
     this.stage.addEventListener("mousedown", handleMouseEvent);
     this.stage.addEventListener("mouseenter", handleMouseEvent);
     this.stage.addEventListener("mouseleave", handleMouseEvent);
   }
 
-  public setFilterSettings(settings: FilterSettings) {
-    this.textureImage.cache();
-    const enabledFilters: Filter[] = Object.values(settings)
+  get brush(): Brush {
+    return this._brush;
+  }
+
+  set brush(value: Brush) {
+    this._brush = value;
+    this.paintLayer.brush = value;
+    this.cursorLayer.brush = value;
+  }
+
+  public applyFilters(filters: FilterSettings) {
+    this.modelTexture.cache();
+    const enabledFilters: Filter[] = Object.values(filters)
       .filter((s) => s.enabled)
       .map((s) => s.filter);
-    this.textureImage.filters(enabledFilters);
+    this.modelTexture.filters(enabledFilters);
 
-    if (settings.hue.enabled) {
-      this.textureImage.hue(settings.hue.value);
+    if (filters.hue.enabled) {
+      this.modelTexture.hue(filters.hue.value);
     }
 
-    if (settings.saturation.enabled) {
-      this.textureImage.saturation(settings.saturation.value);
+    if (filters.saturation.enabled) {
+      this.modelTexture.saturation(filters.saturation.value);
     }
 
-    if (settings.contrast.enabled) {
-      this.textureImage.contrast(settings.contrast.value);
+    if (filters.contrast.enabled) {
+      this.modelTexture.contrast(filters.contrast.value);
     }
 
-    if (settings.brightness.enabled) {
-      this.textureImage.brightness(settings.brightness.value);
+    if (filters.brightness.enabled) {
+      this.modelTexture.brightness(filters.brightness.value);
     }
 
-    if (settings.blur.enabled) {
-      this.textureImage.blurRadius(settings.blur.value);
+    if (filters.blur.enabled) {
+      this.modelTexture.blurRadius(filters.blur.value);
     }
 
     this.onChange();
@@ -115,14 +133,16 @@ export class TextureEditor {
 
   public toURI(): string {
     this.helperLayer.hide();
+    this.cursorLayer.hide();
     const dataURL = this.stage.toDataURL();
     this.helperLayer.show();
+    this.cursorLayer.show();
     return dataURL;
   }
 
   public async setTextureByURI(textureURI: string): Promise<void> {
     const newTextureImage = await createImageFromURI(textureURI);
-    this.textureImage.image(newTextureImage);
+    this.modelTexture.image(newTextureImage);
     await this.updateOutline(newTextureImage);
     this.onChange();
   }
@@ -137,19 +157,19 @@ export class TextureEditor {
       strokeOptions
     );
 
-    this.textureOutline.image(newOutlineImage);
+    this.modelTextureOutline.image(newOutlineImage);
 
     const textureScale = {
       x: this.stage.width() / textureImage.width,
       y: this.stage.height() / textureImage.height,
     };
 
-    this.textureOutline.offset({
+    this.modelTextureOutline.offset({
       x: strokeOptions.thickness * textureScale.x,
       y: strokeOptions.thickness * textureScale.y,
     });
-    this.textureOutline.width(textureScale.x * newOutlineImage.width);
-    this.textureOutline.height(textureScale.y * newOutlineImage.height);
+    this.modelTextureOutline.width(textureScale.x * newOutlineImage.width);
+    this.modelTextureOutline.height(textureScale.y * newOutlineImage.height);
   }
 
   public async setTextureByFile(textureFile: File): Promise<void> {
@@ -163,8 +183,8 @@ export class TextureEditor {
   }
 
   public toggleTextureOutline(): void {
-    this.textureOutline.isVisible()
-      ? this.textureOutline.hide()
-      : this.textureOutline.show();
+    this.modelTextureOutline.isVisible()
+      ? this.modelTextureOutline.hide()
+      : this.modelTextureOutline.show();
   }
 }

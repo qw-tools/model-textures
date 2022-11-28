@@ -2,8 +2,8 @@
 import { onMounted, reactive, watch } from "vue";
 import { QuakeModelViewer } from "../../components/QuakeModelViewer";
 import { TextureEditor } from "../../components/TextureEditor";
-import PlayerBrushSettings from "../../components/PlayerSkin/PlayerBrushSettings.vue";
-import { BrushSettings, getDefaultBrushSettings } from "../../components/Brush";
+import BrushSettings from "../../components/PlayerSkin/BrushSettings.vue";
+import { Brush, getDefaultBrush } from "../../components/Brush";
 import {
   BlurFilterSetting,
   BrightnessFilterSetting,
@@ -37,13 +37,13 @@ const models: Model[] = textures.map((texture) => ({
   defaultTexturePath: `${baseUrl}/assets/models/${texture}.png`,
 }));
 
-interface PlayerSkinStore {
-  brushSettings: BrushSettings;
+interface Store {
+  brush: Brush;
   filterSettings: FilterSettings;
 }
 
-const store: PlayerSkinStore = reactive({
-  brushSettings: getDefaultBrushSettings(),
+const store: Store = reactive({
+  brush: getDefaultBrush(),
   filterSettings: {
     blur: new BlurFilterSetting(),
     grayscale: new GrayscaleFilterSetting(),
@@ -70,33 +70,31 @@ onMounted(() => {
         viewer.setTextureByURI(editor.toURI());
       },
     });
-    editor.textureOutline.hide();
-    editor.setTextureByURI(model.defaultTexturePath);
+    editor.modelTextureOutline.hide();
 
     viewers.push(viewer);
     editors.push(editor);
   }
 });
 
-async function onBrushSettingsChange(
-  newSettings: BrushSettings
-): Promise<void> {
+function onBrushChange(newBrush: Brush): void {
   for (let i = 0; i < editors.length; i++) {
-    editors[i].paintLayer.brush = newSettings;
+    editors[i].brush = newBrush;
   }
 }
 
 function onFilterSettingsChange(newFilterSettings: FilterSettings): void {
   for (let i = 0; i < editors.length; i++) {
-    editors[i].setFilterSettings(newFilterSettings);
+    editors[i].applyFilters(newFilterSettings);
   }
 }
 
 function onViewerLoaded(viewerIndex: number, model: Model) {
   editors[viewerIndex].setTextureByURI(model.defaultTexturePath);
+  editors[viewerIndex].brush = store.brush;
 }
 
-watch(store.brushSettings, onBrushSettingsChange);
+watch(store.brush, onBrushChange);
 watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
 </script>
 <template>
@@ -111,104 +109,101 @@ watch(store.filterSettings, throttle(onFilterSettingsChange, 10));
       <div
         class="flex px-4 py-3 my-4 items-center rounded border shadow bg-white space-x-8"
       >
-        <PlayerBrushSettings
-          :settings="store.brushSettings"
-          :on-change="onBrushSettingsChange"
-        />
+        <BrushSettings :brush="store.brush" :on-change="onBrushChange" />
 
         <div class="flex items-center space-x-2">
           <label>
-            <input type="checkbox" v-model="store.filterSettings.hue.enabled" />
+            <input v-model="store.filterSettings.hue.enabled" type="checkbox" />
             <strong>HUE</strong>
           </label>
           <input
-            type="range"
-            :disabled="!store.filterSettings.hue.enabled"
-            :min="store.filterSettings.hue.min"
-            :max="store.filterSettings.hue.max"
             v-model.number="store.filterSettings.hue.value"
+            :disabled="!store.filterSettings.hue.enabled"
+            :max="store.filterSettings.hue.max"
+            :min="store.filterSettings.hue.min"
             class="w-24"
+            type="range"
           />
         </div>
 
         <div class="flex items-center space-x-2">
           <label>
             <input
-              type="checkbox"
               v-model="store.filterSettings.saturation.enabled"
+              type="checkbox"
             />
             <strong>Saturation</strong>
           </label>
           <input
-            type="range"
-            :disabled="!store.filterSettings.saturation.enabled"
-            :min="store.filterSettings.saturation.min"
-            :max="store.filterSettings.saturation.max"
-            :step="store.filterSettings.saturation.max / 100"
             v-model.number="store.filterSettings.saturation.value"
+            :disabled="!store.filterSettings.saturation.enabled"
+            :max="store.filterSettings.saturation.max"
+            :min="store.filterSettings.saturation.min"
+            :step="store.filterSettings.saturation.max / 100"
             class="w-24"
+            type="range"
           />
         </div>
 
         <div class="flex items-center space-x-2">
           <label>
             <input
-              type="checkbox"
               v-model="store.filterSettings.brightness.enabled"
+              type="checkbox"
             />
             <strong>Brightness</strong>
           </label>
           <input
-            type="range"
-            :disabled="!store.filterSettings.brightness.enabled"
-            :min="store.filterSettings.brightness.min"
-            :max="store.filterSettings.brightness.max"
-            :step="0.1"
             v-model.number="store.filterSettings.brightness.value"
+            :disabled="!store.filterSettings.brightness.enabled"
+            :max="store.filterSettings.brightness.max"
+            :min="store.filterSettings.brightness.min"
+            :step="0.1"
             class="w-24"
+            type="range"
           />
         </div>
 
         <div class="flex items-center space-x-2">
           <label>
             <input
-              type="checkbox"
               v-model="store.filterSettings.blur.enabled"
+              type="checkbox"
             />
             <strong>Blur</strong>
           </label>
           <input
-            type="range"
-            :disabled="!store.filterSettings.blur.enabled"
-            :min="store.filterSettings.blur.min"
-            :max="store.filterSettings.blur.max"
-            :step="1"
             v-model.number="store.filterSettings.blur.value"
+            :disabled="!store.filterSettings.blur.enabled"
+            :max="store.filterSettings.blur.max"
+            :min="store.filterSettings.blur.min"
+            :step="1"
             class="w-24"
+            type="range"
           />
         </div>
       </div>
 
       <div class="grid gap-2 grid-cols-1">
-        <div v-for="(m, index) in models" class="flex" :key="m.id">
+        <div v-for="(m, index) in models" :key="m.id" class="flex">
           <div
-            style="width: 50%; height: 240px"
             class="border-2 border-dashed border-black/20"
+            style="width: 50%; height: 240px"
           >
             <model-viewer
               :id="m.viewerID"
+              :interaction-prompt="0 === index ? 'auto' : 'none'"
               :src="m.modelPath"
-              @load="() => onViewerLoaded(index, m)"
               auto-rotate
               camera-controls
               disable-pan
               disable-tap
               disable-zoom
-              :interaction-prompt="0 === index ? 'auto' : 'none'"
               max-camera-orbit="auto 360deg 100"
               min-camera-orbit="auto 0deg auto"
               orientation="0deg 270deg -45deg"
               rotation-per-second="7deg"
+              @load="() => onViewerLoaded(index, m)"
             >
             </model-viewer>
           </div>

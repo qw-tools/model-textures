@@ -1,12 +1,12 @@
-export type BrushShape = "round" | "square";
+export type BrushShape = "round" | "square" | "";
 
-export interface BrushSettings {
+export interface Brush {
   color: string;
   shape: BrushShape;
   size: number;
 }
 
-export function getDefaultBrushSettings(): BrushSettings {
+export function getDefaultBrush(): Brush {
   return {
     color: "#ff0000",
     size: 24,
