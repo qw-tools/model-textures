@@ -1,46 +1,46 @@
 <script lang="ts" setup>
-import { BrushSettings } from "../Brush";
+import { Brush } from "../konva/Brush";
 import { reactive, watch } from "vue";
 import { throttle } from "@google/model-viewer/lib/utilities";
 
 interface Props {
-  settings: BrushSettings;
-  onChange: (settings: BrushSettings) => void;
+  brush: Brush;
+  onChange: (newBrush: Brush, oldBrush: Brush) => void;
 }
 
 const props = defineProps<Props>();
 
-const store = reactive<BrushSettings>({
-  ...props.settings,
+const store = reactive<Brush>({
+  ...props.brush,
 });
 
-watch(store, throttle(props.onChange, 50));
+watch(() => ({ ...store }), throttle(props.onChange, 50));
 </script>
 <template>
   <div class="flex items-center">
     <strong class="mr-2">Brush</strong>
     <div class="flex space-x-4 mr-4">
-      <input type="color" v-model="store.color" />
+      <input v-model="store.color" type="color" />
     </div>
 
     <div class="items-center flex mr-4">
       <input
-        type="range"
-        min="1"
-        max="48"
-        class="w-20"
         v-model.number="store.size"
+        class="w-20"
+        max="48"
+        min="1"
+        type="range"
       />
       <span class="text-sm ml-2">{{ store.size }}px</span>
     </div>
 
     <div class="text-xs">
       <label
-        ><input type="radio" value="round" v-model="store.shape" />
+        ><input v-model="store.shape" type="radio" value="round" />
         Circle</label
       ><br />
       <label
-        ><input type="radio" value="square" v-model="store.shape" />
+        ><input v-model="store.shape" type="radio" value="square" />
         Square</label
       >
     </div>

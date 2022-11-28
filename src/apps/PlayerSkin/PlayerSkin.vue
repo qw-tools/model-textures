@@ -1,21 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, reactive, watch } from "vue";
-import PlayerBrushSettings from "./PlayerBrushSettings.vue";
-import { TextureEditor } from "../TextureEditor";
-import { QuakeModelViewer } from "../QuakeModelViewer";
-import { BrushSettings, getDefaultBrushSettings } from "../Brush";
-
-const baseUrl = import.meta.env.BASE_URL;
-const defaultModel = `${baseUrl}/assets/models/playerout.gltf`;
-const defaultTextureURI = `${baseUrl}/assets/models/playerout0_tex00.png`;
-
-interface PlayerSkinStore {
-  brushSettings: BrushSettings;
-}
-
-const store: PlayerSkinStore = reactive({
-  brushSettings: getDefaultBrushSettings(),
-});
+import { onMounted } from "vue";
+import BrushSettings from "../../components/BrushSettings.vue";
+import { TextureEditor } from "../../konva/TextureEditor";
+import { QuakeModelViewer } from "../../components/QuakeModelViewer";
+import { Brush, getDefaultBrush } from "../../konva/Brush";
+import { publicUrl } from "../../components/util";
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
   // prevent opening image in browser
@@ -42,31 +31,25 @@ async function onTextureFileUpload(event: Event): Promise<void> {
 let viewer: QuakeModelViewer;
 let editor: TextureEditor;
 
-async function onEditorChange(): Promise<void> {
-  await viewer?.setTextureByURI(editor.toURI());
-}
-
 onMounted(async () => {
+  viewer = new QuakeModelViewer({
+    containerID: "PlayerModelViewer",
+    modelPath: publicUrl("/assets/models/playerout.gltf"),
+  });
   editor = new TextureEditor({
     containerID: "PlayerTextureEditor",
+    texturePath: publicUrl("/assets/models/playerout0_tex00.png"),
     width: 512,
     height: 336,
-    onChange: onEditorChange,
+    onChange: function () {
+      viewer.setTextureByURI(editor.toURI());
+    },
   });
-  await editor.setTextureByURI(defaultTextureURI);
+  editor.modelTextureOutline.hide();
 });
 
-async function onBrushSettingsChange(
-  newSettings: BrushSettings
-): Promise<void> {
+function onBrushChange(newSettings: Brush): void {
   editor.brush = newSettings;
-}
-
-watch(store.brushSettings, onBrushSettingsChange);
-
-async function onViewerLoaded(): Promise<void> {
-  viewer = new QuakeModelViewer("PlayerModelViewer");
-  await onEditorChange();
 }
 </script>
 
@@ -84,15 +67,14 @@ async function onViewerLoaded(): Promise<void> {
           <div class="col-span-3 border-2 border-dashed border-black/20">
             <model-viewer
               id="PlayerModelViewer"
-              :src="defaultModel"
               camera-controls
-              disable-zoom
+              disable-pan
               disable-tap
+              disable-zoom
               max-camera-orbit="auto 360deg 100"
               min-camera-orbit="auto 0deg auto"
               orientation="270deg 270deg 0deg"
               rotation-per-second="5deg"
-              @load="onViewerLoaded"
             >
             </model-viewer>
           </div>
@@ -109,14 +91,14 @@ async function onViewerLoaded(): Promise<void> {
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button
                 class="block border border-gray-400 hover:bg-red-100 rounded py-2 bg-gray-100 shadow w-40 text-sm"
-                @click="editor.clearPainting"
+                @click="editor.clearPaint"
               >
                 Clear drawing
               </button>
-              <PlayerBrushSettings
+              <BrushSettings
+                :brush="getDefaultBrush()"
+                :on-change="onBrushChange"
                 class="w-full"
-                :settings="store.brushSettings"
-                :on-change="onBrushSettingsChange"
               />
             </div>
           </div>
@@ -138,11 +120,7 @@ async function onViewerLoaded(): Promise<void> {
               <hr />
               <div class="">
                 <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked
-                    @click="editor.toggleTextureOutline"
-                  />
+                  <input type="checkbox" @click="editor.toggleTextureOutline" />
                   <strong>Show texture outline</strong>
                 </label>
               </div>
