@@ -60,49 +60,17 @@
                 "metallicFactor": 0.0
             },
             "name": "skin0"
-        },
-        {
-            "pbrMetallicRoughness": {
-                "baseColorTexture": {
-                    "index": 1
-                },
-                "metallicFactor": 0.0
-            },
-            "name": "skin1"
-        },
-        {
-            "pbrMetallicRoughness": {
-                "baseColorTexture": {
-                    "index": 2
-                },
-                "metallicFactor": 0.0
-            },
-            "name": "skin2"
         }
     ],
     "textures": [
         {
             "sampler": 0,
             "source": 0
-        },
-        {
-            "sampler": 0,
-            "source": 1
-        },
-        {
-            "sampler": 0,
-            "source": 2
         }
     ],
     "images": [
         {
-            "uri": "armorout0_tex00.png"
-        },
-        {
-            "uri": "armorout0_tex01.png"
-        },
-        {
-            "uri": "armorout0_tex02.png"
+            "uri": "player_0.png"
         }
     ],
     "samplers": [
@@ -118,9 +86,9 @@
             "bufferView": 0,
             "byteOffset": 0,
             "componentType": 5123,
-            "count": 246,
+            "count": 1224,
             "max": [
-                69
+                316
             ],
             "min": [
                 0
@@ -131,16 +99,16 @@
             "bufferView": 1,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 70,
+            "count": 317,
             "max": [
-                9.4720058441162109375,
-                18.23412322998046875,
-                34.288562774658203125
+                24.32929229736328125,
+                12.858310699462890625,
+                26.882381439208984375
             ],
             "min": [
-                -7.777500152587890625,
-                -19.7828521728515625,
-                7.66450214385986328125
+                -26.5531978607177734375,
+                -15.0225982666015625,
+                -21.9593048095703125
             ],
             "type": "VEC3"
         },
@@ -148,7 +116,7 @@
             "bufferView": 2,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 70,
+            "count": 317,
             "max": [
                 1.0,
                 1.0,
@@ -165,17 +133,17 @@
             "bufferView": 3,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 70,
+            "count": 317,
             "max": [
+                0.999963223934173583984375,
                 1.0,
-                1.0,
-                0.52066552639007568359375,
+                0.987111628055572509765625,
                 1.0
             ],
             "min": [
-                -0.999974787235260009765625,
-                -0.52573108673095703125,
-                -0.549761235713958740234375,
+                -0.9995424747467041015625,
+                -1.0,
+                -0.986715137958526611328125,
                 -1.0
             ],
             "type": "VEC4"
@@ -184,14 +152,14 @@
             "bufferView": 4,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 70,
+            "count": 317,
             "max": [
-                0.986413061618804931640625,
-                0.875
+                0.984797298908233642578125,
+                0.97680413722991943359375
             ],
             "min": [
-                0.0461956523358821868896484375,
-                0.13815788924694061279296875
+                0.01520270295441150665283203125,
+                0.02319587580859661102294921875
             ],
             "type": "VEC2"
         }
@@ -200,42 +168,42 @@
         {
             "buffer": 0,
             "byteOffset": 0,
-            "byteLength": 492,
+            "byteLength": 2448,
             "target": 34963
         },
         {
             "buffer": 0,
-            "byteOffset": 492,
-            "byteLength": 840,
+            "byteOffset": 2448,
+            "byteLength": 3804,
             "byteStride": 12,
             "target": 34962
         },
         {
             "buffer": 0,
-            "byteOffset": 1332,
-            "byteLength": 840,
+            "byteOffset": 6252,
+            "byteLength": 3804,
             "byteStride": 12,
             "target": 34962
         },
         {
             "buffer": 0,
-            "byteOffset": 2172,
-            "byteLength": 1120,
+            "byteOffset": 10056,
+            "byteLength": 5072,
             "byteStride": 16,
             "target": 34962
         },
         {
             "buffer": 0,
-            "byteOffset": 3292,
-            "byteLength": 560,
+            "byteOffset": 15128,
+            "byteLength": 2536,
             "byteStride": 8,
             "target": 34962
         }
     ],
     "buffers": [
         {
-            "byteLength": 3852,
-            "uri": "armorout0.bin"
+            "byteLength": 17664,
+            "uri": "player.bin"
         }
     ]
 }

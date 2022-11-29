@@ -70,7 +70,7 @@
     ],
     "images": [
         {
-            "uri": "g_rock2out0_tex00.png"
+            "uri": "g_rock2_0.png"
         }
     ],
     "samplers": [
@@ -203,7 +203,7 @@
     "buffers": [
         {
             "byteLength": 8928,
-            "uri": "g_rock2out0.bin"
+            "uri": "g_rock2.bin"
         }
     ]
 }

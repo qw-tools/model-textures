@@ -60,17 +60,49 @@
                 "metallicFactor": 0.0
             },
             "name": "skin0"
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 1
+                },
+                "metallicFactor": 0.0
+            },
+            "name": "skin1"
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 2
+                },
+                "metallicFactor": 0.0
+            },
+            "name": "skin2"
         }
     ],
     "textures": [
         {
             "sampler": 0,
             "source": 0
+        },
+        {
+            "sampler": 0,
+            "source": 1
+        },
+        {
+            "sampler": 0,
+            "source": 2
         }
     ],
     "images": [
         {
-            "uri": "invisiblout0_tex00.png"
+            "uri": "armor_0.png"
+        },
+        {
+            "uri": "armor_1.png"
+        },
+        {
+            "uri": "armor_2.png"
         }
     ],
     "samplers": [
@@ -86,9 +118,9 @@
             "bufferView": 0,
             "byteOffset": 0,
             "componentType": 5123,
-            "count": 198,
+            "count": 246,
             "max": [
-                48
+                69
             ],
             "min": [
                 0
@@ -99,16 +131,16 @@
             "bufferView": 1,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 49,
+            "count": 70,
             "max": [
-                5.034793376922607421875,
-                5.029088497161865234375,
-                8.518688201904296875
+                9.4720058441162109375,
+                18.23412322998046875,
+                34.288562774658203125
             ],
             "min": [
-                -1.118543148040771484375,
-                -4.191224575042724609375,
-                0.0334066189825534820556640625
+                -7.777500152587890625,
+                -19.7828521728515625,
+                7.66450214385986328125
             ],
             "type": "VEC3"
         },
@@ -116,16 +148,16 @@
             "bufferView": 2,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 49,
+            "count": 70,
             "max": [
-                0.951056003570556640625,
-                0.951056003570556640625,
-                0.95542299747467041015625
+                1.0,
+                1.0,
+                1.0
             ],
             "min": [
-                -0.951056003570556640625,
-                -0.951056003570556640625,
-                -0.95542299747467041015625
+                -1.0,
+                -1.0,
+                -0.951056003570556640625
             ],
             "type": "VEC3"
         },
@@ -133,17 +165,17 @@
             "bufferView": 3,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 49,
+            "count": 70,
             "max": [
-                0.91900539398193359375,
-                0.999879300594329833984375,
-                0.646894276142120361328125,
+                1.0,
+                1.0,
+                0.52066552639007568359375,
                 1.0
             ],
             "min": [
-                -0.988970279693603515625,
-                -0.8899471759796142578125,
-                -0.690884768962860107421875,
+                -0.999974787235260009765625,
+                -0.52573108673095703125,
+                -0.549761235713958740234375,
                 -1.0
             ],
             "type": "VEC4"
@@ -152,14 +184,14 @@
             "bufferView": 4,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 49,
+            "count": 70,
             "max": [
-                0.947115361690521240234375,
-                0.97115385532379150390625
+                0.986413061618804931640625,
+                0.875
             ],
             "min": [
-                0.052884615957736968994140625,
-                0.18269230425357818603515625
+                0.0461956523358821868896484375,
+                0.13815788924694061279296875
             ],
             "type": "VEC2"
         }
@@ -168,42 +200,42 @@
         {
             "buffer": 0,
             "byteOffset": 0,
-            "byteLength": 396,
+            "byteLength": 492,
             "target": 34963
         },
         {
             "buffer": 0,
-            "byteOffset": 396,
-            "byteLength": 588,
+            "byteOffset": 492,
+            "byteLength": 840,
             "byteStride": 12,
             "target": 34962
         },
         {
             "buffer": 0,
-            "byteOffset": 984,
-            "byteLength": 588,
+            "byteOffset": 1332,
+            "byteLength": 840,
             "byteStride": 12,
             "target": 34962
         },
         {
             "buffer": 0,
-            "byteOffset": 1572,
-            "byteLength": 784,
+            "byteOffset": 2172,
+            "byteLength": 1120,
             "byteStride": 16,
             "target": 34962
         },
         {
             "buffer": 0,
-            "byteOffset": 2356,
-            "byteLength": 392,
+            "byteOffset": 3292,
+            "byteLength": 560,
             "byteStride": 8,
             "target": 34962
         }
     ],
     "buffers": [
         {
-            "byteLength": 2748,
-            "uri": "invisiblout0.bin"
+            "byteLength": 3852,
+            "uri": "armor.bin"
         }
     ]
 }
