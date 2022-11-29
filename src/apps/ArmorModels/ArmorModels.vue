@@ -9,13 +9,16 @@ import FilterToolbar from "../../components/FilterToolbar.vue";
 import { EditorAndViewerSettings } from "./EditorAndViewer";
 import { armors } from "../../quake/Item";
 
+const previewHeight = 240;
+
 const setups: EditorAndViewerSettings[] = armors.map((item) => {
+  const scale = previewHeight / item.model.texture.height;
   return {
     editor: {
       containerID: `Editor_${item.id}`,
       texturePath: item.model.texture.path,
-      width: 2 * item.model.texture.width,
-      height: 2 * item.model.texture.height,
+      width: scale * item.model.texture.width,
+      height: scale * item.model.texture.height,
     },
     viewer: {
       containerID: `Viewer_${item.id}`,
@@ -80,8 +83,8 @@ function onFiltersChange(newFilters: FilterSettings): void {
           class="flex"
         >
           <div
-            class="border-2 border-dashed border-black/20 mr-4"
-            style="min-width: 320px; height: 240px"
+            class="app-border-dashed mr-4"
+            :style="`min-width: 320px; height: ${previewHeight}px`"
           >
             <model-viewer
               :id="setup.viewer.containerID"
@@ -99,8 +102,15 @@ function onFiltersChange(newFilters: FilterSettings): void {
             </model-viewer>
           </div>
 
-          <div class="border bg-gray-200">
-            <div :id="setup.editor.containerID" />
+          <div class="flex flex-col justify-center">
+            <div
+              class="app-border-dashed"
+              :style="`width: ${setup.editor.width + 4}px; height: ${
+                setup.editor.height + 4
+              }px`"
+            >
+              <div :id="setup.editor.containerID" />
+            </div>
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button

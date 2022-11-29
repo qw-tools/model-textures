@@ -9,22 +9,29 @@ import { FilterSettings } from "../../konva/Filter";
 import { EditorAndViewerSettings } from "../ArmorModels/EditorAndViewer";
 import { powerups, projectiles } from "../../quake/Item";
 
-const preferredEditorHeight = 180;
-
+const previewHeight = 240;
 const items = projectiles.concat(powerups);
+
 const setups: EditorAndViewerSettings[] = items.map((item) => {
-  const scale = preferredEditorHeight / item.model.texture.height;
+  let scale;
+
+  if (item.model.texture.height > item.model.texture.width) {
+    scale = previewHeight / item.model.texture.width;
+  } else {
+    scale = previewHeight / item.model.texture.height;
+  }
 
   return {
     editor: {
       containerID: `Editor_${item.id}`,
       texturePath: item.model.texture.path,
-      width: item.model.texture.width * scale,
-      height: item.model.texture.height * scale,
+      width: scale * item.model.texture.width,
+      height: scale * item.model.texture.height,
     },
     viewer: {
       containerID: `Viewer_${item.id}`,
       modelPath: item.model.path,
+      texturePath: item.model.texture.path,
     },
   };
 });
@@ -78,15 +85,15 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
         <FilterToolbar :on-change="onFiltersChange" />
       </div>
 
-      <div class="grid gap-2 grid-cols-1">
+      <div class="grid gap-4 grid-cols-auto">
         <div
           v-for="(setup, index) in setups"
           :key="setup.viewer.modelPath"
           class="flex"
         >
           <div
-            class="border-2 border-dashed border-black/20"
-            style="min-width: 400px; height: 240px"
+            class="app-border-dashed mr-4"
+            :style="`min-width: 320px; height: ${previewHeight}px`"
           >
             <model-viewer
               :id="setup.viewer.containerID"
@@ -104,8 +111,15 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
             </model-viewer>
           </div>
 
-          <div class="border bg-gray-200">
-            <div :id="setup.editor.containerID" />
+          <div class="flex flex-col justify-center">
+            <div
+              class="app-border-dashed"
+              :style="`width: ${setup.editor.width + 4}px; height: ${
+                setup.editor.height + 4
+              }px`"
+            >
+              <div :id="setup.editor.containerID" />
+            </div>
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
               <button

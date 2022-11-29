@@ -4,6 +4,7 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import { TextureEditor } from "../../konva/TextureEditor";
 import { ModelViewer } from "../../components/ModelViewer";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
+import { EditorAndViewerSettings } from "../ArmorModels/EditorAndViewer";
 import { player } from "../../quake/Item";
 
 async function onTextureFileDrop(event: DragEvent): Promise<void> {
@@ -28,20 +29,30 @@ async function onTextureFileUpload(event: Event): Promise<void> {
   await editor.setTextureByFile(files[0]);
 }
 
+const item = player;
+const setup: EditorAndViewerSettings = {
+  editor: {
+    containerID: `Editor_${item.id}`,
+    texturePath: item.model.texture.path,
+    width: 2 * item.model.texture.width,
+    height: 2 * item.model.texture.height,
+  },
+  viewer: {
+    containerID: `Viewer_${item.id}`,
+    modelPath: item.model.path,
+    texturePath: item.model.texture.path,
+  },
+};
+
 let viewer: ModelViewer;
 let editor: TextureEditor;
 
 onMounted(async () => {
-  viewer = new ModelViewer({
-    containerID: "PlayerModelViewer",
-    modelPath: player.model.path,
-  });
-  editor = new TextureEditor({
-    containerID: "PlayerTextureEditor",
-    texturePath: player.model.texture.path,
-    width: 2 * player.model.texture.width,
-    height: 2 * player.model.texture.height,
-    onChange: function () {
+  viewer = new ModelViewer(setup.viewer);
+
+  const editor = new TextureEditor({
+    ...setup.editor,
+    onChange: () => {
       viewer.setTextureByURI(editor.toURI());
     },
   });
@@ -64,9 +75,9 @@ function onBrushChange(newSettings: Brush): void {
     <div class="container fadeIn my-4">
       <div class="flex grow">
         <div class="grid grid-cols-10 gap-4 w-full">
-          <div class="col-span-3 border-2 border-dashed border-black/20">
+          <div class="col-span-3 app-border-dashed">
             <model-viewer
-              id="PlayerModelViewer"
+              :id="setup.viewer.containerID"
               camera-controls
               disable-pan
               disable-tap
@@ -78,13 +89,14 @@ function onBrushChange(newSettings: Brush): void {
             >
             </model-viewer>
           </div>
-          <div
-            class="col-span-4 self-center"
-            @drop="onTextureFileDrop"
-            @dragover.prevent
-          >
-            <div class="border border-dashed border-black">
-              <div id="PlayerTextureEditor" />
+          <div class="col-span-4" @drop="onTextureFileDrop" @dragover.prevent>
+            <div
+              class="app-border-dashed"
+              :style="`width: ${setup.editor.width + 4}px; height: ${
+                setup.editor.height + 4
+              }px`"
+            >
+              <div :id="setup.editor.containerID" />
             </div>
 
             <div class="p-2 bg-gray-300 flex items-center space-x-4">
