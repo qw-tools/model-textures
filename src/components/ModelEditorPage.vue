@@ -2,10 +2,10 @@
 import ViewerAndTextureEditor from "./ViewerAndTextureEditor.vue";
 import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../konva/Brush";
-import { FilterSettings } from "../konva/Filter";
 import FilterToolbar from "./FilterToolbar.vue";
 import { Item } from "../quake/Item";
 import { EditorEvent } from "./Event";
+import { CssFilterSettings } from "./CssFilter";
 
 //const previewHeight = 240;
 
@@ -25,7 +25,7 @@ function onBrushChange(brush: Brush): void {
   document.dispatchEvent(event);
 }
 
-function onFiltersChange(filters: FilterSettings): void {
+function onFiltersChange(filters: CssFilterSettings): void {
   const event = new CustomEvent(EditorEvent.FILTERS_CHANGE, {
     bubbles: true,
     detail: { filters },
