@@ -50,7 +50,7 @@ let editor: TextureEditor;
 onMounted(async () => {
   viewer = new ModelViewer(setup.viewer);
 
-  const editor = new TextureEditor({
+  editor = new TextureEditor({
     ...setup.editor,
     onChange: () => {
       viewer.setTextureByURI(editor.toURI());
