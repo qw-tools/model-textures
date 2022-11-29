@@ -1,29 +1,36 @@
 <script lang="ts" setup>
-import {
-  BlurFilterSetting,
-  BrightnessFilterSetting,
-  ContrastFilterSetting,
-  FilterSettings,
-  GrayscaleFilterSetting,
-  HUEFilterSetting,
-  SaturationFilterSetting,
-} from "../konva/Filter";
 import { reactive, watch } from "vue";
 import { throttle } from "@google/model-viewer/lib/utilities";
+import {
+  Blur,
+  Brightness,
+  Contrast,
+  CssFilterSettings,
+  Grayscale,
+  HUE,
+  Invert,
+  Opacity,
+  Saturation,
+} from "./CssFilter";
 
 interface Props {
-  onChange: (newFilters: FilterSettings, oldFilters: FilterSettings) => void;
+  onChange: (
+    newFilters: CssFilterSettings,
+    oldFilters: CssFilterSettings
+  ) => void;
 }
 
 const props = defineProps<Props>();
 
-const store: FilterSettings = reactive({
-  blur: new BlurFilterSetting(),
-  grayscale: new GrayscaleFilterSetting(),
-  hue: new HUEFilterSetting(),
-  saturation: new SaturationFilterSetting(),
-  brightness: new BrightnessFilterSetting(),
-  contrast: new ContrastFilterSetting(),
+const store: CssFilterSettings = reactive({
+  blur: new Blur(),
+  grayscale: new Grayscale(),
+  hue: new HUE(),
+  saturation: new Saturation(),
+  brightness: new Brightness(),
+  contrast: new Contrast(),
+  opacity: new Opacity(),
+  invert: new Invert(),
 });
 
 watch(store, throttle(props.onChange, 20));
@@ -38,8 +45,9 @@ watch(store, throttle(props.onChange, 20));
       <input
         v-model.number="store.hue.value"
         :disabled="!store.hue.enabled"
-        :max="store.hue.max"
-        :min="store.hue.min"
+        :max="store.hue.maxValue"
+        :min="store.hue.minValue"
+        :step="10"
         class="w-24"
         type="range"
       />
@@ -53,9 +61,9 @@ watch(store, throttle(props.onChange, 20));
       <input
         v-model.number="store.saturation.value"
         :disabled="!store.saturation.enabled"
-        :max="store.saturation.max"
-        :min="store.saturation.min"
-        :step="store.saturation.max / 100"
+        :max="store.saturation.maxValue"
+        :min="store.saturation.minValue"
+        :step="10"
         class="w-24"
         type="range"
       />
@@ -69,9 +77,9 @@ watch(store, throttle(props.onChange, 20));
       <input
         v-model.number="store.brightness.value"
         :disabled="!store.brightness.enabled"
-        :max="store.brightness.max"
-        :min="store.brightness.min"
-        :step="0.1"
+        :max="store.brightness.maxValue"
+        :min="store.brightness.minValue"
+        :step="10"
         class="w-24"
         type="range"
       />
@@ -85,9 +93,8 @@ watch(store, throttle(props.onChange, 20));
       <input
         v-model.number="store.blur.value"
         :disabled="!store.blur.enabled"
-        :max="store.blur.max"
-        :min="store.blur.min"
-        :step="1"
+        :max="store.blur.maxValue"
+        :min="store.blur.minValue"
         class="w-24"
         type="range"
       />

@@ -45,11 +45,13 @@ onMounted(async () => {
 });
 
 function onFiltersChangeEvent(e: Event): void {
-  editor.applyFilters((e as CustomEvent).detail.filters);
+  const event = e as CustomEvent;
+  editor.applyCSSFilters(Object.values(event.detail.filters));
 }
 
 const onBrushChangeEvent = (e: Event) => {
-  editor.brush = (e as CustomEvent).detail.brush;
+  const event = e as CustomEvent;
+  editor.brush = event.detail.brush;
 };
 
 onBeforeUnmount(() => {

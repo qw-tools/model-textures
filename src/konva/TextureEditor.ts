@@ -7,13 +7,12 @@ import {
   dataUriFromFile,
 } from "../components/domutil";
 import { throttle } from "@google/model-viewer/lib/utilities";
-import { FilterSettings } from "./Filter";
-import { Filter } from "konva/lib/Node";
 import { PaintLayer } from "./PaintLayer";
 import { CursorLayer } from "./CursorLayer";
 import { Brush, getDefaultBrush } from "./Brush";
 import { nullOperation } from "../components/util";
 import { saveAs } from "file-saver";
+import { CssFilter } from "../components/CssFilter";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -123,43 +122,33 @@ export class TextureEditor {
     this.cursorLayer.brush = value;
   }
 
-  public applyFilters(filters: FilterSettings) {
-    this.modelTexture.cache();
-    const enabledFilters: Filter[] = Object.values(filters)
-      .filter((s) => s.enabled)
-      .map((s) => s.filter);
-    this.modelTexture.filters(enabledFilters);
+  public applyCSSFilters(filters: CssFilter[]): void {
+    const enabledFilters = filters.filter((f) => f.enabled);
+    let filterStr;
 
-    if (filters.hue.enabled) {
-      this.modelTexture.hue(filters.hue.value);
+    if (enabledFilters.length > 0) {
+      filterStr = enabledFilters.map((f) => f.toString()).join(" ");
+    } else {
+      filterStr = "none";
     }
 
-    if (filters.saturation.enabled) {
-      this.modelTexture.saturation(filters.saturation.value);
-    }
-
-    if (filters.contrast.enabled) {
-      this.modelTexture.contrast(filters.contrast.value);
-    }
-
-    if (filters.brightness.enabled) {
-      this.modelTexture.brightness(filters.brightness.value);
-    }
-
-    if (filters.blur.enabled) {
-      this.modelTexture.blurRadius(filters.blur.value);
-    }
-
-    this._onChange();
+    this.modelTextureLayer.getContext().setAttr("filter", filterStr);
+    this.modelTextureLayer.draw();
+    this.onChange();
   }
 
   public toURI(): string {
-    this.helperLayer.hide();
-    this.cursorLayer.hide();
-    const dataURL = this.stage.toDataURL();
-    this.helperLayer.show();
-    this.cursorLayer.show();
-    return dataURL;
+    const result = document.createElement("canvas");
+    result.width = this.stage.width();
+    result.height = this.stage.height();
+
+    const ctx = result.getContext("2d");
+    const texture = this.modelTextureLayer.getNativeCanvasElement();
+    const paint = this.paintLayer.getNativeCanvasElement();
+    ctx?.drawImage(texture, 0, 0, result.width, result.height);
+    ctx?.drawImage(paint, 0, 0, result.width, result.height);
+
+    return result.toDataURL();
   }
 
   public download(filename = ""): void {
@@ -205,7 +194,8 @@ export class TextureEditor {
 
   public clearPaint(): void {
     this.paintLayer.destroyChildren();
-    this._onChange();
+    this.paintLayer.draw();
+    this.onChange();
   }
 
   public toggleTextureOutline(): void {
