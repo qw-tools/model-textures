@@ -18,25 +18,41 @@ export interface Item {
   id: string;
   category: string;
   model: Model;
+  viewerOrientation: number;
 }
 
-// armors
-function createArmorItem(name: string, textureIndex: number): Item {
+function createItem(
+  category: string,
+  name: string,
+  modelName: string,
+  textureIndex: number,
+  width: number,
+  height: number,
+  viewerOrientation = 0
+): Item {
+  const filename = `${modelName}_${textureIndex}`;
+
   return {
     name,
-    id: slugify(name),
-    category: "Armors",
+    id: slugify(filename),
+    category,
     model: {
-      path: publicUrl("/assets/models/armorout.gltf"),
+      path: publicUrl(`/assets/models/${modelName}.gltf`),
       texture: {
-        path: publicUrl(`/assets/models/armorout0_tex0${textureIndex}.png`),
-        width: 184,
-        height: 76,
+        path: publicUrl(`/assets/models/${modelName}_${textureIndex}.png`),
+        width,
+        height,
       },
     },
+    viewerOrientation,
   };
 }
 
+function createArmorItem(name: string, textureIndex: number): Item {
+  return createItem("Armors", name, "armor", textureIndex, 184, 76, 30);
+}
+
+// armors
 const GreenArmor = createArmorItem("Green Armor", 0);
 const YellowArmor = createArmorItem("Yellow Armor", 1);
 const RedArmor = createArmorItem("Red Armor", 2);
@@ -44,66 +60,64 @@ const RedArmor = createArmorItem("Red Armor", 2);
 export const armors: Item[] = [GreenArmor, YellowArmor, RedArmor];
 
 // player skin
-export const player = {
-  name: "Player",
-  id: "player",
-  category: "Player Skins",
-  model: {
-    path: publicUrl("/assets/models/playerout.gltf"),
-    texture: {
-      path: publicUrl("/assets/models/playerout0_tex00.png"),
-      width: 296,
-      height: 194,
-    },
-  },
-};
+export const player = createItem("Units", "Player", "player", 0, 296, 194, 45);
 
 // weapon models
-function createItem(
-  category: string,
-  itemName: string,
-  modelName: string,
-  width: number,
-  height: number
-): Item {
-  return {
-    name: itemName,
-    id: slugify(itemName),
-    category,
-    model: {
-      path: publicUrl(`/assets/models/${modelName}out.gltf`),
-      texture: {
-        path: publicUrl(`/assets/models/${modelName}out0_tex00.png`),
-        width,
-        height,
-      },
-    },
-  };
-}
 
-const SuperShotgun = createItem("Weapons", "Super Shotgun", "g_shot", 232, 132);
-const NailGun = createItem("Weapons", "Nailgun", "g_nail", 308, 94);
-const SuperNailGun = createItem("Weapons", "Super Nailgun", "g_nail2", 308, 79);
+const weaponOrientation = 45;
+const SuperShotgun = createItem(
+  "Weapons",
+  "Super Shotgun",
+  "g_shot",
+  0,
+  232,
+  132,
+  weaponOrientation
+);
+const NailGun = createItem(
+  "Weapons",
+  "Nailgun",
+  "g_nail",
+  0,
+  308,
+  94,
+  weaponOrientation
+);
+const SuperNailGun = createItem(
+  "Weapons",
+  "Super Nailgun",
+  "g_nail2",
+  0,
+  308,
+  79,
+  weaponOrientation
+);
 const GrenadeLauncher = createItem(
   "Weapons",
   "Grenade Launcher",
   "g_rock",
+  0,
   224,
-  195
+  195,
+  weaponOrientation
 );
 const RocketLauncher = createItem(
   "Weapons",
   "Rocket Launcher",
   "g_rock2",
+  0,
   232,
-  156
+  156,
+  weaponOrientation
 );
 const LightningGun = createItem(
   "Weapons",
   "Lightning Gun",
   "g_light",
+  0,
   308,
-  144
+  144,
+  weaponOrientation
 );
 
 export const weapons: Item[] = [
@@ -116,13 +130,13 @@ export const weapons: Item[] = [
 ];
 
 // projectiles
-const Grenade = createItem("Projectiles", "Grenade", "grenade", 40, 44);
-const Rocket = createItem("Projectiles", "Missile", "missile", 288, 195);
+const Grenade = createItem("Projectiles", "Grenade", "grenade", 0, 40, 44, 90);
+const Rocket = createItem("Projectiles", "Missile", "missile", 0, 288, 195, 90);
 export const projectiles: Item[] = [Grenade, Rocket];
 
 // powerups
-const Quad = createItem("Powerups", "Quad", "quaddama", 308, 121);
-const Pent = createItem("Powerups", "Pent", "invulner", 308, 67);
+const Quad = createItem("Powerups", "Quad", "quaddama", 0, 308, 121, 30);
+const Pent = createItem("Powerups", "Pent", "invulner", 0, 308, 67, 30);
 export const powerups: Item[] = [Quad, Pent];
 
 export function itemToEditorSettings(item: Item): TextureEditorSettings {
