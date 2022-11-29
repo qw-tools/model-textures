@@ -6,26 +6,19 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import FilterToolbar from "../../components/FilterToolbar.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { FilterSettings } from "../../konva/Filter";
-import { publicUrl } from "../../components/util";
 import { EditorAndViewerSettings } from "../ArmorModels/EditorAndViewer";
+import { weapons } from "../../quake/Item";
 
-const setups: EditorAndViewerSettings[] = [
-  "g_shot",
-  "g_nail",
-  "g_nail2",
-  "g_rock",
-  "g_rock2",
-  "g_light",
-].map((modelName) => ({
+const setups: EditorAndViewerSettings[] = weapons.map((item) => ({
   editor: {
-    containerID: `Editor_${modelName}`,
-    texturePath: publicUrl(`/assets/models/${modelName}out0_tex00.png`),
-    width: 320,
-    height: 240,
+    containerID: `Editor_${item.id}`,
+    texturePath: item.model.texture.path,
+    width: item.model.texture.width,
+    height: item.model.texture.height,
   },
   viewer: {
-    containerID: `Viewer_${modelName}`,
-    modelPath: publicUrl(`/assets/models/${modelName}out.gltf`),
+    containerID: `Viewer_${item.id}`,
+    modelPath: item.model.path,
   },
 }));
 
@@ -78,15 +71,15 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
         <FilterToolbar :on-change="onFiltersChange" />
       </div>
 
-      <div class="grid gap-2 lg:grid-cols-2 xl:grid-cols-3">
+      <div class="grid gap-4 lg:grid-cols-2">
         <div
           v-for="(setup, index) in setups"
           :key="setup.viewer.modelPath"
           class="flex"
         >
           <div
-            class="border-2 border-dashed border-black/20"
-            style="width: 50%; height: 240px"
+            class="border-2 border-dashed border-black/20 mr-4"
+            style="min-width: 320px; height: 240px"
           >
             <model-viewer
               :id="setup.viewer.containerID"

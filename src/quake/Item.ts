@@ -55,3 +55,47 @@ export const player = {
     },
   },
 };
+
+// weapon models
+
+function createWeaponItem(
+  itemName: string,
+  modelName: string,
+  width: number,
+  height: number
+): Item {
+  return {
+    name: itemName,
+    id: slugify(itemName),
+    category: "Weapons",
+    model: {
+      path: publicUrl(`/assets/models/${modelName}out.gltf`),
+      texture: {
+        path: publicUrl(`/assets/models/${modelName}out0_tex00.png`),
+        width,
+        height,
+      },
+    },
+  };
+}
+
+const SuperShotgun = createWeaponItem("Super Shotgun", "g_shot", 232, 132);
+const NailGun = createWeaponItem("Nailgun", "g_nail", 308, 94);
+const SuperNailGun = createWeaponItem("Super Nailgun", "g_nail2", 308, 79);
+const GrenadeLauncher = createWeaponItem(
+  "Grenade Launcher",
+  "g_rock",
+  224,
+  195
+);
+const RocketLauncher = createWeaponItem("Rocket Launcher", "g_rock", 232, 156);
+const LightningGun = createWeaponItem("Lightning Gun", "g_light", 308, 144);
+
+export const weapons: Item[] = [
+  SuperShotgun,
+  NailGun,
+  SuperNailGun,
+  GrenadeLauncher,
+  RocketLauncher,
+  LightningGun,
+];
