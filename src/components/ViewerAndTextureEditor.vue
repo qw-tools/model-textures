@@ -104,9 +104,9 @@ function foo() {
         <div :id="editorSettings.containerID" />
       </div>
 
-      <div class="p-2 bg-gray-300 flex items-center space-x-4">
+      <div class="p-2 bg-gray-300 flex items-center space-x-2">
         <button
-          class="block border border-gray-400 hover:bg-red-100 rounded py-2 bg-gray-100 shadow w-40 text-sm"
+          class="block border border-gray-400 hover:bg-red-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm"
           @click="editor.clearPaint"
         >
           Clear drawing
