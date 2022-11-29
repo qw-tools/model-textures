@@ -13,6 +13,7 @@ import { PaintLayer } from "./PaintLayer";
 import { CursorLayer } from "./CursorLayer";
 import { Brush, getDefaultBrush } from "./Brush";
 import { nullOperation } from "../components/util";
+import { saveAs } from "file-saver";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -30,10 +31,15 @@ export class TextureEditor {
   private readonly modelTexture: KonvaImage;
   private readonly stage: Stage;
   public readonly modelTextureOutline: KonvaImage;
+  private readonly filename: string;
   private _brush: Brush = getDefaultBrush();
   private _onChange: () => void = nullOperation;
 
   constructor(settings: TextureEditorSettings) {
+    // filename
+    this.filename =
+      settings.texturePath.split("/").pop() || settings.containerID;
+
     // change callback
     if (settings.onChange) {
       this.onChange = settings.onChange;
@@ -154,6 +160,10 @@ export class TextureEditor {
     this.helperLayer.show();
     this.cursorLayer.show();
     return dataURL;
+  }
+
+  public download(filename = ""): void {
+    saveAs(this.toURI(), filename || this.filename);
   }
 
   public async setTextureByURI(textureURI: string): Promise<void> {
