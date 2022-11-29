@@ -92,7 +92,7 @@ const GrenadeLauncher = createItem(
 const RocketLauncher = createItem(
   "Weapons",
   "Rocket Launcher",
-  "g_rock",
+  "g_rock2",
   232,
   156
 );
