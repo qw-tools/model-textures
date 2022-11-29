@@ -104,7 +104,13 @@ export class TextureEditor {
 
   set onChange(callback: () => void) {
     const throttleLimit = 15; // at most one call per x ms
-    this._onChange = throttle(callback, throttleLimit);
+    const graceTimeout = 25; // give time to apply changes
+
+    const delayedCallback = () => {
+      setTimeout(callback, graceTimeout);
+    };
+
+    this._onChange = throttle(delayedCallback, throttleLimit);
   }
 
   get brush(): Brush {
@@ -191,7 +197,6 @@ export class TextureEditor {
 
   public clearPaint(): void {
     this.paintLayer.destroyChildren();
-    this.paintLayer.draw();
     this.onChange();
   }
 
