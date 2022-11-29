@@ -26,7 +26,7 @@ export class Brightness implements CssFilter {
   name = "brightness";
   defaultValue = 100;
   minValue = 0;
-  maxValue = 500;
+  maxValue = 1000;
   value = this.defaultValue;
   enabled = false;
 
