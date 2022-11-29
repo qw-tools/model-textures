@@ -3,6 +3,7 @@ import { TextureEditorSettings } from "../konva/TextureEditor";
 import { ModelViewerSettings } from "../components/ModelViewer";
 
 export interface Texture {
+  filename: string;
   path: string;
   width: number;
   height: number;
@@ -30,16 +31,18 @@ function createItem(
   height: number,
   viewerOrientation = 0
 ): Item {
-  const filename = `${modelName}_${textureIndex}`;
+  const id = slugify(`${modelName}_${textureIndex}`);
+  const filename = `${modelName}_${textureIndex}.png`;
 
   return {
     name,
-    id: slugify(filename),
+    id,
     category,
     model: {
       path: publicUrl(`/assets/models/${modelName}.gltf`),
       texture: {
-        path: publicUrl(`/assets/models/${modelName}_${textureIndex}.png`),
+        filename,
+        path: publicUrl(`/assets/models/${filename}`),
         width,
         height,
       },
