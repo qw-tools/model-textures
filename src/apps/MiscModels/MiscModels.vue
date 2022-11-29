@@ -6,50 +6,28 @@ import BrushSettings from "../../components/BrushSettings.vue";
 import FilterToolbar from "../../components/FilterToolbar.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { FilterSettings } from "../../konva/Filter";
-import { publicUrl } from "../../components/util";
 import { EditorAndViewerSettings } from "../ArmorModels/EditorAndViewer";
+import { powerups, projectiles } from "../../quake/Item";
 
 const preferredEditorHeight = 180;
 
-const setups: EditorAndViewerSettings[] = [
-  {
-    modelName: "grenade",
-    width: 40,
-    height: 44,
-    scale: preferredEditorHeight / 44,
-  },
-  {
-    modelName: "missile",
-    width: 288,
-    height: 195,
-    scale: preferredEditorHeight / 195,
-  },
-  {
-    modelName: "quaddama",
-    width: 308,
-    height: 121,
-    scale: preferredEditorHeight / 121,
-  },
-  {
-    modelName: "invulner",
-    width: 308,
-    height: 67,
-    scale: preferredEditorHeight / 67,
-  },
-].map((settings) => ({
-  editor: {
-    containerID: `Editor_${settings.modelName}`,
-    texturePath: publicUrl(
-      `/assets/models/${settings.modelName}out0_tex00.png`
-    ),
-    width: settings.width * settings.scale,
-    height: settings.height * settings.scale,
-  },
-  viewer: {
-    containerID: `Viewer_${settings.modelName}`,
-    modelPath: publicUrl(`/assets/models/${settings.modelName}out.gltf`),
-  },
-}));
+const items = projectiles.concat(powerups);
+const setups: EditorAndViewerSettings[] = items.map((item) => {
+  const scale = preferredEditorHeight / item.model.texture.height;
+
+  return {
+    editor: {
+      containerID: `Editor_${item.id}`,
+      texturePath: item.model.texture.path,
+      width: item.model.texture.width * scale,
+      height: item.model.texture.height * scale,
+    },
+    viewer: {
+      containerID: `Viewer_${item.id}`,
+      modelPath: item.model.path,
+    },
+  };
+});
 
 const viewers: ModelViewer[] = [];
 const editors: TextureEditor[] = [];
@@ -100,7 +78,7 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
         <FilterToolbar :on-change="onFiltersChange" />
       </div>
 
-      <div class="grid gap-2 lg:grid-cols-1">
+      <div class="grid gap-2 grid-cols-1">
         <div
           v-for="(setup, index) in setups"
           :key="setup.viewer.modelPath"
@@ -108,7 +86,7 @@ function onFiltersChange(newFilterSettings: FilterSettings): void {
         >
           <div
             class="border-2 border-dashed border-black/20"
-            style="width: 480px; height: 240px"
+            style="min-width: 400px; height: 240px"
           >
             <model-viewer
               :id="setup.viewer.containerID"

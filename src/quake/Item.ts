@@ -57,8 +57,8 @@ export const player = {
 };
 
 // weapon models
-
-function createWeaponItem(
+function createItem(
+  category: string,
   itemName: string,
   modelName: string,
   width: number,
@@ -67,7 +67,7 @@ function createWeaponItem(
   return {
     name: itemName,
     id: slugify(itemName),
-    category: "Weapons",
+    category,
     model: {
       path: publicUrl(`/assets/models/${modelName}out.gltf`),
       texture: {
@@ -79,17 +79,30 @@ function createWeaponItem(
   };
 }
 
-const SuperShotgun = createWeaponItem("Super Shotgun", "g_shot", 232, 132);
-const NailGun = createWeaponItem("Nailgun", "g_nail", 308, 94);
-const SuperNailGun = createWeaponItem("Super Nailgun", "g_nail2", 308, 79);
-const GrenadeLauncher = createWeaponItem(
+const SuperShotgun = createItem("Weapons", "Super Shotgun", "g_shot", 232, 132);
+const NailGun = createItem("Weapons", "Nailgun", "g_nail", 308, 94);
+const SuperNailGun = createItem("Weapons", "Super Nailgun", "g_nail2", 308, 79);
+const GrenadeLauncher = createItem(
+  "Weapons",
   "Grenade Launcher",
   "g_rock",
   224,
   195
 );
-const RocketLauncher = createWeaponItem("Rocket Launcher", "g_rock", 232, 156);
-const LightningGun = createWeaponItem("Lightning Gun", "g_light", 308, 144);
+const RocketLauncher = createItem(
+  "Weapons",
+  "Rocket Launcher",
+  "g_rock",
+  232,
+  156
+);
+const LightningGun = createItem(
+  "Weapons",
+  "Lightning Gun",
+  "g_light",
+  308,
+  144
+);
 
 export const weapons: Item[] = [
   SuperShotgun,
@@ -99,3 +112,13 @@ export const weapons: Item[] = [
   RocketLauncher,
   LightningGun,
 ];
+
+// projectiles
+const Grenade = createItem("Projectiles", "Grenade", "grenade", 40, 44);
+const Rocket = createItem("Projectiles", "Missile", "missile", 288, 195);
+export const projectiles: Item[] = [Grenade, Rocket];
+
+// powerups
+const Quad = createItem("Powerups", "Quad", "quaddama", 308, 121);
+const Pent = createItem("Powerups", "Pent", "invulner", 308, 67);
+export const powerups: Item[] = [Quad, Pent];
