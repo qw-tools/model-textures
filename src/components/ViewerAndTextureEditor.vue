@@ -112,6 +112,13 @@ function foo() {
           Clear drawing
         </button>
 
+        <button
+          class="block border border-gray-400 hover:bg-red-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm"
+          @click="() => editor.download()"
+        >
+          Download
+        </button>
+
         <label class="flex items-center">
           <input type="checkbox" @click="editor?.toggleTextureOutline()" />
           <strong class="text-sm">Show texture outline</strong>
