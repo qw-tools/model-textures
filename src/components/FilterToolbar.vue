@@ -36,7 +36,7 @@ const store: CssFilterSettings = reactive({
 watch(store, throttle(props.onChange, 20));
 </script>
 <template>
-  <div class="flex items-center space-x-8">
+  <div class="grid md:grid-cols-2 xl:flex items-center space-x-6">
     <div class="flex items-center space-x-2">
       <label>
         <input v-model="store.hue.enabled" type="checkbox" />
@@ -48,7 +48,7 @@ watch(store, throttle(props.onChange, 20));
         :max="store.hue.maxValue"
         :min="store.hue.minValue"
         :step="10"
-        class="w-24"
+        class="w-20"
         type="range"
       />
     </div>
@@ -64,7 +64,7 @@ watch(store, throttle(props.onChange, 20));
         :max="store.saturation.maxValue"
         :min="store.saturation.minValue"
         :step="10"
-        class="w-24"
+        class="w-20"
         type="range"
       />
     </div>
@@ -80,7 +80,37 @@ watch(store, throttle(props.onChange, 20));
         :max="store.brightness.maxValue"
         :min="store.brightness.minValue"
         :step="10"
-        class="w-24"
+        class="w-20"
+        type="range"
+      />
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <label>
+        <input v-model="store.contrast.enabled" type="checkbox" />
+        <strong>Contrast</strong>
+      </label>
+      <input
+        v-model.number="store.contrast.value"
+        :disabled="!store.contrast.enabled"
+        :max="store.contrast.maxValue"
+        :min="store.contrast.minValue"
+        class="w-20"
+        type="range"
+      />
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <label>
+        <input v-model="store.invert.enabled" type="checkbox" />
+        <strong>Invert</strong>
+      </label>
+      <input
+        v-model.number="store.invert.value"
+        :disabled="!store.invert.enabled"
+        :max="store.invert.maxValue"
+        :min="store.invert.minValue"
+        class="w-20"
         type="range"
       />
     </div>
@@ -95,7 +125,7 @@ watch(store, throttle(props.onChange, 20));
         :disabled="!store.blur.enabled"
         :max="store.blur.maxValue"
         :min="store.blur.minValue"
-        class="w-24"
+        class="w-20"
         type="range"
       />
     </div>

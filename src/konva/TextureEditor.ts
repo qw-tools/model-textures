@@ -132,6 +132,8 @@ export class TextureEditor {
       filterStr = "none";
     }
 
+    console.log("filter", filterStr);
+
     this.modelTextureLayer.getContext().setAttr("filter", filterStr);
     this.modelTextureLayer.draw();
     this.onChange();

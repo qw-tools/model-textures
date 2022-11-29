@@ -37,14 +37,14 @@ export class Brightness implements CssFilter {
 
 export class Contrast implements CssFilter {
   name = "contrast";
-  defaultValue = 0;
+  defaultValue = 100;
   minValue = 0;
   maxValue = 500;
   value = this.defaultValue;
   enabled = false;
 
   public toString(): string {
-    return `${this.name}(${this.value})%`;
+    return `${this.name}(${this.value}%)`;
   }
 }
 
@@ -57,7 +57,7 @@ export class Grayscale implements CssFilter {
   enabled = false;
 
   public toString(): string {
-    return `${this.name}(${this.value})%`;
+    return `${this.name}(${this.value}%)`;
   }
 }
 
