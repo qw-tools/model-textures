@@ -89,7 +89,7 @@ function foo() {
         disable-zoom
         max-camera-orbit="auto 360deg 100"
         min-camera-orbit="auto 0deg auto"
-        orientation="270deg 270deg 0deg"
+        :orientation="`270deg 270deg ${props.item.viewerOrientation}deg`"
         rotation-per-second="5deg"
       >
       </model-viewer>
