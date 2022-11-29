@@ -1,4 +1,6 @@
 import { publicUrl, slugify } from "../components/util";
+import { TextureEditorSettings } from "../konva/TextureEditor";
+import { ModelViewerSettings } from "../components/ModelViewer";
 
 export interface Texture {
   path: string;
@@ -122,3 +124,20 @@ export const projectiles: Item[] = [Grenade, Rocket];
 const Quad = createItem("Powerups", "Quad", "quaddama", 308, 121);
 const Pent = createItem("Powerups", "Pent", "invulner", 308, 67);
 export const powerups: Item[] = [Quad, Pent];
+
+export function itemToEditorSettings(item: Item): TextureEditorSettings {
+  return {
+    containerID: `Editor_${item.id}`,
+    texturePath: item.model.texture.path,
+    width: item.model.texture.width,
+    height: item.model.texture.height,
+  };
+}
+
+export function itemToViewerSettings(item: Item): ModelViewerSettings {
+  return {
+    containerID: `Viewer_${item.id}`,
+    modelPath: item.model.path,
+    texturePath: item.model.texture.path,
+  };
+}

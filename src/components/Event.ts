@@ -9,3 +9,8 @@ export enum MouseEventType {
   Enter = "mouseenter",
   Leave = "mouseleave",
 }
+
+export enum EditorEvent {
+  BRUSH_CHANGE = "ItemEditor.BRUSH_CHANGE",
+  FILTERS_CHANGE = "ItemEditor.FILTERS_CHANGE",
+}

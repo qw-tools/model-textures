@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import SiteHeader from "../../components/Site/SiteHeader.vue";
 import SiteFooter from "../../components/Site/SiteFooter.vue";
-import WeaponModels from "./WeaponModels.vue";
+import ModelEditorPage from "../../components/ModelEditorPage.vue";
+
+import { weapons } from "../../quake/Item";
+
+const items = weapons;
 </script>
 
 <template>
   <SiteHeader current-page="weapon_models" />
-  <WeaponModels />
+  <ModelEditorPage :items="items" title="Weapon models texture editor" />
   <SiteFooter />
 </template>

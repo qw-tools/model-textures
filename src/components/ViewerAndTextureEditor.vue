@@ -1,0 +1,122 @@
+<script lang="ts" setup>
+import { onBeforeUnmount, onMounted } from "vue";
+import {
+  Item,
+  itemToEditorSettings,
+  itemToViewerSettings,
+} from "../quake/Item";
+import { ModelViewer } from "./ModelViewer";
+import { TextureEditor } from "../konva/TextureEditor";
+import { EditorEvent } from "./Event";
+
+interface Props {
+  item: Item;
+}
+
+const props = defineProps<Props>();
+
+let viewer: ModelViewer;
+const viewerSettings = itemToViewerSettings(props.item);
+
+let editor: TextureEditor;
+const editorSettings = itemToEditorSettings(props.item);
+
+onMounted(async () => {
+  viewer = new ModelViewer(viewerSettings);
+
+  editor = new TextureEditor({
+    ...editorSettings,
+    onChange: () => {
+      viewer.setTextureByURI(editor.toURI());
+    },
+  });
+  editor.modelTextureOutline.hide();
+
+  document.addEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
+  document.addEventListener(EditorEvent.FILTERS_CHANGE, onFiltersChangeEvent);
+});
+
+function onFiltersChangeEvent(e: Event): void {
+  editor.applyFilters((e as CustomEvent).detail.filters);
+}
+
+const onBrushChangeEvent = (e: Event) => {
+  editor.brush = (e as CustomEvent).detail.brush;
+};
+
+onBeforeUnmount(() => {
+  document.removeEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
+  document.removeEventListener(
+    EditorEvent.FILTERS_CHANGE,
+    onFiltersChangeEvent
+  );
+});
+
+function foo() {
+  // async function onTextureFileDrop(event: DragEvent): Promise<void> {
+  //   // prevent opening image in browser
+  //   event.stopPropagation();
+  //   event.preventDefault();
+  //
+  //   if (!event.dataTransfer) {
+  //     return;
+  //   }
+  //
+  //   await editor.setTextureByFile(event.dataTransfer.files[0]);
+  // }
+  //
+  // async function onTextureFileUpload(event: Event): Promise<void> {
+  //   const files = (event.target as HTMLInputElement).files;
+  //
+  //   if (!files) {
+  //     return;
+  //   }
+  //
+  //   await editor.setTextureByFile(files[0]);
+  // }
+}
+</script>
+
+<template>
+  <div class="grid grid-cols-10 gap-4 w-full">
+    <div class="col-span-3 app-border-dashed">
+      <model-viewer
+        :id="viewerSettings.containerID"
+        camera-controls
+        interaction-prompt="none"
+        disable-pan
+        disable-tap
+        disable-zoom
+        max-camera-orbit="auto 360deg 100"
+        min-camera-orbit="auto 0deg auto"
+        orientation="270deg 270deg 0deg"
+        rotation-per-second="5deg"
+      >
+      </model-viewer>
+    </div>
+    <div class="col-span-4">
+      <div
+        class="app-border-dashed"
+        :style="`width: ${editorSettings.width + 4}px; height: ${
+          editorSettings.height + 4
+        }px`"
+      >
+        <div :id="editorSettings.containerID" />
+      </div>
+
+      <div class="p-2 bg-gray-300 flex items-center space-x-4">
+        <button
+          class="block border border-gray-400 hover:bg-red-100 rounded py-2 bg-gray-100 shadow w-40 text-sm"
+          @click="editor.clearPaint"
+        >
+          Clear drawing
+        </button>
+
+        <label class="flex items-center">
+          <input type="checkbox" @click="editor?.toggleTextureOutline()" />
+          <strong class="text-sm">Show texture outline</strong>
+        </label>
+      </div>
+    </div>
+  </div>
+</template>
