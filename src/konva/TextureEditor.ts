@@ -170,7 +170,7 @@ export class TextureEditor {
     const newTextureImage = await createImageFromURI(textureURI);
     this.modelTexture.image(newTextureImage);
     await this.updateOutline(newTextureImage);
-    this._onChange();
+    this.onChange();
   }
 
   private async updateOutline(textureImage: HTMLImageElement): Promise<void> {
