@@ -30,15 +30,10 @@ export class TextureEditor {
   private readonly modelTexture: KonvaImage;
   private readonly stage: Stage;
   public readonly modelTextureOutline: KonvaImage;
-  private readonly filename: string;
   private _brush: Brush = getDefaultBrush();
   private _onChange: () => void = nullOperation;
 
   constructor(settings: TextureEditorSettings) {
-    // filename
-    this.filename =
-      settings.texturePath.split("/").pop() || settings.containerID;
-
     // change callback
     if (settings.onChange) {
       this.onChange = settings.onChange;
@@ -154,7 +149,7 @@ export class TextureEditor {
   }
 
   public download(filename = ""): void {
-    saveAs(this.toURI(), filename || this.filename);
+    saveAs(this.toURI(), filename || "download");
   }
 
   public async setTextureByURI(textureURI: string): Promise<void> {

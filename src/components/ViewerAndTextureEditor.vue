@@ -114,7 +114,7 @@ function foo() {
         <div :id="editorSettings.containerID" />
       </div>
 
-      <div class="p-2 bg-gray-300 flex items-center space-x-2">
+      <div class="p-2 bg-gray-300 flex items-center">
         <button
           class="block border border-gray-400 hover:bg-red-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm"
           @click="editor.clearPaint"
@@ -123,16 +123,23 @@ function foo() {
         </button>
 
         <button
-          class="block border border-gray-400 hover:bg-red-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm"
-          @click="() => editor.download()"
+          class="block border border-gray-400 hover:bg-blue-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm ml-2"
+          @click="() => editor.download(props.item.model.texture.filename)"
         >
           Download
         </button>
 
-        <label class="flex items-center">
+        <label class="flex items-center ml-4">
           <input type="checkbox" @click="editor?.toggleTextureOutline()" />
           <strong class="text-sm">Show texture outline</strong>
         </label>
+
+        <div class="ml-auto text-xs font-mono">
+          {{ props.item.model.texture.filename }}
+          {{ props.item.model.texture.width }}x{{
+            props.item.model.texture.height
+          }}
+        </div>
       </div>
     </div>
   </div>
