@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
-import { QuakeModelViewer } from "../../components/QuakeModelViewer";
+import { ModelViewer } from "../../components/ModelViewer";
 import { TextureEditor } from "../../konva/TextureEditor";
 import BrushSettings from "../../components/BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
@@ -25,13 +25,13 @@ const setups: EditorAndViewerSettings[] = armors.map((item) => {
   };
 });
 
-const viewers: QuakeModelViewer[] = [];
+const viewers: ModelViewer[] = [];
 const editors: TextureEditor[] = [];
 
 onMounted(() => {
   for (let i = 0; i < setups.length; i++) {
     const setup = setups[i];
-    const viewer = new QuakeModelViewer(setup.viewer);
+    const viewer = new ModelViewer(setup.viewer);
     viewers.push(viewer);
 
     const editor = new TextureEditor({

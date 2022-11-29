@@ -1,7 +1,7 @@
 import { TextureEditorSettings } from "../../konva/TextureEditor";
-import { QuakeModelViewerSettings } from "../../components/QuakeModelViewer";
+import { ModelViewerSettings } from "../../components/ModelViewer";
 
 export interface EditorAndViewerSettings {
   editor: TextureEditorSettings;
-  viewer: QuakeModelViewerSettings;
+  viewer: ModelViewerSettings;
 }

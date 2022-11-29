@@ -2,16 +2,16 @@ import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import { dataUriFromFile } from "./domutil";
 
-export interface QuakeModelViewerSettings {
+export interface ModelViewerSettings {
   containerID: string;
   modelPath: string;
   texturePath?: string;
 }
 
-export class QuakeModelViewer {
+export class ModelViewer {
   private readonly viewer: ModelViewerElement;
 
-  constructor(settings: QuakeModelViewerSettings) {
+  constructor(settings: ModelViewerSettings) {
     this.viewer = document.getElementById(
       settings.containerID
     ) as ModelViewerElement;
@@ -19,9 +19,7 @@ export class QuakeModelViewer {
     this.viewer.addEventListener("load", () => this.onViewerLoaded(settings));
   }
 
-  public async onViewerLoaded(
-    settings: QuakeModelViewerSettings
-  ): Promise<void> {
+  public async onViewerLoaded(settings: ModelViewerSettings): Promise<void> {
     if (settings.texturePath) {
       await this.setTextureByURI(settings.texturePath);
     }

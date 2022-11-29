@@ -2,7 +2,7 @@
 import { onMounted } from "vue";
 import BrushSettings from "../../components/BrushSettings.vue";
 import { TextureEditor } from "../../konva/TextureEditor";
-import { QuakeModelViewer } from "../../components/QuakeModelViewer";
+import { ModelViewer } from "../../components/ModelViewer";
 import { Brush, getDefaultBrush } from "../../konva/Brush";
 import { player } from "../../quake/Item";
 
@@ -28,11 +28,11 @@ async function onTextureFileUpload(event: Event): Promise<void> {
   await editor.setTextureByFile(files[0]);
 }
 
-let viewer: QuakeModelViewer;
+let viewer: ModelViewer;
 let editor: TextureEditor;
 
 onMounted(async () => {
-  viewer = new QuakeModelViewer({
+  viewer = new ModelViewer({
     containerID: "PlayerModelViewer",
     modelPath: player.model.path,
   });
