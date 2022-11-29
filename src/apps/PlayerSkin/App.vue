@@ -10,6 +10,10 @@ const items = [player];
 
 <template>
   <SiteHeader current-page="index" />
-  <ModelEditorPage :items="items" title="Player model texture editor" />
+  <ModelEditorPage
+    :items="items"
+    title="Player model texture editor"
+    :editor-height="400"
+  />
   <SiteFooter />
 </template>

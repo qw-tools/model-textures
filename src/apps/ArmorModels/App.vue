@@ -10,6 +10,10 @@ const items = armors;
 
 <template>
   <SiteHeader current-page="Armor_models" />
-  <ModelEditorPage :items="items" title="Armor models texture editor" />
+  <ModelEditorPage
+    :items="items"
+    title="Armor models texture editor"
+    :editor-height="160"
+  />
   <SiteFooter />
 </template>

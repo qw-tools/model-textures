@@ -10,6 +10,10 @@ const items = projectiles.concat(powerups);
 
 <template>
   <SiteHeader current-page="misc_models" />
-  <ModelEditorPage :items="items" title="Misc models texture editor" />
+  <ModelEditorPage
+    :items="items"
+    title="Misc models texture editor"
+    :editor-height="160"
+  />
   <SiteFooter />
 </template>

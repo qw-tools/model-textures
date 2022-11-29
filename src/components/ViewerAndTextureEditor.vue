@@ -11,15 +11,23 @@ import { EditorEvent } from "./Event";
 
 interface Props {
   item: Item;
+  editorHeight: number;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  editorHeight: 240,
+});
+const editorScale = props.editorHeight / props.item.model.texture.height;
 
 let viewer: ModelViewer;
 const viewerSettings = itemToViewerSettings(props.item);
 
 let editor: TextureEditor;
-const editorSettings = itemToEditorSettings(props.item);
+const editorSettings = {
+  ...itemToEditorSettings(props.item),
+  height: props.editorHeight,
+  width: props.item.model.texture.width * editorScale,
+};
 
 onMounted(async () => {
   viewer = new ModelViewer(viewerSettings);

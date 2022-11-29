@@ -11,6 +11,7 @@ import { EditorEvent } from "./Event";
 
 interface Props {
   title: string;
+  editorHeight: number;
   items: Item[];
 }
 
@@ -53,6 +54,7 @@ function onFiltersChange(filters: FilterSettings): void {
           v-for="item in props.items"
           :item="item"
           :key="item.id"
+          :editor-height="props.editorHeight"
         />
       </div>
     </div>
