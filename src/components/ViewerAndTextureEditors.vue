@@ -49,7 +49,7 @@ function onFiltersChangeEvent(e: Event): void {
   const event = e as CustomEvent;
 
   for (let i = 0; i < editors.length; i++) {
-    editors[i].applyCSSFilters(Object.values(event.detail.filters));
+    editors[i].applyCSSFilters(event.detail.filters);
   }
 }
 

@@ -68,6 +68,7 @@ export class HUE implements CssFilter {
   maxValue = 360;
   value = this.defaultValue;
   enabled = false;
+  colorize = false;
 
   public toString(): string {
     return `${this.name}(${this.value}deg)`;

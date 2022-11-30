@@ -12,7 +12,7 @@ import { CursorLayer } from "./CursorLayer";
 import { Brush, getDefaultBrush } from "./Brush";
 import { nullOperation } from "../components/util";
 import { saveAs } from "file-saver";
-import { CssFilter } from "../components/CssFilter";
+import { CssFilterSettings } from "../components/CssFilter";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -123,19 +123,24 @@ export class TextureEditor {
     this.cursorLayer.brush = value;
   }
 
-  public applyCSSFilters(filters: CssFilter[]): void {
-    const enabledFilters = filters.filter((f) => f.enabled);
-    let filterStr;
-
-    if (enabledFilters.length > 0) {
-      filterStr = enabledFilters.map((f) => f.toString()).join(" ");
+  public applyCSSFilters(filters: CssFilterSettings): void {
+    if (filters.hue.enabled && filters.hue.colorize) {
+      this.modelTexture.cache();
+      this.modelTexture.filters([ColorizeFilter]);
     } else {
-      filterStr = "none";
+      this.modelTexture.filters([]);
     }
 
-    console.log("filter", filterStr);
+    const enabledCssFilters = Object.values(filters).filter((f) => f.enabled);
+    let cssFilterStr;
 
-    this.modelTextureLayer.getContext().setAttr("filter", filterStr);
+    if (enabledCssFilters.length > 0) {
+      cssFilterStr = enabledCssFilters.map((f) => f.toString()).join(" ");
+    } else {
+      cssFilterStr = "none";
+    }
+
+    this.modelTextureLayer.getContext().setAttr("filter", cssFilterStr);
     this.modelTextureLayer.draw();
     this.onChange();
   }
@@ -204,5 +209,18 @@ export class TextureEditor {
     this.modelTextureOutline.isVisible()
       ? this.modelTextureOutline.hide()
       : this.modelTextureOutline.show();
+  }
+}
+
+function ColorizeFilter(imageData: ImageData) {
+  // make all pixels opaque 100%
+  const data = imageData.data;
+  const pixelCount = data.length;
+  let brightness;
+  for (let i = 0; i < pixelCount; i += 4) {
+    brightness = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
+    data[i] += brightness; // red
+    data[i + 1] += 0; // green
+    data[i + 2] += 0; // blue
   }
 }

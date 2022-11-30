@@ -51,6 +51,10 @@ watch(store, throttle(props.onChange, 20));
         class="w-20"
         type="range"
       />
+
+      <label class="text-sm fadeIn" v-if="store.hue.enabled"
+        ><input type="checkbox" v-model="store.hue.colorize" /> Colorize</label
+      >
     </div>
 
     <div class="flex items-center space-x-2">
@@ -95,21 +99,6 @@ watch(store, throttle(props.onChange, 20));
         :disabled="!store.contrast.enabled"
         :max="store.contrast.maxValue"
         :min="store.contrast.minValue"
-        class="w-20"
-        type="range"
-      />
-    </div>
-
-    <div class="flex items-center space-x-2">
-      <label>
-        <input v-model="store.invert.enabled" type="checkbox" />
-        <strong>Invert</strong>
-      </label>
-      <input
-        v-model.number="store.invert.value"
-        :disabled="!store.invert.enabled"
-        :max="store.invert.maxValue"
-        :min="store.invert.minValue"
         class="w-20"
         type="range"
       />
