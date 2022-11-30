@@ -201,7 +201,7 @@
                         "TEXCOORD_1": 23
                     },
                     "indices": 18,
-                    "material": 1,
+                    "material": 2,
                     "mode": 4
                 }
             ],
@@ -259,7 +259,7 @@
                     "occlusionIsLightmap": true
                 }
             },
-            "name": "0000 med3_1"
+            "name": "shot1sid"
         },
         {
             "pbrMetallicRoughness": {
@@ -277,7 +277,25 @@
                     "occlusionIsLightmap": true
                 }
             },
-            "name": "0001 med3_0"
+            "name": "shot1top"
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 3
+                },
+                "metallicFactor": 0.0
+            },
+            "occlusionTexture": {
+                "index": 1,
+                "texCoord": 1
+            },
+            "extensions": {
+                "NOESIS_extendedInformation": {
+                    "occlusionIsLightmap": true
+                }
+            },
+            "name": "rockettop"
         }
     ],
     "textures": [
@@ -292,17 +310,24 @@
         {
             "sampler": 0,
             "source": 2
+        },
+        {
+            "sampler": 0,
+            "source": 3
         }
     ],
     "images": [
         {
-            "uri": "b_bh10_0.png"
+            "uri": "shot1sid.png"
         },
         {
-            "uri": "b_bh10_1.png"
+            "uri": "shell1_1.png"
         },
         {
-            "uri": "b_bh10_2.png"
+            "uri": "shot1top.png"
+        },
+        {
+            "uri": "rockettop.png"
         }
     ],
     "samplers": [
@@ -335,7 +360,7 @@
             "max": [
                 32.0,
                 32.0,
-                16.0
+                24.0
             ],
             "min": [
                 0.0,
@@ -391,7 +416,7 @@
             ],
             "min": [
                 0.0,
-                -1.0
+                -0.75
             ],
             "type": "VEC2"
         },
@@ -402,11 +427,11 @@
             "count": 4,
             "max": [
                 0.0166015625,
-                0.0029296875
+                0.0048828125
             ],
             "min": [
                 0.0126953125,
-                0.0009765625
+                0.001953125
             ],
             "type": "VEC2"
         },
@@ -431,7 +456,7 @@
             "max": [
                 32.0,
                 32.0,
-                16.0
+                24.0
             ],
             "min": [
                 32.0,
@@ -487,7 +512,7 @@
             ],
             "min": [
                 0.0,
-                -1.0
+                -0.75
             ],
             "type": "VEC2"
         },
@@ -498,11 +523,11 @@
             "count": 4,
             "max": [
                 0.0224609375,
-                0.0029296875
+                0.0048828125
             ],
             "min": [
                 0.0185546875,
-                0.0009765625
+                0.001953125
             ],
             "type": "VEC2"
         },
@@ -527,12 +552,12 @@
             "max": [
                 32.0,
                 32.0,
-                16.0
+                24.0
             ],
             "min": [
                 0.0,
                 0.0,
-                16.0
+                24.0
             ],
             "type": "VEC3"
         },
@@ -674,12 +699,12 @@
             "componentType": 5126,
             "count": 4,
             "max": [
-                1.0,
+                2.0,
                 0.0
             ],
             "min": [
                 0.0,
-                -1.0
+                -2.0
             ],
             "type": "VEC2"
         },
@@ -719,7 +744,7 @@
             "max": [
                 32.0,
                 0.0,
-                16.0
+                24.0
             ],
             "min": [
                 0.0,
@@ -775,7 +800,7 @@
             ],
             "min": [
                 0.0,
-                -1.0
+                -0.75
             ],
             "type": "VEC2"
         },
@@ -786,11 +811,11 @@
             "count": 4,
             "max": [
                 0.0107421875,
-                0.0029296875
+                0.0048828125
             ],
             "min": [
                 0.0068359375,
-                0.0009765625
+                0.001953125
             ],
             "type": "VEC2"
         },
@@ -815,7 +840,7 @@
             "max": [
                 0.0,
                 32.0,
-                16.0
+                24.0
             ],
             "min": [
                 0.0,
@@ -871,7 +896,7 @@
             ],
             "min": [
                 0.0,
-                -1.0
+                -0.75
             ],
             "type": "VEC2"
         },
@@ -882,11 +907,11 @@
             "count": 4,
             "max": [
                 0.0048828125,
-                0.0029296875
+                0.0048828125
             ],
             "min": [
                 0.0009765625,
-                0.0009765625
+                0.001953125
             ],
             "type": "VEC2"
         }
@@ -1112,7 +1137,7 @@
     "buffers": [
         {
             "byteLength": 1416,
-            "uri": "b_bh10.bin"
+            "uri": "shell1.bin"
         }
     ],
     "extensionsUsed": [

@@ -2,6 +2,34 @@ import { publicUrl, slugify } from "../components/util";
 import { TextureEditorSettings } from "../konva/TextureEditor";
 import { ModelViewerSettings } from "../components/ModelViewer";
 
+// import playerGLTF from "../models/rock1.gltf?raw";
+//
+// export interface gltfInfo {
+//   model: string;
+//   textures: string[];
+// }
+//
+// export function parseGLTF(gltf: string) {
+//   const model = JSON.parse(gltf);
+//
+//   const result = [];
+//
+//   for (let index = 0; index < model.materials.length; index++) {
+//     const textureIndex =
+//       model.materials[index].pbrMetallicRoughness.baseColorTexture.index;
+//
+//     result.push({
+//       materialIndex: index,
+//       destName: model.materials[index].name.split(" ")[1],
+//       sourceURI: model.images[textureIndex].uri,
+//     });
+//   }
+//
+//   console.log(result);
+// }
+//
+// parseGLTF(playerGLTF);
+
 // interfaces
 export interface Texture {
   filename: string;
@@ -176,7 +204,7 @@ export const backpack = createItem(
 const MegaHealth = createItem(
   "Health packs",
   "Mega Health",
-  "b_bh100",
+  "bh100",
   0,
   32,
   32,
@@ -185,7 +213,7 @@ const MegaHealth = createItem(
 const LargeHealth = createItem(
   "Health packs",
   "Large Health",
-  "b_bh25",
+  "bh25",
   0,
   32,
   16,
@@ -194,10 +222,96 @@ const LargeHealth = createItem(
 const SmallHealth = createItem(
   "Health packs",
   "Small Health",
-  "b_bh10",
+  "bh10",
   0,
   32,
   16,
   45
 );
 export const healthPacks: Item[] = [SmallHealth, LargeHealth, MegaHealth];
+
+// ammo
+const SmallShells = createItem(
+  "Ammo",
+  "Small shells pack",
+  "shell0",
+  0,
+  32,
+  32,
+  45
+);
+const LargeShells = createItem(
+  "Ammo",
+  "Large shells pack",
+  "shell1",
+  0,
+  32,
+  32,
+  45
+);
+const SmallNails = createItem(
+  "Ammo",
+  "Small nails pack",
+  "nail0",
+  0,
+  32,
+  32,
+  45
+);
+const LargeNails = createItem(
+  "Ammo",
+  "Large nails pack",
+  "nail1",
+  0,
+  32,
+  32,
+  45
+);
+const SmallRockets = createItem(
+  "Ammo",
+  "Small rockets pack",
+  "rock0",
+  2,
+  32,
+  16,
+  45
+);
+const LargeRockets = createItem(
+  "Ammo",
+  "Large rockets pack",
+  "rock1",
+  0,
+  32,
+  16,
+  45
+);
+
+const SmallCells = createItem(
+  "Ammo",
+  "Small cells pack",
+  "batt0",
+  0,
+  32,
+  32,
+  45
+);
+const LargeCells = createItem(
+  "Ammo",
+  "Large cells pack",
+  "batt1",
+  0,
+  32,
+  32,
+  45
+);
+
+export const ammo: Item[] = [
+  SmallShells,
+  LargeShells,
+  SmallNails,
+  LargeNails,
+  SmallRockets,
+  LargeRockets,
+  SmallCells,
+  LargeCells,
+];

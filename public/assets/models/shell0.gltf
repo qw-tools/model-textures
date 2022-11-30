@@ -259,7 +259,7 @@
                     "occlusionIsLightmap": true
                 }
             },
-            "name": "0000 shot0sid"
+            "name": "shot0sid"
         },
         {
             "pbrMetallicRoughness": {
@@ -277,7 +277,7 @@
                     "occlusionIsLightmap": true
                 }
             },
-            "name": "0001 shot0top"
+            "name": "shot0top"
         },
         {
             "pbrMetallicRoughness": {
@@ -295,7 +295,7 @@
                     "occlusionIsLightmap": true
                 }
             },
-            "name": "0002 rockettop"
+            "name": "rockettop"
         }
     ],
     "textures": [
@@ -318,16 +318,16 @@
     ],
     "images": [
         {
-            "uri": "b_shell0_0.png"
+            "uri": "shot0sid.png"
         },
         {
-            "uri": "b_shell0_1.png"
+            "uri": "shell0_1.png"
         },
         {
-            "uri": "b_shell0_2.png"
+            "uri": "shot0top.png"
         },
         {
-            "uri": "b_shell0_3.png"
+            "uri": "rockettop.png"
         }
     ],
     "samplers": [
@@ -1137,7 +1137,7 @@
     "buffers": [
         {
             "byteLength": 1416,
-            "uri": "b_shell0.bin"
+            "uri": "shell0.bin"
         }
     ],
     "extensionsUsed": [
