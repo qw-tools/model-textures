@@ -3,9 +3,19 @@ import SiteHeader from "../../components/Site/SiteHeader.vue";
 import SiteFooter from "../../components/Site/SiteFooter.vue";
 import ModelEditorPage from "../../components/ModelEditorPage.vue";
 
-import { healthPacks, ammo, powerups, projectiles } from "../../quake/Item";
+import {
+  ammo,
+  backpack,
+  healthPacks,
+  powerups,
+  projectiles,
+} from "../../quake/Item";
 
-const items = healthPacks.concat(ammo).concat(powerups).concat(projectiles);
+const items = healthPacks
+  .concat(ammo)
+  .concat(powerups)
+  .concat(projectiles)
+  .concat([backpack]);
 </script>
 
 <template>

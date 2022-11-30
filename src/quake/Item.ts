@@ -266,11 +266,12 @@ const Ring: Item = {
 export const powerups: Item[] = [Quad, Pent, Ring];
 
 // misc
-export const backpack = {
+export const backpack: Item = {
   category: "Misc",
   name: "Backpack",
   id: "backpack",
   model: {
+    filename: "backpack.gltf",
     textures: [
       { index: 0, filename: "backpack_0.png", width: 152, height: 108 },
     ],
