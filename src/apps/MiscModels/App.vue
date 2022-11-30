@@ -3,9 +3,9 @@ import SiteHeader from "../../components/Site/SiteHeader.vue";
 import SiteFooter from "../../components/Site/SiteFooter.vue";
 import ModelEditorPage from "../../components/ModelEditorPage.vue";
 
-import { healthPacks, ammo } from "../../quake/Item";
+import { healthPacks, ammo, powerups, projectiles } from "../../quake/Item";
 
-const items = healthPacks.concat(ammo);
+const items = healthPacks.concat(ammo).concat(powerups).concat(projectiles);
 </script>
 
 <template>
