@@ -140,7 +140,8 @@ export const projectiles: Item[] = [Grenade, Rocket];
 // powerups
 const Quad = createItem("Powerups", "Quad", "quaddama", 0, 308, 121, 30);
 const Pent = createItem("Powerups", "Pent", "invulner", 0, 308, 67, 30);
-export const powerups: Item[] = [Quad, Pent];
+const Ring = createItem("Powerups", "Ring", "invisibl", 0, 104, 52, 30);
+export const powerups: Item[] = [Quad, Pent, Ring];
 
 export function itemToEditorSettings(item: Item): TextureEditorSettings {
   return {
