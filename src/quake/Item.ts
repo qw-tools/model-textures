@@ -206,9 +206,7 @@ const Grenade: Item = {
   id: "grenade",
   model: {
     filename: "grenade.gltf",
-    textures: [
-      { index: 0, filename: "grenade_light_0.png", width: 40, height: 44 },
-    ],
+    textures: [{ index: 0, filename: "grenade_0.png", width: 40, height: 44 }],
   },
   viewerOrientation: 90,
 };
@@ -220,7 +218,7 @@ const Rocket: Item = {
   model: {
     filename: "missile.gltf",
     textures: [
-      { index: 0, filename: "missile_light_0.png", width: 288, height: 195 },
+      { index: 0, filename: "missile_0.png", width: 288, height: 195 },
     ],
   },
   viewerOrientation: 90,
@@ -286,7 +284,10 @@ const MegaHealth = {
   id: "Mega Health",
   model: {
     filename: "bh100.gltf",
-    textures: [{ index: 0, filename: "", width: 32, height: 32 }],
+    textures: [
+      { index: 0, filename: "+3_med100.png", width: 240, height: 240 },
+      { index: 1, filename: "med100.png", width: 240, height: 240 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -296,7 +297,10 @@ const LargeHealth = {
   id: "Large Health",
   model: {
     filename: "bh25.gltf",
-    textures: [{ index: 0, filename: "", width: 32, height: 16 }],
+    textures: [
+      { index: 0, filename: "+0_med25s.png", width: 32, height: 16 },
+      { index: 1, filename: "+0_med25.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -306,7 +310,10 @@ const SmallHealth = {
   id: "Small Health",
   model: {
     filename: "bh10.gltf",
-    textures: [{ index: 0, filename: "", width: 32, height: 16 }],
+    textures: [
+      { index: 0, filename: "med3_1.png", width: 32, height: 16 },
+      { index: 1, filename: "med3_0.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -319,7 +326,10 @@ const SmallShells = {
   id: "Small shells pack",
   model: {
     filename: "shell0.gltf",
-    textures: [{ filename: "shell0.png", index: 0, width: 32, height: 32 }],
+    textures: [
+      { index: 0, filename: "shot0sid.png", width: 32, height: 32 },
+      { index: 1, filename: "shot0top.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -329,7 +339,10 @@ const LargeShells = {
   id: "Large shells pack",
   model: {
     filename: "shell1.gltf",
-    textures: [{ filename: "shell1.png", index: 0, width: 32, height: 32 }],
+    textures: [
+      { index: 0, filename: "shot1sid.png", width: 32, height: 32 },
+      { index: 1, filename: "shot1top.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -339,7 +352,10 @@ const SmallNails = {
   id: "Small nails pack",
   model: {
     filename: "nail0.gltf",
-    textures: [{ filename: "nail0.png", index: 0, width: 32, height: 32 }],
+    textures: [
+      { index: 0, filename: "nail0sid.png", width: 32, height: 32 },
+      { index: 1, filename: "nail0top.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -349,7 +365,10 @@ const LargeNails = {
   id: "Large nails pack",
   model: {
     filename: "nail1.gltf",
-    textures: [{ filename: "nail1.png", index: 0, width: 32, height: 32 }],
+    textures: [
+      { index: 0, filename: "nail1sid.png", width: 32, height: 32 },
+      { index: 1, filename: "nail1top.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -359,7 +378,10 @@ const SmallRockets = {
   id: "Small rockets pack",
   model: {
     filename: "rock0.gltf",
-    textures: [{ filename: "rock0.png", index: 2, width: 32, height: 16 }],
+    textures: [
+      { index: 1, filename: "rock0sid.png", width: 32, height: 16 },
+      { index: 0, filename: "rockettop.png", width: 16, height: 16 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -369,7 +391,10 @@ const LargeRockets = {
   id: "Large rockets pack",
   model: {
     filename: "rock1.gltf",
-    textures: [{ filename: "rock1.png", index: 0, width: 32, height: 16 }],
+    textures: [
+      { index: 0, filename: "rock1sid.png", width: 32, height: 16 },
+      { index: 1, filename: "rockettop.png", width: 16, height: 16 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -379,7 +404,10 @@ const SmallCells = {
   id: "Small cells pack",
   model: {
     filename: "batt0.gltf",
-    textures: [{ filename: "batt0.png", index: 0, width: 32, height: 32 }],
+    textures: [
+      { index: 0, filename: "batt1sid.png", width: 32, height: 32 },
+      { index: 1, filename: "batt0top.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
@@ -389,7 +417,10 @@ const LargeCells = {
   id: "Large cells pack",
   model: {
     filename: "batt1.gltf",
-    textures: [{ filename: "batt1.png", index: 0, width: 32, height: 32 }],
+    textures: [
+      { index: 0, filename: "batt0sid.png", width: 32, height: 32 },
+      { index: 1, filename: "batt1top.png", width: 32, height: 32 },
+    ],
   },
   viewerOrientation: 45,
 };
