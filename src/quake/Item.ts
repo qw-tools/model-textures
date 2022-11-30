@@ -169,7 +169,7 @@ const MegaHealth = createItem(
   0,
   32,
   32,
-  0
+  45
 );
 const LargeHealth = createItem(
   "Health packs",
@@ -178,7 +178,7 @@ const LargeHealth = createItem(
   0,
   32,
   16,
-  0
+  45
 );
 const SmallHealth = createItem(
   "Health packs",
@@ -187,6 +187,6 @@ const SmallHealth = createItem(
   0,
   32,
   16,
-  0
+  45
 );
 export const healthPacks: Item[] = [SmallHealth, LargeHealth, MegaHealth];
