@@ -25,7 +25,7 @@ export class ModelViewer {
     }
   }
 
-  public setTexture(texture: Texture, index = 1): void {
+  public setTexture(texture: Texture, index = 0): void {
     if (!this.viewer.model || index >= this.viewer.model.materials.length) {
       return;
     }
