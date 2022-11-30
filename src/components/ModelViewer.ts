@@ -25,21 +25,27 @@ export class ModelViewer {
     }
   }
 
-  public setTexture(texture: Texture, index = 0): void {
-    if (!this.viewer.model || index >= this.viewer.model.materials.length) {
+  public setTexture(texture: Texture, materialIndex = 0): void {
+    if (
+      !this.viewer.model ||
+      materialIndex >= this.viewer.model.materials.length
+    ) {
       return;
     }
 
     this.viewer.model.materials[
-      index
+      materialIndex
     ].pbrMetallicRoughness.baseColorTexture.setTexture(texture);
   }
 
-  public async setTextureByURI(textureURI: string): Promise<void> {
+  public async setTextureByURI(
+    textureURI: string,
+    materialIndex = 0
+  ): Promise<void> {
     const texture = await this.viewer.createTexture(textureURI);
 
     if (texture) {
-      this.setTexture(texture);
+      this.setTexture(texture, materialIndex);
     }
   }
 
