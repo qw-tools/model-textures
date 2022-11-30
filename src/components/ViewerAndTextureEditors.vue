@@ -4,6 +4,7 @@ import {
   Item,
   itemToEditorSettings,
   itemToViewerSettings,
+  Texture,
 } from "../quake/Item";
 import { ModelViewer } from "./ModelViewer";
 import { TextureEditor } from "../konva/TextureEditor";
@@ -17,28 +18,28 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   editorHeight: 240,
 });
-const editorScale = props.editorHeight / props.item.model.texture.height;
 
 let viewer: ModelViewer;
 const viewerSettings = itemToViewerSettings(props.item);
 
-let editor: TextureEditor;
-const editorSettings = {
-  ...itemToEditorSettings(props.item),
-  height: props.editorHeight,
-  width: props.item.model.texture.width * editorScale,
-};
+const editors: TextureEditor[] = new Array(
+  props.item.model.textures.length
+).fill(null);
+const editorSettings = itemToEditorSettings(props.item);
 
 onMounted(async () => {
   viewer = new ModelViewer(viewerSettings);
 
-  editor = new TextureEditor({
-    ...editorSettings,
-    onChange: () => {
-      viewer.setTextureByURI(editor.toURI());
-    },
-  });
-  editor.modelTextureOutline.hide();
+  for (let i = 0; i < props.item.model.textures.length; i++) {
+    const texture: Texture = props.item.model.textures[i];
+    editors[i] = new TextureEditor({
+      ...editorSettings[i],
+      onChange: () => {
+        viewer.setTextureByURI(editors[i].toURI(), texture.index);
+      },
+    });
+    editors[i].modelTextureOutline.hide();
+  }
 
   document.addEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
   document.addEventListener(EditorEvent.FILTERS_CHANGE, onFiltersChangeEvent);
@@ -46,12 +47,18 @@ onMounted(async () => {
 
 function onFiltersChangeEvent(e: Event): void {
   const event = e as CustomEvent;
-  editor.applyCSSFilters(Object.values(event.detail.filters));
+
+  for (let i = 0; i < editors.length; i++) {
+    editors[i].applyCSSFilters(Object.values(event.detail.filters));
+  }
 }
 
 const onBrushChangeEvent = (e: Event) => {
   const event = e as CustomEvent;
-  editor.brush = event.detail.brush;
+
+  for (let i = 0; i < editors.length; i++) {
+    editors[i].brush = event.detail.brush;
+  }
 };
 
 onBeforeUnmount(() => {
@@ -64,56 +71,68 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-10 gap-4 w-full">
+  <div class="grid grid-cols-9 gap-4 w-full">
     <div class="col-span-3 app-border-dashed">
       <model-viewer
         :id="viewerSettings.containerID"
+        :orientation="`270deg 270deg ${props.item.viewerOrientation}deg`"
         camera-controls
-        interaction-prompt="none"
         disable-pan
         disable-tap
         disable-zoom
+        interaction-prompt="none"
         max-camera-orbit="auto 360deg 100"
         min-camera-orbit="auto 0deg auto"
-        :orientation="`270deg 270deg ${props.item.viewerOrientation}deg`"
         rotation-per-second="5deg"
       >
       </model-viewer>
     </div>
-    <div class="col-span-4">
+    <div
+      v-for="(editorSetting, index) in editorSettings"
+      :key="editorSetting.containerID"
+      class="col-span-3"
+    >
       <div
-        class="app-border-dashed"
-        :style="`width: ${editorSettings.width + 4}px; height: ${
-          editorSettings.height + 4
+        :style="`width: ${editorSetting.width + 4}px; height: ${
+          editorSetting.height + 4
         }px`"
+        class="app-border-dashed"
       >
-        <div :id="editorSettings.containerID" />
+        <div :id="editorSetting.containerID" />
       </div>
 
       <div class="p-2 bg-gray-300 flex items-center">
         <button
           class="block border border-gray-400 hover:bg-red-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm"
-          @click="editor.clearPaint"
+          @click="() => editors[index]?.clearPaint()"
         >
-          Clear drawing
+          Clear
         </button>
 
         <button
           class="block border border-gray-400 hover:bg-blue-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm ml-2"
-          @click="() => editor.download(props.item.model.texture.filename)"
+          @click="
+            () =>
+              editors[index]?.download(
+                props.item.model.textures[index].filename
+              )
+          "
         >
           Download
         </button>
 
         <label class="flex items-center ml-4">
-          <input type="checkbox" @click="editor?.toggleTextureOutline()" />
+          <input
+            type="checkbox"
+            @click="() => editors[index]?.toggleTextureOutline()"
+          />
           <strong class="text-sm">Show texture outline</strong>
         </label>
 
         <div class="ml-auto text-xs font-mono">
-          {{ props.item.model.texture.filename }}
-          {{ props.item.model.texture.width }}x{{
-            props.item.model.texture.height
+          {{ props.item.model.textures[index].filename }}
+          {{ props.item.model.textures[index].width }}x{{
+            props.item.model.textures[index].height
           }}
         </div>
       </div>
