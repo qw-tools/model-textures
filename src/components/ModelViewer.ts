@@ -25,14 +25,14 @@ export class ModelViewer {
     }
   }
 
-  public setTexture(texture: Texture): void {
-    if (!this.viewer.model || 0 === this.viewer.model.materials.length) {
+  public setTexture(texture: Texture, index = 1): void {
+    if (!this.viewer.model || index >= this.viewer.model.materials.length) {
       return;
     }
 
-    this.viewer.model.materials[0].pbrMetallicRoughness.baseColorTexture.setTexture(
-      texture
-    );
+    this.viewer.model.materials[
+      index
+    ].pbrMetallicRoughness.baseColorTexture.setTexture(texture);
   }
 
   public async setTextureByURI(textureURI: string): Promise<void> {
