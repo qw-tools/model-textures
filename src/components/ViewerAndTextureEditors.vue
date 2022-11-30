@@ -61,30 +61,6 @@ onBeforeUnmount(() => {
     onFiltersChangeEvent
   );
 });
-
-function foo() {
-  // async function onTextureFileDrop(event: DragEvent): Promise<void> {
-  //   // prevent opening image in browser
-  //   event.stopPropagation();
-  //   event.preventDefault();
-  //
-  //   if (!event.dataTransfer) {
-  //     return;
-  //   }
-  //
-  //   await editor.setTextureByFile(event.dataTransfer.files[0]);
-  // }
-  //
-  // async function onTextureFileUpload(event: Event): Promise<void> {
-  //   const files = (event.target as HTMLInputElement).files;
-  //
-  //   if (!files) {
-  //     return;
-  //   }
-  //
-  //   await editor.setTextureByFile(files[0]);
-  // }
-}
 </script>
 
 <template>
