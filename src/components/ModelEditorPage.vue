@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ViewerAndTextureEditor from "./ViewerAndTextureEditor.vue";
+import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
@@ -50,7 +50,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
       </div>
 
       <div class="grid gap-4 grid-cols-1">
-        <ViewerAndTextureEditor
+        <ViewerAndTextureEditors
           v-for="item in props.items"
           :item="item"
           :key="item.id"
