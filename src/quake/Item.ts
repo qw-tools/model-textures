@@ -2,6 +2,7 @@ import { publicUrl, slugify } from "../components/util";
 import { TextureEditorSettings } from "../konva/TextureEditor";
 import { ModelViewerSettings } from "../components/ModelViewer";
 
+// interfaces
 export interface Texture {
   filename: string;
   path: string;
@@ -22,6 +23,7 @@ export interface Item {
   viewerOrientation: number;
 }
 
+// methods
 function createItem(
   category: string,
   name: string,
@@ -55,6 +57,23 @@ function createArmorItem(name: string, textureIndex: number): Item {
   return createItem("Armors", name, "armor", textureIndex, 184, 76, 30);
 }
 
+export function itemToEditorSettings(item: Item): TextureEditorSettings {
+  return {
+    containerID: `Editor_${item.id}`,
+    texturePath: item.model.texture.path,
+    width: item.model.texture.width,
+    height: item.model.texture.height,
+  };
+}
+
+export function itemToViewerSettings(item: Item): ModelViewerSettings {
+  return {
+    containerID: `Viewer_${item.id}`,
+    modelPath: item.model.path,
+    texturePath: item.model.texture.path,
+  };
+}
+
 // armors
 const GreenArmor = createArmorItem("Green Armor", 0);
 const YellowArmor = createArmorItem("Yellow Armor", 1);
@@ -62,11 +81,10 @@ const RedArmor = createArmorItem("Red Armor", 2);
 
 export const armors: Item[] = [GreenArmor, YellowArmor, RedArmor];
 
-// player skin
+// Units
 export const player = createItem("Units", "Player", "player", 0, 296, 194, 45);
 
 // weapon models
-
 const weaponOrientation = 45;
 const SuperShotgun = createItem(
   "Weapons",
@@ -143,19 +161,32 @@ const Pent = createItem("Powerups", "Pent", "invulner", 0, 308, 67, 30);
 const Ring = createItem("Powerups", "Ring", "invisibl", 0, 104, 52, 30);
 export const powerups: Item[] = [Quad, Pent, Ring];
 
-export function itemToEditorSettings(item: Item): TextureEditorSettings {
-  return {
-    containerID: `Editor_${item.id}`,
-    texturePath: item.model.texture.path,
-    width: item.model.texture.width,
-    height: item.model.texture.height,
-  };
-}
-
-export function itemToViewerSettings(item: Item): ModelViewerSettings {
-  return {
-    containerID: `Viewer_${item.id}`,
-    modelPath: item.model.path,
-    texturePath: item.model.texture.path,
-  };
-}
+// health packs
+const MegaHealth = createItem(
+  "Health packs",
+  "Mega Health",
+  "b_bh100",
+  0,
+  32,
+  32,
+  0
+);
+const LargeHealth = createItem(
+  "Health packs",
+  "Large Health",
+  "b_bh25",
+  0,
+  32,
+  16,
+  0
+);
+const SmallHealth = createItem(
+  "Health packs",
+  "Small Health",
+  "b_bh10",
+  0,
+  32,
+  16,
+  0
+);
+export const healthPacks: Item[] = [SmallHealth, LargeHealth, MegaHealth];
