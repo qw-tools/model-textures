@@ -58,12 +58,18 @@ export function modelFilenamePath(filename: string): string {
 // methods
 
 export function itemToEditorSettings(item: Item): TextureEditorSettings[] {
-  return item.model.textures.map((texture) => ({
-    containerID: slugify(`editor ${texture.filename}`),
-    texturePath: modelFilenamePath(texture.filename),
-    width: texture.width,
-    height: texture.height,
-  }));
+  const editorHeight = 180;
+
+  return item.model.textures.map(function (texture) {
+    const editorScale = editorHeight / texture.height;
+
+    return {
+      containerID: slugify(`editor ${item.model.filename} ${texture.filename}`),
+      texturePath: modelFilenamePath(texture.filename),
+      width: editorScale * texture.width,
+      height: editorScale * texture.height,
+    };
+  });
 }
 
 export function itemToViewerSettings(item: Item): ModelViewerSettings {
