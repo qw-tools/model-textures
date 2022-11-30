@@ -161,6 +161,17 @@ const Pent = createItem("Powerups", "Pent", "invulner", 0, 308, 67, 30);
 const Ring = createItem("Powerups", "Ring", "invisibl", 0, 104, 52, 30);
 export const powerups: Item[] = [Quad, Pent, Ring];
 
+// misc
+export const backpack = createItem(
+  "Misc",
+  "Backpack",
+  "backpack",
+  0,
+  152,
+  108,
+  30
+);
+
 // health packs
 const MegaHealth = createItem(
   "Health packs",
