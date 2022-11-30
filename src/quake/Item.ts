@@ -57,9 +57,10 @@ export function modelFilenamePath(filename: string): string {
 
 // methods
 
-export function itemToEditorSettings(item: Item): TextureEditorSettings[] {
-  const editorHeight = 180;
-
+export function itemToEditorSettings(
+  item: Item,
+  editorHeight = 180
+): TextureEditorSettings[] {
   return item.model.textures.map(function (texture) {
     const editorScale = editorHeight / texture.height;
 

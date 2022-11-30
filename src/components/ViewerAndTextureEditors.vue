@@ -25,7 +25,7 @@ const viewerSettings = itemToViewerSettings(props.item);
 const editors: TextureEditor[] = new Array(
   props.item.model.textures.length
 ).fill(null);
-const editorSettings = itemToEditorSettings(props.item);
+const editorSettings = itemToEditorSettings(props.item, props.editorHeight);
 
 onMounted(async () => {
   viewer = new ModelViewer(viewerSettings);
