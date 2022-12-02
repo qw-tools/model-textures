@@ -2,10 +2,11 @@ import { slugify } from "../../pkg/stringUtil";
 import { TextureEditorSettings } from "../../pkg/konva/TextureEditor";
 import { ModelViewerSettings } from "../../pkg/ModelViewer";
 import { publicUrl } from "../../pkg/viteUtil";
-import { Model } from "../../pkg/quake/types";
+import * as quakeModels from "../../pkg/quake/models";
+import { Model } from "../../pkg/quake/models";
 
+// types
 export interface Item {
-  name: string;
   id: string;
   category: string;
   model: Model;
@@ -17,7 +18,6 @@ export function modelFilenamePath(filename: string): string {
 }
 
 // methods
-
 export function itemToEditorSettings(
   item: Item,
   editorHeight = 180
@@ -42,113 +42,77 @@ export function itemToViewerSettings(item: Item): ModelViewerSettings {
   };
 }
 
-function createArmorItem(name: string, textureNumber: number): Item {
-  return {
-    category: "Armors",
-    name,
-    id: slugify(name),
-    model: {
-      filename: "armor.gltf",
-      textures: [
-        {
-          index: 0,
-          filename: `armor_${textureNumber}.png`,
-          width: 184,
-          height: 76,
-        },
-      ],
-    },
-    viewerOrientation: 45,
-  };
-}
-
-// armors
-const GreenArmor: Item = createArmorItem("Green Armor", 0);
-const YellowArmor = createArmorItem("Yellow Armor", 1);
-const RedArmor = createArmorItem("Red Armor", 2);
+// items
+const GreenArmor: Item = {
+  category: "Armors",
+  id: slugify(quakeModels.GreenArmor.name),
+  model: quakeModels.GreenArmor,
+  viewerOrientation: 45,
+};
+const YellowArmor = {
+  category: "Armors",
+  id: slugify("Yellow Armor"),
+  model: quakeModels.YellowArmor,
+  viewerOrientation: 45,
+};
+const RedArmor = {
+  category: "Armors",
+  id: slugify(quakeModels.RedArmor.name),
+  model: quakeModels.RedArmor,
+  viewerOrientation: 45,
+};
 export const armors: Item[] = [GreenArmor, YellowArmor, RedArmor];
 
 // Units
 export const player: Item = {
   category: "Units",
-  name: "Player",
-  id: "player",
-  model: {
-    filename: "player.gltf",
-    textures: [{ index: 0, filename: "player_0.png", width: 296, height: 194 }],
-  },
+  id: slugify(quakeModels.Player.name),
+  model: quakeModels.Player,
   viewerOrientation: 45,
 };
 
 // weapon models
 const weaponOrientation = 45;
+
 const SuperShotgun: Item = {
   category: "Weapons",
-  name: "Super Shotgun",
-  id: "super_shotgun",
-  model: {
-    filename: "g_shot.gltf",
-    textures: [{ index: 0, filename: "g_shot_0.png", width: 232, height: 132 }],
-  },
+  id: slugify(quakeModels.SuperShotgun.name),
+  model: quakeModels.SuperShotgun,
   viewerOrientation: weaponOrientation,
 };
 
 const NailGun: Item = {
   category: "Weapons",
-  name: "Nailgun",
-  id: "nailgun",
-  model: {
-    filename: "g_nail.gltf",
-    textures: [{ index: 0, filename: "g_nail_0.png", width: 308, height: 94 }],
-  },
+  id: slugify(quakeModels.Nailgun.name),
+  model: quakeModels.Nailgun,
   viewerOrientation: weaponOrientation,
 };
 
 const SuperNailGun: Item = {
   category: "Weapons",
-  name: "Super Nailgun",
-  id: "super_nailgun",
-  model: {
-    filename: "g_nail2.gltf",
-    textures: [{ index: 0, filename: "g_nail2_0.png", width: 308, height: 79 }],
-  },
+  id: slugify(quakeModels.SuperNailgun.name),
+  model: quakeModels.SuperNailgun,
   viewerOrientation: weaponOrientation,
 };
 
 const GrenadeLauncher: Item = {
   category: "Weapons",
-  name: "Grenade Launcher",
-  id: "grenade_launcher",
-  model: {
-    filename: "g_rock.gltf",
-    textures: [{ index: 0, filename: "g_rock_0.png", width: 224, height: 195 }],
-  },
+  id: slugify(quakeModels.GrenadeLauncher.name),
+  model: quakeModels.GrenadeLauncher,
   viewerOrientation: weaponOrientation,
 };
 
 const RocketLauncher: Item = {
   category: "Weapons",
-  name: "Rocket Launcher",
-  id: "rocket_launcher",
-  model: {
-    filename: "g_rock2.gltf",
-    textures: [
-      { index: 0, filename: "g_rock2_0.png", width: 232, height: 156 },
-    ],
-  },
+  id: slugify(quakeModels.RocketLauncher.name),
+  model: quakeModels.RocketLauncher,
   viewerOrientation: weaponOrientation,
 };
 
 const LightningGun: Item = {
   category: "Weapons",
-  name: "Lightning Gun",
-  id: "lightning_gun",
-  model: {
-    filename: "g_light.gltf",
-    textures: [
-      { index: 0, filename: "g_light_0.png", width: 308, height: 144 },
-    ],
-  },
+  id: slugify(quakeModels.LightningGun.name),
+  model: quakeModels.LightningGun,
   viewerOrientation: weaponOrientation,
 };
 
@@ -161,230 +125,131 @@ export const weapons: Item[] = [
   LightningGun,
 ];
 
-// projectiles
 const Grenade: Item = {
   category: "Projectiles",
-  name: "Grenade",
-  id: "grenade",
-  model: {
-    filename: "grenade.gltf",
-    textures: [{ index: 0, filename: "grenade_0.png", width: 40, height: 44 }],
-  },
+  id: slugify(quakeModels.Grenade.name),
+  model: quakeModels.Grenade,
   viewerOrientation: 90,
 };
 
-const Rocket: Item = {
+const Missile: Item = {
   category: "Projectiles",
-  name: "Missile",
-  id: "missile",
-  model: {
-    filename: "missile.gltf",
-    textures: [
-      { index: 0, filename: "missile_0.png", width: 288, height: 195 },
-    ],
-  },
+  id: slugify(quakeModels.Missile.name),
+  model: quakeModels.Missile,
   viewerOrientation: 90,
 };
-export const projectiles: Item[] = [Grenade, Rocket];
+export const projectiles: Item[] = [Grenade, Missile];
 
-// powerups
 const Quad: Item = {
   category: "Powerups",
-  name: "Quad",
-  id: "quad",
-  model: {
-    filename: "quaddama.gltf",
-    textures: [
-      { index: 0, filename: "quaddama_0.png", width: 308, height: 121 },
-    ],
-  },
+  id: slugify(quakeModels.Quad.name),
+  model: quakeModels.Quad,
   viewerOrientation: 30,
 };
 const Pent: Item = {
   category: "Powerups",
-  name: "Pent",
-  id: "pent",
-  model: {
-    filename: "invulner.gltf",
-    textures: [
-      { index: 0, filename: "invulner_0.png", width: 308, height: 67 },
-    ],
-  },
+  id: slugify(quakeModels.Pent.name),
+  model: quakeModels.Pent,
   viewerOrientation: 30,
 };
 const Ring: Item = {
   category: "Powerups",
-  name: "Ring",
-  id: "ring",
-  model: {
-    filename: "invisibl.gltf",
-    textures: [
-      { index: 0, filename: "invisibl_0.png", width: 104, height: 52 },
-    ],
-  },
+  id: slugify(quakeModels.Ring.name),
+  model: quakeModels.Ring,
   viewerOrientation: 30,
 };
+
 export const powerups: Item[] = [Quad, Pent, Ring];
 
 // misc
+
 export const backpack: Item = {
   category: "Misc",
-  name: "Backpack",
-  id: "backpack",
-  model: {
-    filename: "backpack.gltf",
-    textures: [
-      { index: 0, filename: "backpack_0.png", width: 152, height: 108 },
-    ],
-  },
+  id: slugify(quakeModels.Backpack.name),
+  model: quakeModels.Backpack,
   viewerOrientation: 30,
 };
 
 // health packs
+
 const MegaHealth = {
   category: "Health packs",
-  name: "Mega Health",
-  id: "Mega Health",
-  model: {
-    filename: "bh100.gltf",
-    textures: [
-      { index: 0, filename: "+3_med100.png", width: 240, height: 240 },
-      { index: 1, filename: "med100.png", width: 240, height: 240 },
-    ],
-  },
+  id: slugify(quakeModels.MegaHealth.name),
+  model: quakeModels.MegaHealth,
   viewerOrientation: 45,
 };
+
 const LargeHealth = {
   category: "Health packs",
-  name: "Large Health",
-  id: "Large Health",
-  model: {
-    filename: "bh25.gltf",
-    textures: [
-      { index: 0, filename: "+0_med25s.png", width: 32, height: 16 },
-      { index: 1, filename: "+0_med25.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.HealthLarge.name),
+  model: quakeModels.HealthLarge,
   viewerOrientation: 45,
 };
+
 const SmallHealth = {
   category: "Health packs",
-  name: "Small Health",
-  id: "Small Health",
-  model: {
-    filename: "bh10.gltf",
-    textures: [
-      { index: 0, filename: "med3_1.png", width: 32, height: 16 },
-      { index: 1, filename: "med3_0.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.HealthSmall.name),
+  model: quakeModels.HealthSmall,
   viewerOrientation: 45,
 };
+
 export const healthPacks: Item[] = [SmallHealth, LargeHealth, MegaHealth];
 
 // ammo
+
 const SmallShells = {
   category: "Ammo",
-  name: "Shells (small)",
-  id: "Shells (small)",
-  model: {
-    filename: "shell0.gltf",
-    textures: [
-      { index: 0, filename: "shot0sid.png", width: 32, height: 32 },
-      { index: 1, filename: "shot0top.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.ShellsSmall.name),
+  model: quakeModels.ShellsSmall,
   viewerOrientation: 45,
 };
+
 const LargeShells = {
   category: "Ammo",
-  name: "Shells (large)",
-  id: "Shells (large)",
-  model: {
-    filename: "shell1.gltf",
-    textures: [
-      { index: 0, filename: "shot1sid.png", width: 32, height: 32 },
-      { index: 1, filename: "shot1top.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.ShellsLarge.name),
+  model: quakeModels.ShellsLarge,
   viewerOrientation: 45,
 };
+
 const SmallNails = {
   category: "Ammo",
-  name: "Nails (small)",
-  id: "Nails (small)",
-  model: {
-    filename: "nail0.gltf",
-    textures: [
-      { index: 0, filename: "nail0sid.png", width: 32, height: 32 },
-      { index: 1, filename: "nail0top.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.NailsSmall.name),
+  model: quakeModels.NailsSmall,
   viewerOrientation: 45,
 };
+
 const LargeNails = {
   category: "Ammo",
-  name: "Nails (large)",
-  id: "Nails (large)",
-  model: {
-    filename: "nail1.gltf",
-    textures: [
-      { index: 0, filename: "nail1sid.png", width: 32, height: 32 },
-      { index: 1, filename: "nail1top.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.NailsLarge.name),
+  model: quakeModels.NailsLarge,
   viewerOrientation: 45,
 };
+
 const SmallRockets = {
   category: "Ammo",
-  name: "Rockets (small)",
-  id: "Rockets (small)",
-  model: {
-    filename: "rock0.gltf",
-    textures: [
-      { index: 1, filename: "rock0sid.png", width: 32, height: 16 },
-      { index: 0, filename: "rockettop.png", width: 16, height: 16 },
-    ],
-  },
+  id: slugify(quakeModels.RocketsSmall.name),
+  model: quakeModels.RocketsSmall,
   viewerOrientation: 45,
 };
+
 const LargeRockets = {
   category: "Ammo",
-  name: "Rockets (large)",
-  id: "Rockets (large)",
-  model: {
-    filename: "rock1.gltf",
-    textures: [
-      { index: 0, filename: "rock1sid.png", width: 32, height: 16 },
-      { index: 1, filename: "rockettop.png", width: 16, height: 16 },
-    ],
-  },
+  id: slugify(quakeModels.RocketsLarge.name),
+  model: quakeModels.RocketsLarge,
   viewerOrientation: 45,
 };
+
 const SmallCells = {
   category: "Ammo",
-  name: "Cells (small)",
-  id: "Cells (small)",
-  model: {
-    filename: "batt0.gltf",
-    textures: [
-      { index: 0, filename: "batt1sid.png", width: 32, height: 32 },
-      { index: 1, filename: "batt0top.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.CellsSmall.name),
+  model: quakeModels.CellsSmall,
   viewerOrientation: 45,
 };
+
 const LargeCells = {
   category: "Ammo",
-  name: "Cells (large)",
-  id: "Cells (large)",
-  model: {
-    filename: "batt1.gltf",
-    textures: [
-      { index: 0, filename: "batt0sid.png", width: 32, height: 32 },
-      { index: 1, filename: "batt1top.png", width: 32, height: 32 },
-    ],
-  },
+  id: slugify(quakeModels.CellsLarge.name),
+  model: quakeModels.CellsLarge,
   viewerOrientation: 45,
 };
 
