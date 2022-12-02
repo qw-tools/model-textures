@@ -11,7 +11,7 @@ import {
   Invert,
   Opacity,
   Saturation,
-} from "../pkg/CssFilter";
+} from "../../pkg/CssFilter";
 
 interface Props {
   onChange: (

@@ -5,9 +5,9 @@ import {
   itemToEditorSettings,
   itemToViewerSettings,
   Texture,
-} from "../pkg/quake/Item";
-import { ModelViewer } from "../pkg/ModelViewer";
-import { TextureEditor } from "../pkg/konva/TextureEditor";
+} from "../../pkg/quake/Item";
+import { ModelViewer } from "../../pkg/ModelViewer";
+import { TextureEditor } from "../../pkg/konva/TextureEditor";
 import { EditorEvent } from "./events";
 
 interface Props {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import SiteHeader from "../../components/Site/SiteHeader.vue";
-import SiteFooter from "../../components/Site/SiteFooter.vue";
-import ModelEditorPage from "../../components/ModelEditorPage.vue";
+import SiteHeader from "../Site/SiteHeader.vue";
+import SiteFooter from "../Site/SiteFooter.vue";
+import ModelEditorPage from "../Editor/ModelEditorPage.vue";
 
 import { player } from "../../pkg/quake/Item";
 
