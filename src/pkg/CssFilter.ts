@@ -124,3 +124,16 @@ export interface CssFilterSettings {
   opacity: Opacity;
   invert: Invert;
 }
+
+export function getDefaultFilterSettings(): CssFilterSettings {
+  return {
+    blur: new Blur(),
+    grayscale: new Grayscale(),
+    hue: new HUE(),
+    saturation: new Saturation(),
+    brightness: new Brightness(),
+    contrast: new Contrast(),
+    opacity: new Opacity(),
+    invert: new Invert(),
+  };
+}
