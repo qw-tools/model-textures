@@ -2,6 +2,7 @@ import { slugify } from "../stringUtil";
 import { TextureEditorSettings } from "../konva/TextureEditor";
 import { ModelViewerSettings } from "../ModelViewer";
 import { publicUrl } from "../viteUtil";
+import { Model } from "./types";
 
 // import playerGLTF from "../models/rock1.gltf?raw";
 //
@@ -30,19 +31,6 @@ import { publicUrl } from "../viteUtil";
 // }
 //
 // parseGLTF(playerGLTF);
-
-// interfaces
-export interface Texture {
-  index: number;
-  filename: string;
-  width: number;
-  height: number;
-}
-
-export interface Model {
-  filename: string;
-  textures: Texture[];
-}
 
 export interface Item {
   name: string;
