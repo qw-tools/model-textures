@@ -5,7 +5,7 @@ import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../pkg/konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
-import { Item, player } from "./Item";
+import { armors, Item, player } from "./Item";
 import {
   CssFilterSettings,
   getDefaultFilterSettings,
@@ -81,6 +81,15 @@ function onFiltersChange(filters: CssFilterSettings): void {
       >
         <BrushSettings :brush="getDefaultBrush()" :on-change="onBrushChange" />
         <FilterToolbar :on-change="onFiltersChange" />
+      </div>
+
+      <div v-if="0 === store.items.length" class="text-center py-32">
+        <strong>Click an item below to load editor</strong>, for example:
+        <span
+          class="hover:cursor-pointer font-bold text-sky-600 hover:text-sky-800"
+          @click="() => store.addItem(armors[0])"
+          >Green Armor</span
+        >.
       </div>
 
       <div class="grid gap-4 grid-cols-1">
