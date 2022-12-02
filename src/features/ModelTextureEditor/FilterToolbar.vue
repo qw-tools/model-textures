@@ -52,8 +52,8 @@ watch(store, throttle(props.onChange, 20));
         type="range"
       />
 
-      <label class="text-sm fadeIn" v-if="store.hue.enabled"
-        ><input type="checkbox" v-model="store.hue.colorize" /> Colorize</label
+      <label v-if="store.hue.enabled" class="text-sm fadeIn"
+        ><input v-model="store.hue.colorize" type="checkbox" /> Colorize</label
       >
     </div>
 

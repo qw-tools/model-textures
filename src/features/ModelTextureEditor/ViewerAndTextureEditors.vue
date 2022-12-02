@@ -76,8 +76,8 @@ onBeforeUnmount(() => {
         disable-pan
         disable-tap
         disable-zoom
-        loading="eager"
         interaction-prompt="none"
+        loading="eager"
         max-camera-orbit="auto 360deg 100"
         min-camera-orbit="auto 0deg auto"
         rotation-per-second="5deg"

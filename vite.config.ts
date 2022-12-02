@@ -20,10 +20,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        playerSkin: resolve(__dirname, "index.html"),
-        miscModels: resolve(__dirname, "misc_models.html"),
-        weaponModels: resolve(__dirname, "weapon_models.html"),
-        armorModels: resolve(__dirname, "armor_models.html"),
+        modelTextureEditor: resolve(__dirname, "index.html"),
       },
     },
   },

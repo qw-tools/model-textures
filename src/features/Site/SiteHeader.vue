@@ -3,12 +3,7 @@ const props = defineProps<{
   currentPage: string;
 }>();
 
-const pages = [
-  { url: "index", title: "Player Skin" },
-  { url: "weapon_models", title: "Weapon models" },
-  { url: "armor_models", title: "Armor Models" },
-  { url: "misc_models", title: "Misc Models" },
-];
+const pages = [{ url: "index", title: "Model Texture Editor" }];
 </script>
 
 <template>
