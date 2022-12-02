@@ -325,8 +325,8 @@ export const healthPacks: Item[] = [SmallHealth, LargeHealth, MegaHealth];
 // ammo
 const SmallShells = {
   category: "Ammo",
-  name: "Small shells pack",
-  id: "Small shells pack",
+  name: "Shells (small)",
+  id: "Shells (small)",
   model: {
     filename: "shell0.gltf",
     textures: [
@@ -338,8 +338,8 @@ const SmallShells = {
 };
 const LargeShells = {
   category: "Ammo",
-  name: "Large shells pack",
-  id: "Large shells pack",
+  name: "Shells (large)",
+  id: "Shells (large)",
   model: {
     filename: "shell1.gltf",
     textures: [
@@ -351,8 +351,8 @@ const LargeShells = {
 };
 const SmallNails = {
   category: "Ammo",
-  name: "Small nails pack",
-  id: "Small nails pack",
+  name: "Nails (small)",
+  id: "Nails (small)",
   model: {
     filename: "nail0.gltf",
     textures: [
@@ -364,8 +364,8 @@ const SmallNails = {
 };
 const LargeNails = {
   category: "Ammo",
-  name: "Large nails pack",
-  id: "Large nails pack",
+  name: "Nails (large)",
+  id: "Nails (large)",
   model: {
     filename: "nail1.gltf",
     textures: [
@@ -377,8 +377,8 @@ const LargeNails = {
 };
 const SmallRockets = {
   category: "Ammo",
-  name: "Small rockets pack",
-  id: "Small rockets pack",
+  name: "Rockets (small)",
+  id: "Rockets (small)",
   model: {
     filename: "rock0.gltf",
     textures: [
@@ -390,8 +390,8 @@ const SmallRockets = {
 };
 const LargeRockets = {
   category: "Ammo",
-  name: "Large rockets pack",
-  id: "Large rockets pack",
+  name: "Rockets (large)",
+  id: "Rockets (large)",
   model: {
     filename: "rock1.gltf",
     textures: [
@@ -403,8 +403,8 @@ const LargeRockets = {
 };
 const SmallCells = {
   category: "Ammo",
-  name: "Small cells pack",
-  id: "Small cells pack",
+  name: "Cells (small)",
+  id: "Cells (small)",
   model: {
     filename: "batt0.gltf",
     textures: [
@@ -416,8 +416,8 @@ const SmallCells = {
 };
 const LargeCells = {
   category: "Ammo",
-  name: "Large cells pack",
-  id: "Large cells pack",
+  name: "Cells (large)",
+  id: "Cells (large)",
   model: {
     filename: "batt1.gltf",
     textures: [
