@@ -30,6 +30,12 @@ const props = defineProps<Props>();
 </script>
 <template>
   <div class="container my-6">
+    <div
+      class="border-2 bg-green-100 border-green-300 p-3 rounded-md font-bold my-4"
+    >
+      &darr; Click an item to load editor &darr;
+    </div>
+
     <div class="flex flex-wrap gap-16">
       <div v-for="category in itemsCategories" :key="category.name">
         <strong>{{ category.name }}</strong>
