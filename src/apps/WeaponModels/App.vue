@@ -3,7 +3,7 @@ import SiteHeader from "../../components/Site/SiteHeader.vue";
 import SiteFooter from "../../components/Site/SiteFooter.vue";
 import ModelEditorPage from "../../components/ModelEditorPage.vue";
 
-import { weapons } from "../../quake/Item";
+import { weapons } from "../../pkg/quake/Item";
 
 const items = weapons;
 </script>

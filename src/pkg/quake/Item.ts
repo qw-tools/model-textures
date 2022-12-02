@@ -1,6 +1,7 @@
-import { publicUrl, slugify } from "../components/util";
+import { slugify } from "../stringutil";
 import { TextureEditorSettings } from "../konva/TextureEditor";
-import { ModelViewerSettings } from "../components/ModelViewer";
+import { ModelViewerSettings } from "../ModelViewer";
+import { publicUrl } from "../viteutil";
 
 // import playerGLTF from "../models/rock1.gltf?raw";
 //

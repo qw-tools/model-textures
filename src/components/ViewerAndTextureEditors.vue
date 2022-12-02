@@ -5,10 +5,10 @@ import {
   itemToEditorSettings,
   itemToViewerSettings,
   Texture,
-} from "../quake/Item";
-import { ModelViewer } from "./ModelViewer";
-import { TextureEditor } from "../konva/TextureEditor";
-import { EditorEvent } from "./Event";
+} from "../pkg/quake/Item";
+import { ModelViewer } from "../pkg/ModelViewer";
+import { TextureEditor } from "../pkg/konva/TextureEditor";
+import { EditorEvent } from "../pkg/Event";
 
 interface Props {
   item: Item;

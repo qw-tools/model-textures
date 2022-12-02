@@ -1,7 +1,7 @@
 import { Brush, getDefaultBrush } from "./Brush";
 import { Line } from "konva/lib/shapes/Line";
 import { Layer } from "konva/lib/Layer";
-import { MouseEventButton, MouseEventType } from "../components/Event";
+import { MouseEventButton, MouseEventType } from "../Event";
 
 export class PaintLayer extends Layer {
   public onPaint: () => void = function (): void {

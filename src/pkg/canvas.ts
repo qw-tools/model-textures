@@ -4,7 +4,7 @@ import ImageStroke from "image-stroke";
 // @ts-ignore
 import rotate from "image-stroke/lib/method-rotate";
 
-export async function createImageOutline(
+export async function imageOutlineFromImage(
   sourceImage: HTMLImageElement,
   options: {
     thickness: number;
@@ -34,35 +34,5 @@ export async function createImageOutline(
     strokeContext.drawImage(sourceImage, offset.x, offset.y);
 
     return resolve(strokeCanvas);
-  });
-}
-
-export async function createImageFromURI(
-  imageURI: string
-): Promise<HTMLImageElement> {
-  return new Promise((resolve) => {
-    const img = new Image();
-
-    img.onload = function () {
-      resolve(img);
-    };
-
-    img.src = imageURI;
-  });
-}
-
-export async function dataUriFromFile(file: File): Promise<string> {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-
-    reader.addEventListener("load", async () => {
-      resolve(reader.result as string);
-    });
-
-    try {
-      reader.readAsDataURL(file);
-    } catch (e) {
-      console.log("error during reader.readAsDataURL", e);
-    }
   });
 }

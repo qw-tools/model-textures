@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
-import { Brush, getDefaultBrush } from "../konva/Brush";
+import { Brush, getDefaultBrush } from "../pkg/konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
-import { Item } from "../quake/Item";
-import { EditorEvent } from "./Event";
-import { CssFilterSettings } from "./CssFilter";
+import { Item } from "../pkg/quake/Item";
+import { EditorEvent } from "../pkg/Event";
+import { CssFilterSettings } from "../pkg/CssFilter";
 
 //const previewHeight = 240;
 

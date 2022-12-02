@@ -1,18 +1,15 @@
 import { Stage } from "konva/lib/Stage";
 import { Layer } from "konva/lib/Layer";
 import { Image as KonvaImage } from "konva/lib/shapes/Image";
-import {
-  createImageFromURI,
-  createImageOutline,
-  dataUriFromFile,
-} from "../components/domutil";
+import { imageFromURI, dataURLFromFile } from "../domutil";
+import { imageOutlineFromImage } from "../canvas";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { PaintLayer } from "./PaintLayer";
 import { CursorLayer } from "./CursorLayer";
 import { Brush, getDefaultBrush } from "./Brush";
-import { nullOperation } from "../components/util";
+import { nullOperation } from "../stringutil";
 import { saveAs } from "file-saver";
-import { CssFilterSettings } from "../components/CssFilter";
+import { CssFilterSettings } from "../CssFilter";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -164,7 +161,7 @@ export class TextureEditor {
   }
 
   public async setTextureByURI(textureURI: string): Promise<void> {
-    const newTextureImage = await createImageFromURI(textureURI);
+    const newTextureImage = await imageFromURI(textureURI);
     this.modelTexture.image(newTextureImage);
     await this.updateOutline(newTextureImage);
     this.onChange();
@@ -175,7 +172,7 @@ export class TextureEditor {
       thickness: 1,
       color: "#000000",
     };
-    const newOutlineImage = await createImageOutline(
+    const newOutlineImage = await imageOutlineFromImage(
       textureImage,
       strokeOptions
     );
@@ -196,7 +193,7 @@ export class TextureEditor {
   }
 
   public async setTextureByFile(textureFile: File): Promise<void> {
-    const textureURI = await dataUriFromFile(textureFile);
+    const textureURI = await dataURLFromFile(textureFile);
     return this.setTextureByURI(textureURI);
   }
 

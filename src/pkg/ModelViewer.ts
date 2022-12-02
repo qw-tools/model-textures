@@ -1,6 +1,6 @@
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
-import { dataUriFromFile } from "./domutil";
+import { dataURLFromFile } from "./domutil";
 
 export interface ModelViewerSettings {
   containerID: string;
@@ -50,7 +50,7 @@ export class ModelViewer {
   }
 
   public async setTextureByFile(textureFile: File): Promise<void> {
-    const textureURI = await dataUriFromFile(textureFile);
+    const textureURI = await dataURLFromFile(textureFile);
     return this.setTextureByURI(textureURI);
   }
 }
