@@ -10,14 +10,11 @@ import { Brush } from "../../pkg/konva/Brush";
 
 interface Props {
   item: Item;
-  editorHeight: number;
   filters: CssFilterSettings;
   brush: Brush;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  editorHeight: 240,
-});
+const props = defineProps<Props>();
 
 let viewer: ModelViewer;
 const viewerSettings = itemToViewerSettings(props.item);
@@ -25,7 +22,7 @@ const viewerSettings = itemToViewerSettings(props.item);
 const editors: TextureEditor[] = new Array(
   props.item.model.textures.length
 ).fill(null);
-const editorSettings = itemToEditorSettings(props.item, props.editorHeight);
+const editorSettings = itemToEditorSettings(props.item);
 
 onMounted(async () => {
   viewer = new ModelViewer(viewerSettings);

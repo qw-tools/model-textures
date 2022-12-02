@@ -17,15 +17,22 @@ export function modelFilenamePath(filename: string): string {
   return publicUrl(`/assets/models/${filename}`);
 }
 
+function getEditorHeightByItem(item: Item): number {
+  if (item.model.name === player.model.name) {
+    return 520;
+  }
+  return 240;
+}
+
 // methods
-export function itemToEditorSettings(
-  item: Item,
-  editorHeight = 180
-): TextureEditorSettings[] {
+export function itemToEditorSettings(item: Item): TextureEditorSettings[] {
   return item.model.textures.map(function (texture) {
-    const editorScale = editorHeight / texture.height;
+    const editorScale = getEditorHeightByItem(item) / texture.height;
+    const containerID = slugify(
+      `editor ${item.model.filename} ${texture.filename}`
+    );
     return {
-      containerID: slugify(`editor ${item.id} ${texture.filename}`),
+      containerID,
       texturePath: modelFilenamePath(texture.filename),
       width: editorScale * texture.width,
       height: editorScale * texture.height,
@@ -37,12 +44,16 @@ export function itemToViewerSettings(item: Item): ModelViewerSettings {
   return {
     containerID: slugify(`viewer ${item.id}`),
     modelPath: modelFilenamePath(item.model.filename),
-    texturePath: modelFilenamePath(item.model.textures[0].filename),
+    textures: item.model.textures.map((t) => ({
+      path: modelFilenamePath(t.filename),
+      index: t.index,
+    })),
   };
 }
 
 function modelToId(model: Model): string {
-  return slugify(`${model.filename}`);
+  const textureNames = model.textures.map((t) => t.filename).join(" ");
+  return slugify(`${model.filename} ${textureNames}`);
 }
 
 // items
