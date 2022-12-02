@@ -1,6 +1,6 @@
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
-import { dataURLFromFile } from "./domutil";
+import { dataURLFromFile } from "./domUtil";
 
 export interface ModelViewerSettings {
   containerID: string;

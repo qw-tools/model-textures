@@ -1,6 +1,6 @@
 import { Brush } from "./Brush";
 import { Layer } from "konva/lib/Layer";
-import { MouseEventType } from "../Event";
+import { MouseEventType } from "../domEvent";
 import { Circle } from "konva/lib/shapes/Circle";
 import { Rect } from "konva/lib/shapes/Rect";
 

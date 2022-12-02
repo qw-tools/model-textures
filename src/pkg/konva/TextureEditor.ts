@@ -1,13 +1,13 @@
 import { Stage } from "konva/lib/Stage";
 import { Layer } from "konva/lib/Layer";
 import { Image as KonvaImage } from "konva/lib/shapes/Image";
-import { imageFromURI, dataURLFromFile } from "../domutil";
+import { imageFromURI, dataURLFromFile } from "../domUtil";
 import { imageOutlineFromImage } from "../canvas";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { PaintLayer } from "./PaintLayer";
 import { CursorLayer } from "./CursorLayer";
 import { Brush, getDefaultBrush } from "./Brush";
-import { nullOperation } from "../stringutil";
+import { nullOperation } from "../stringUtil";
 import { saveAs } from "file-saver";
 import { CssFilterSettings } from "../CssFilter";
 

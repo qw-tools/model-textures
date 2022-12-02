@@ -8,7 +8,7 @@ import {
 } from "../pkg/quake/Item";
 import { ModelViewer } from "../pkg/ModelViewer";
 import { TextureEditor } from "../pkg/konva/TextureEditor";
-import { EditorEvent } from "../pkg/Event";
+import { EditorEvent } from "./events";
 
 interface Props {
   item: Item;

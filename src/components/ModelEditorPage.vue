@@ -4,8 +4,8 @@ import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../pkg/konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
 import { Item } from "../pkg/quake/Item";
-import { EditorEvent } from "../pkg/Event";
 import { CssFilterSettings } from "../pkg/CssFilter";
+import { EditorEvent } from "./events";
 
 //const previewHeight = 240;
 
