@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from "vue";
-import {
-  Item,
-  itemToEditorSettings,
-  itemToViewerSettings,
-} from "../../pkg/quake/Item";
+import { Item, itemToEditorSettings, itemToViewerSettings } from "./Item";
 import { ModelViewer } from "../../pkg/ModelViewer";
 import { TextureEditor } from "../../pkg/konva/TextureEditor";
 import { EditorEvent } from "./events";

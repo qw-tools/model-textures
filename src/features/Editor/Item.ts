@@ -1,8 +1,8 @@
-import { slugify } from "../stringUtil";
-import { TextureEditorSettings } from "../konva/TextureEditor";
-import { ModelViewerSettings } from "../ModelViewer";
-import { publicUrl } from "../viteUtil";
-import { Model } from "./types";
+import { slugify } from "../../pkg/stringUtil";
+import { TextureEditorSettings } from "../../pkg/konva/TextureEditor";
+import { ModelViewerSettings } from "../../pkg/ModelViewer";
+import { publicUrl } from "../../pkg/viteUtil";
+import { Model } from "../../pkg/quake/types";
 
 export interface Item {
   name: string;

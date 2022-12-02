@@ -3,7 +3,7 @@ import SiteHeader from "../Site/SiteHeader.vue";
 import SiteFooter from "../Site/SiteFooter.vue";
 import ModelEditorPage from "../Editor/ModelEditorPage.vue";
 
-import { armors } from "../../pkg/quake/Item";
+import { armors } from "../Editor/Item";
 
 const items = armors;
 </script>

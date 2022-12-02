@@ -9,7 +9,7 @@ import {
   healthPacks,
   powerups,
   projectiles,
-} from "../../pkg/quake/Item";
+} from "../Editor/Item";
 
 const items = healthPacks
   .concat(ammo)

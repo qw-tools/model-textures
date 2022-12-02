@@ -9,7 +9,7 @@ import {
   powerups,
   projectiles,
   weapons,
-} from "../../pkg/quake/Item";
+} from "./Item";
 
 interface ItemSelection {
   isSelected: boolean;
