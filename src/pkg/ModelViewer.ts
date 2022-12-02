@@ -27,7 +27,10 @@ export class ModelViewer {
   public async onViewerLoaded(settings: ModelViewerSettings): Promise<void> {
     if (settings.textures && settings.textures.length > 0) {
       for (let i = 0; i < settings.textures.length; i++) {
-        await this.setTextureByURI(settings.textures[i].path);
+        await this.setTextureByURI(
+          settings.textures[i].path,
+          settings.textures[i].index
+        );
       }
     }
   }
