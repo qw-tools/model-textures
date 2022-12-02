@@ -5,10 +5,14 @@ import { ModelViewer } from "../../pkg/ModelViewer";
 import { TextureEditor } from "../../pkg/konva/TextureEditor";
 import { EditorEvent } from "./events";
 import { Texture } from "../../pkg/quake/models";
+import { CssFilterSettings } from "../../pkg/CssFilter";
+import { Brush } from "../../pkg/konva/Brush";
 
 interface Props {
   item: Item;
   editorHeight: number;
+  filters: CssFilterSettings;
+  brush: Brush;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -30,6 +34,8 @@ onMounted(async () => {
     const texture: Texture = props.item.model.textures[i];
     editors[i] = new TextureEditor({
       ...editorSettings[i],
+      filters: props.filters,
+      brush: props.brush,
       onChange: () => {
         viewer.setTextureByURI(editors[i].toURI(), texture.index);
       },

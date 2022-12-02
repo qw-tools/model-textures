@@ -6,7 +6,10 @@ import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../pkg/konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
 import { armors, Item } from "./Item";
-import { CssFilterSettings } from "../../pkg/CssFilter";
+import {
+  CssFilterSettings,
+  getDefaultFilterSettings,
+} from "../../pkg/CssFilter";
 import { EditorEvent } from "./events";
 import { reactive } from "vue";
 import ItemSelector from "./ModelSelector.vue";
@@ -16,6 +19,9 @@ interface AppStore {
   addItem: (item: Item) => void;
   removeItem: (item: Item) => void;
 }
+
+let lastBrush: Brush = getDefaultBrush();
+let lastFilters: CssFilterSettings = getDefaultFilterSettings();
 
 const store = reactive<AppStore>({
   items: [armors[0]],
@@ -47,6 +53,7 @@ function onBrushChange(brush: Brush): void {
     detail: { brush },
   });
   document.dispatchEvent(event);
+  lastBrush = brush;
 }
 
 function onFiltersChange(filters: CssFilterSettings): void {
@@ -55,6 +62,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
     detail: { filters },
   });
   document.dispatchEvent(event);
+  lastFilters = filters;
 }
 </script>
 <template>
@@ -92,7 +100,12 @@ function onFiltersChange(filters: CssFilterSettings): void {
             </button>
           </div>
           <div class="fadeIn">
-            <ViewerAndTextureEditors :editor-height="240" :item="item" />
+            <ViewerAndTextureEditors
+              :editor-height="240"
+              :item="item"
+              :brush="lastBrush"
+              :filters="lastFilters"
+            />
           </div>
         </div>
       </div>
