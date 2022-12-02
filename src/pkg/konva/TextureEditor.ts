@@ -1,7 +1,7 @@
 import { Stage } from "konva/lib/Stage";
 import { Layer } from "konva/lib/Layer";
 import { Image as KonvaImage } from "konva/lib/shapes/Image";
-import { imageFromURI, dataURLFromFile } from "../domUtil";
+import { dataURLFromFile, imageFromURI } from "../domUtil";
 import { imageOutlineFromImage } from "../canvas";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { PaintLayer } from "./PaintLayer";
@@ -18,6 +18,9 @@ export interface TextureEditorSettings {
   height: number;
   texturePath: string;
   onChange?: () => void;
+  onLoad?: () => void;
+  filters?: CssFilterSettings;
+  brush?: Brush;
 }
 
 export class TextureEditor {
@@ -92,8 +95,20 @@ export class TextureEditor {
     this.stage.addEventListener("mouseleave", handleMouseEvent);
 
     // init
-    this.setTextureByURI(settings.texturePath);
-    this.brush = getDefaultBrush();
+    if (settings.brush) {
+      this.brush = settings.brush;
+    }
+
+    // apply filters and trigger onload after applying texture
+    this.setTextureByURI(settings.texturePath).then(() => {
+      if (settings.filters) {
+        this.applyCSSFilters(settings.filters);
+      }
+
+      if (typeof settings.onLoad === "function") {
+        settings.onLoad();
+      }
+    });
   }
 
   get onChange(): () => void {
