@@ -35,7 +35,9 @@ export function itemToEditorSettings(
 
 export function itemToViewerSettings(item: Item): ModelViewerSettings {
   return {
-    containerID: slugify(`viewer ${item.model.filename}`),
+    containerID: slugify(
+      `viewer ${item.model.filename} ${item.model.textures[0].filename}`
+    ),
     modelPath: modelFilenamePath(item.model.filename),
     texturePath: modelFilenamePath(item.model.textures[0].filename),
   };
