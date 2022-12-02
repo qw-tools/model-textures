@@ -5,7 +5,7 @@ import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "../../pkg/konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
-import { armors, Item } from "./Item";
+import { Item, player } from "./Item";
 import {
   CssFilterSettings,
   getDefaultFilterSettings,
@@ -24,7 +24,7 @@ let lastBrush: Brush = getDefaultBrush();
 let lastFilters: CssFilterSettings = getDefaultFilterSettings();
 
 const store = reactive<AppStore>({
-  items: [armors[0]],
+  items: [player],
   addItem(item: Item): void {
     if (this.items.includes(item)) {
       const el = document.getElementById(item.id);
@@ -101,10 +101,9 @@ function onFiltersChange(filters: CssFilterSettings): void {
           </div>
           <div class="fadeIn">
             <ViewerAndTextureEditors
-              :editor-height="240"
-              :item="item"
               :brush="lastBrush"
               :filters="lastFilters"
+              :item="item"
             />
           </div>
         </div>
