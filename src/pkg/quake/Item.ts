@@ -4,34 +4,6 @@ import { ModelViewerSettings } from "../ModelViewer";
 import { publicUrl } from "../viteUtil";
 import { Model } from "./types";
 
-// import playerGLTF from "../models/rock1.gltf?raw";
-//
-// export interface gltfInfo {
-//   model: string;
-//   textures: string[];
-// }
-//
-// export function parseGLTF(gltf: string) {
-//   const model = JSON.parse(gltf);
-//
-//   const result = [];
-//
-//   for (let index = 0; index < model.materials.length; index++) {
-//     const textureIndex =
-//       model.materials[index].pbrMetallicRoughness.baseColorTexture.index;
-//
-//     result.push({
-//       materialIndex: index,
-//       destName: model.materials[index].name.split(" ")[1],
-//       sourceURI: model.images[textureIndex].uri,
-//     });
-//   }
-//
-//   console.log(result);
-// }
-//
-// parseGLTF(playerGLTF);
-
 export interface Item {
   name: string;
   id: string;
