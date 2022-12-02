@@ -24,9 +24,8 @@ export function itemToEditorSettings(
 ): TextureEditorSettings[] {
   return item.model.textures.map(function (texture) {
     const editorScale = editorHeight / texture.height;
-
     return {
-      containerID: slugify(`editor ${item.id}`),
+      containerID: slugify(`editor ${item.id} ${texture.filename}`),
       texturePath: modelFilenamePath(texture.filename),
       width: editorScale * texture.width,
       height: editorScale * texture.height,
@@ -43,7 +42,7 @@ export function itemToViewerSettings(item: Item): ModelViewerSettings {
 }
 
 function modelToId(model: Model): string {
-  return slugify(`${model.filename} ${model.textures[0].filename}`);
+  return slugify(`${model.filename}`);
 }
 
 // items
