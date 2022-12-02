@@ -20,7 +20,12 @@ interface AppStore {
 const store = reactive<AppStore>({
   items: [armors[0]],
   addItem(item: Item): void {
-    if (!this.items.includes(item)) {
+    if (this.items.includes(item)) {
+      const el = document.getElementById(item.id);
+      if (el) {
+        window.scrollTo(el.offsetLeft, el.offsetTop);
+      }
+    } else {
       this.items.push(item);
     }
   },
