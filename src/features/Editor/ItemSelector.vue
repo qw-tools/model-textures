@@ -15,8 +15,6 @@ interface ItemSelection {
   isSelected: boolean;
   item: Item;
 }
-
-const items: ItemSelection[] = [];
 </script>
 <template>
   <div>
@@ -24,7 +22,7 @@ const items: ItemSelection[] = [];
       <div>
         <strong>Armors</strong>
         <ul>
-          <li v-for="item in armors">
+          <li v-for="item in armors" :key="item.id">
             <label><input type="checkbox" /> {{ item.name }}</label>
           </li>
         </ul>
@@ -32,7 +30,7 @@ const items: ItemSelection[] = [];
       <div>
         <strong>Weapons</strong>
         <ul>
-          <li v-for="item in weapons">
+          <li v-for="item in weapons" :key="item.id">
             <label><input type="checkbox" /> {{ item.name }}</label>
           </li>
         </ul>
@@ -40,7 +38,7 @@ const items: ItemSelection[] = [];
       <div>
         <strong>Powerups</strong>
         <ul>
-          <li v-for="item in powerups">
+          <li v-for="item in powerups" :key="item.id">
             <label><input type="checkbox" /> {{ item.name }}</label>
           </li>
         </ul>
@@ -48,7 +46,7 @@ const items: ItemSelection[] = [];
       <div>
         <strong>Ammo</strong>
         <ul>
-          <li v-for="item in ammo">
+          <li v-for="item in ammo" :key="item.id">
             <label><input type="checkbox" /> {{ item.name }}</label>
           </li>
         </ul>
@@ -56,7 +54,7 @@ const items: ItemSelection[] = [];
       <div>
         <strong>Health packs</strong>
         <ul>
-          <li v-for="item in healthPacks">
+          <li v-for="item in healthPacks" :key="item.id">
             <label><input type="checkbox" /> {{ item.name }}</label>
           </li>
         </ul>
@@ -64,7 +62,7 @@ const items: ItemSelection[] = [];
       <div>
         <strong>Projectiles</strong>
         <ul>
-          <li v-for="item in projectiles">
+          <li v-for="item in projectiles" :key="item.id">
             <label><input type="checkbox" /> {{ item.name }}</label>
           </li>
         </ul>
