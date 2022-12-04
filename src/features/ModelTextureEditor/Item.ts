@@ -44,10 +44,7 @@ export function itemToViewerSettings(item: Item): ModelViewerSettings {
   return {
     containerID: slugify(`viewer ${item.id}`),
     modelPath: modelFilenamePath(item.model.filename),
-    textures: item.model.textures.map((t) => ({
-      path: modelFilenamePath(t.filename),
-      index: t.index,
-    })),
+    // skip passing textures, apply from texture editor instead
   };
 }
 
