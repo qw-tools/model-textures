@@ -2,15 +2,8 @@
 import { reactive, watch } from "vue";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import {
-  Blur,
-  Brightness,
-  Contrast,
   CssFilterSettings,
-  Grayscale,
-  HUE,
-  Invert,
-  Opacity,
-  Saturation,
+  getDefaultFilterSettings,
 } from "../../pkg/CssFilter";
 
 interface Props {
@@ -21,17 +14,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const store: CssFilterSettings = reactive({
-  blur: new Blur(),
-  grayscale: new Grayscale(),
-  hue: new HUE(),
-  saturation: new Saturation(),
-  brightness: new Brightness(),
-  contrast: new Contrast(),
-  opacity: new Opacity(),
-  invert: new Invert(),
-});
+const store: CssFilterSettings = reactive(getDefaultFilterSettings());
 
 watch(store, throttle(props.onChange, 20));
 </script>
@@ -52,8 +35,8 @@ watch(store, throttle(props.onChange, 20));
         type="range"
       />
 
-      <label class="text-sm fadeIn" v-if="store.hue.enabled"
-        ><input type="checkbox" v-model="store.hue.colorize" /> Colorize</label
+      <label v-if="store.hue.enabled" class="text-sm fadeIn"
+        ><input v-model="store.hue.colorize" type="checkbox" /> Colorize</label
       >
     </div>
 

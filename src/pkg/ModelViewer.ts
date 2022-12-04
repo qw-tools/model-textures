@@ -2,10 +2,15 @@ import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
 import { dataURLFromFile } from "./domUtil";
 
+export interface ModelViewerTexture {
+  path: string;
+  index: number;
+}
+
 export interface ModelViewerSettings {
   containerID: string;
   modelPath: string;
-  texturePath?: string;
+  textures?: ModelViewerTexture[];
 }
 
 export class ModelViewer {
@@ -20,8 +25,13 @@ export class ModelViewer {
   }
 
   public async onViewerLoaded(settings: ModelViewerSettings): Promise<void> {
-    if (settings.texturePath) {
-      await this.setTextureByURI(settings.texturePath);
+    if (settings.textures && settings.textures.length > 0) {
+      for (let i = 0; i < settings.textures.length; i++) {
+        await this.setTextureByURI(
+          settings.textures[i].path,
+          settings.textures[i].index
+        );
+      }
     }
   }
 

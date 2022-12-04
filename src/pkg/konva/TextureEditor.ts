@@ -1,7 +1,7 @@
 import { Stage } from "konva/lib/Stage";
 import { Layer } from "konva/lib/Layer";
 import { Image as KonvaImage } from "konva/lib/shapes/Image";
-import { imageFromURI, dataURLFromFile } from "../domUtil";
+import { dataURLFromFile, imageFromURI } from "../domUtil";
 import { imageOutlineFromImage } from "../canvas";
 import { throttle } from "@google/model-viewer/lib/utilities";
 import { PaintLayer } from "./PaintLayer";
@@ -10,6 +10,7 @@ import { Brush, getDefaultBrush } from "./Brush";
 import { nullOperation } from "../stringUtil";
 import { saveAs } from "file-saver";
 import { CssFilterSettings } from "../CssFilter";
+import { ColorizeFilter } from "./filters";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -17,6 +18,9 @@ export interface TextureEditorSettings {
   height: number;
   texturePath: string;
   onChange?: () => void;
+  onLoad?: () => void;
+  filters?: CssFilterSettings;
+  brush?: Brush;
 }
 
 export class TextureEditor {
@@ -91,8 +95,20 @@ export class TextureEditor {
     this.stage.addEventListener("mouseleave", handleMouseEvent);
 
     // init
-    this.setTextureByURI(settings.texturePath);
-    this.brush = getDefaultBrush();
+    if (settings.brush) {
+      this.brush = settings.brush;
+    }
+
+    // apply filters and trigger onload after applying texture
+    this.setTextureByURI(settings.texturePath).then(() => {
+      if (settings.filters) {
+        this.applyCSSFilters(settings.filters);
+      }
+
+      if (typeof settings.onLoad === "function") {
+        settings.onLoad();
+      }
+    });
   }
 
   get onChange(): () => void {
@@ -206,18 +222,5 @@ export class TextureEditor {
     this.modelTextureOutline.isVisible()
       ? this.modelTextureOutline.hide()
       : this.modelTextureOutline.show();
-  }
-}
-
-function ColorizeFilter(imageData: ImageData) {
-  const data = imageData.data;
-  const pixelCount = data.length;
-  let brightness;
-
-  for (let i = 0; i < pixelCount; i += 4) {
-    brightness = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
-    data[i] += brightness; // red
-    data[i + 1] += 0; // green
-    data[i + 2] += 0; // blue
   }
 }

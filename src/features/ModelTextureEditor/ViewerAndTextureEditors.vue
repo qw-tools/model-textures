@@ -1,23 +1,20 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from "vue";
-import {
-  Item,
-  itemToEditorSettings,
-  itemToViewerSettings,
-  Texture,
-} from "../../pkg/quake/Item";
+import { Item, itemToEditorSettings, itemToViewerSettings } from "./Item";
 import { ModelViewer } from "../../pkg/ModelViewer";
 import { TextureEditor } from "../../pkg/konva/TextureEditor";
 import { EditorEvent } from "./events";
+import { Texture } from "../../pkg/quake/models";
+import { CssFilterSettings } from "../../pkg/CssFilter";
+import { Brush } from "../../pkg/konva/Brush";
 
 interface Props {
   item: Item;
-  editorHeight: number;
+  filters: CssFilterSettings;
+  brush: Brush;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  editorHeight: 240,
-});
+const props = defineProps<Props>();
 
 let viewer: ModelViewer;
 const viewerSettings = itemToViewerSettings(props.item);
@@ -25,7 +22,7 @@ const viewerSettings = itemToViewerSettings(props.item);
 const editors: TextureEditor[] = new Array(
   props.item.model.textures.length
 ).fill(null);
-const editorSettings = itemToEditorSettings(props.item, props.editorHeight);
+const editorSettings = itemToEditorSettings(props.item);
 
 onMounted(async () => {
   viewer = new ModelViewer(viewerSettings);
@@ -34,6 +31,8 @@ onMounted(async () => {
     const texture: Texture = props.item.model.textures[i];
     editors[i] = new TextureEditor({
       ...editorSettings[i],
+      filters: props.filters,
+      brush: props.brush,
       onChange: () => {
         viewer.setTextureByURI(editors[i].toURI(), texture.index);
       },
@@ -80,8 +79,8 @@ onBeforeUnmount(() => {
         disable-pan
         disable-tap
         disable-zoom
-        loading="eager"
         interaction-prompt="none"
+        loading="eager"
         max-camera-orbit="auto 360deg 100"
         min-camera-orbit="auto 0deg auto"
         rotation-per-second="5deg"
