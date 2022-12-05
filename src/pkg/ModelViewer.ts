@@ -59,8 +59,9 @@ export class ModelViewer {
     }
   }
 
-  public async setTextureByFile(textureFile: File): Promise<void> {
-    const textureURI = await dataURLFromFile(textureFile);
-    return this.setTextureByURI(textureURI);
-  }
+  // todo: used when creating texture from upload/drag and drop
+  // public async setTextureByFile(textureFile: File): Promise<void> {
+  //   const textureURI = await dataURLFromFile(textureFile);
+  //   return this.setTextureByURI(textureURI);
+  // }
 }
