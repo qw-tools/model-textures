@@ -25,21 +25,46 @@ const editors: TextureEditor[] = new Array(
 const editorSettings = itemToEditorSettings(props.item);
 
 onMounted(async () => {
-  viewer = new ModelViewer(viewerSettings);
+  // viewer
+  const viewerPromise = new Promise<void>((resolve) => {
+    viewer = new ModelViewer({
+      ...viewerSettings,
+      onLoad: resolve,
+    });
+  });
+
+  // editors
+  const editorPromises: Promise<void>[] = [];
 
   for (let i = 0; i < props.item.model.textures.length; i++) {
-    const texture: Texture = props.item.model.textures[i];
-    editors[i] = new TextureEditor({
-      ...editorSettings[i],
-      filters: props.filters,
-      brush: props.brush,
-      onChange: () => {
-        viewer.setTextureByURI(editors[i].toURI(), texture.index);
-      },
+    const editorPromise = new Promise<void>((resolve) => {
+      const texture: Texture = props.item.model.textures[i];
+      editors[i] = new TextureEditor({
+        ...editorSettings[i],
+        filters: props.filters,
+        brush: props.brush,
+        onChange: () => {
+          viewer.setTextureByURI(editors[i].toURI(), texture.index);
+        },
+        onLoad: resolve,
+      });
+      editors[i].modelTextureOutline.hide();
     });
-    editors[i].modelTextureOutline.hide();
+
+    editorPromises.push(editorPromise);
   }
 
+  // wait until viewer and all texture editors are ready
+  const allPromises = [viewerPromise].concat(editorPromises);
+  await Promise.all(allPromises);
+
+  // apply textures
+  for (let i = 0; i < props.item.model.textures.length; i++) {
+    const texture: Texture = props.item.model.textures[i];
+    await viewer.setTextureByURI(editors[i].toURI(), texture.index);
+  }
+
+  // events
   document.addEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
   document.addEventListener(EditorEvent.FILTERS_CHANGE, onFiltersChangeEvent);
 });
