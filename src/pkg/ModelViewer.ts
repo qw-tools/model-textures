@@ -1,6 +1,5 @@
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
-import { dataURLFromFile } from "./domUtil";
 
 export interface ModelViewerTexture {
   path: string;
@@ -11,6 +10,7 @@ export interface ModelViewerSettings {
   containerID: string;
   modelPath: string;
   textures?: ModelViewerTexture[];
+  onLoad?: () => void;
 }
 
 export class ModelViewer {
@@ -21,10 +21,11 @@ export class ModelViewer {
       settings.containerID
     ) as ModelViewerElement;
     this.viewer.setAttribute("src", settings.modelPath);
-    this.viewer.addEventListener("load", () => this.onViewerLoaded(settings));
+    this.viewer.addEventListener("load", () => this.onLoad(settings));
   }
 
-  public async onViewerLoaded(settings: ModelViewerSettings): Promise<void> {
+  private async onLoad(settings: ModelViewerSettings): Promise<void> {
+    // apply textures
     if (settings.textures && settings.textures.length > 0) {
       for (let i = 0; i < settings.textures.length; i++) {
         await this.setTextureByURI(
@@ -32,6 +33,11 @@ export class ModelViewer {
           settings.textures[i].index
         );
       }
+    }
+
+    // call custom callback
+    if (typeof settings.onLoad === "function") {
+      settings.onLoad();
     }
   }
 
