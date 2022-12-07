@@ -83,7 +83,10 @@ function onFiltersChange(filters: CssFilterSettings): void {
         <FilterToolbar :on-change="onFiltersChange" />
       </div>
 
-      <div v-if="0 === store.items.length" class="text-center py-32">
+      <div
+        v-if="0 === store.items.length"
+        class="text-center py-32 app-border-dashed bg-black/5"
+      >
         <strong>Click an item below to load editor</strong>, for example:
         <span
           class="hover:cursor-pointer font-bold text-sky-600 hover:text-sky-800"
