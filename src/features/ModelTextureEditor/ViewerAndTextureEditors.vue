@@ -117,51 +117,50 @@ onBeforeUnmount(() => {
       :key="editorSetting.containerID"
       class="col-span-3"
     >
-      <div :style="`width: ${editorSetting.width + 4}px;`">
-        <div class="my-2 text-center text-xs font-mono">
-          {{ props.item.model.textures[index].filename }} [{{
-            props.item.model.textures[index].width
-          }}x{{ props.item.model.textures[index].height }}]
+      <div class="my-2 flex items-center space-x-4">
+        <div class="text-sm font-mono">
+          {{ props.item.model.textures[index].filename }}
+          [{{ props.item.model.textures[index].width }}x{{
+            props.item.model.textures[index].height
+          }}]
         </div>
-        <div
-          :style="`height: ${editorSetting.height + 4}px`"
-          class="app-border-dashed"
+
+        <button
+          class="block border border-gray-400 hover:bg-blue-100 rounded-md py-1.5 px-3 bg-sky-100 shadow text-sm ml-auto"
+          @click="
+            () =>
+              editors[index]?.download(
+                props.item.model.textures[index].filename
+              )
+          "
         >
-          <div :id="editorSetting.containerID" />
-        </div>
+          Download
+        </button>
       </div>
 
-      <div class="flex mt-2 p-2 bg-gray-300 rounded-md">
-        <div class="flex space-x-4 items-center">
-          <button
-            class="block border border-gray-400 hover:bg-blue-100 rounded-md py-1.5 px-3 bg-gray-100 shadow text-sm ml-auto"
-            @click="
-              () =>
-                editors[index]?.download(
-                  props.item.model.textures[index].filename
-                )
-            "
-          >
-            Download
-          </button>
-        </div>
+      <div
+        :style="`width: ${editorSetting.width + 4}px; height: ${
+          editorSetting.height + 4
+        }px`"
+        class="app-border-dashed"
+      >
+        <div :id="editorSetting.containerID" />
+      </div>
 
-        <div class="ml-auto flex items-center space-x-4">
-          <label class="flex items-center ml-4">
-            <input
-              type="checkbox"
-              @click="() => editors[index]?.toggleTextureOutline()"
-            />
-            <strong class="text-sm">Show outline</strong>
-          </label>
-
-          <button
-            class="block border border-gray-400 hover:bg-red-100 rounded-md py-1.5 px-3 bg-gray-100 shadow text-sm"
-            @click="() => editors[index]?.clearPaint()"
-          >
-            Clear paint
-          </button>
-        </div>
+      <div class="flex mt-2 space-x-4">
+        <button
+          class="block border border-gray-400 hover:bg-red-100 rounded-md py-1 px-2 bg-gray-200 shadow text-sm"
+          @click="() => editors[index]?.clearPaint()"
+        >
+          Clear paint
+        </button>
+        <label class="flex items-center">
+          <input
+            type="checkbox"
+            @click="() => editors[index]?.toggleTextureOutline()"
+          />
+          <strong class="text-sm">Show outline</strong>
+        </label>
       </div>
     </div>
   </div>
