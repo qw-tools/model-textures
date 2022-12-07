@@ -95,8 +95,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-9 gap-4 w-full">
-    <div class="col-span-3 app-border-dashed">
+  <div class="grid grid-cols-8 gap-4">
+    <div class="col-span-2 app-border-dashed">
       <model-viewer
         :id="viewerSettings.containerID"
         :orientation="`270deg 270deg ${props.item.viewerOrientation}deg`"
@@ -117,48 +117,50 @@ onBeforeUnmount(() => {
       :key="editorSetting.containerID"
       class="col-span-3"
     >
-      <div
-        :style="`width: ${editorSetting.width + 4}px; height: ${
-          editorSetting.height + 4
-        }px`"
-        class="app-border-dashed"
-      >
-        <div :id="editorSetting.containerID" />
+      <div :style="`width: ${editorSetting.width + 4}px;`">
+        <div class="my-2 text-center text-xs font-mono">
+          {{ props.item.model.textures[index].filename }} [{{
+            props.item.model.textures[index].width
+          }}x{{ props.item.model.textures[index].height }}]
+        </div>
+        <div
+          :style="`height: ${editorSetting.height + 4}px`"
+          class="app-border-dashed"
+        >
+          <div :id="editorSetting.containerID" />
+        </div>
       </div>
 
-      <div class="p-2 bg-gray-300 flex items-center">
-        <button
-          class="block border border-gray-400 hover:bg-red-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm"
-          @click="() => editors[index]?.clearPaint()"
-        >
-          Clear
-        </button>
+      <div class="flex mt-2 p-2 bg-gray-300 rounded-md">
+        <div class="flex space-x-4 items-center">
+          <button
+            class="block border border-gray-400 hover:bg-blue-100 rounded-md py-1.5 px-3 bg-gray-100 shadow text-sm ml-auto"
+            @click="
+              () =>
+                editors[index]?.download(
+                  props.item.model.textures[index].filename
+                )
+            "
+          >
+            Download
+          </button>
+        </div>
 
-        <button
-          class="block border border-gray-400 hover:bg-blue-100 rounded-md py-2 px-3 bg-gray-100 shadow text-sm ml-2"
-          @click="
-            () =>
-              editors[index]?.download(
-                props.item.model.textures[index].filename
-              )
-          "
-        >
-          Download
-        </button>
+        <div class="ml-auto flex items-center space-x-4">
+          <label class="flex items-center ml-4">
+            <input
+              type="checkbox"
+              @click="() => editors[index]?.toggleTextureOutline()"
+            />
+            <strong class="text-sm">Show outline</strong>
+          </label>
 
-        <label class="flex items-center ml-4">
-          <input
-            type="checkbox"
-            @click="() => editors[index]?.toggleTextureOutline()"
-          />
-          <strong class="text-sm">Show texture outline</strong>
-        </label>
-
-        <div class="ml-auto text-xs font-mono">
-          {{ props.item.model.textures[index].filename }}
-          {{ props.item.model.textures[index].width }}x{{
-            props.item.model.textures[index].height
-          }}
+          <button
+            class="block border border-gray-400 hover:bg-red-100 rounded-md py-1.5 px-3 bg-gray-100 shadow text-sm"
+            @click="() => editors[index]?.clearPaint()"
+          >
+            Clear paint
+          </button>
         </div>
       </div>
     </div>
