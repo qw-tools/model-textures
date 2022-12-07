@@ -274,3 +274,39 @@ export const ammo: Item[] = [
   SmallCells,
   LargeCells,
 ];
+
+// runes
+const RuneResistance = {
+  category: "Runes",
+  id: modelToId(quakeModels.RuneResistance),
+  model: quakeModels.RuneResistance,
+  viewerOrientation: 45,
+};
+
+const RuneHaste = {
+  category: "Runes",
+  id: modelToId(quakeModels.RuneHaste),
+  model: quakeModels.RuneHaste,
+  viewerOrientation: 45,
+};
+
+const RuneRegeneration = {
+  category: "Runes",
+  id: modelToId(quakeModels.RuneRegeneration),
+  model: quakeModels.RuneRegeneration,
+  viewerOrientation: 45,
+};
+
+const RuneStrength = {
+  category: "Runes",
+  id: modelToId(quakeModels.RuneStrength),
+  model: quakeModels.RuneStrength,
+  viewerOrientation: 45,
+};
+
+export const runes: Item[] = [
+  RuneHaste,
+  RuneRegeneration,
+  RuneResistance,
+  RuneStrength,
+];

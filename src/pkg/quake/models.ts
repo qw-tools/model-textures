@@ -214,3 +214,28 @@ export const Player: Model = {
   filename: "player.gltf",
   textures: [{ index: 0, filename: "player_0.png", width: 296, height: 194 }],
 };
+
+// Runes
+export const RuneResistance: Model = {
+  name: "Resistance",
+  filename: "end1.gltf",
+  textures: [{ index: 0, filename: "end1_0.png", width: 152, height: 124 }],
+};
+
+export const RuneStrength: Model = {
+  name: "Regeneration",
+  filename: "end2.gltf",
+  textures: [{ index: 0, filename: "end2_0.png", width: 248, height: 156 }],
+};
+
+export const RuneHaste: Model = {
+  name: "Haste",
+  filename: "end3.gltf",
+  textures: [{ index: 0, filename: "end3_0.png", width: 152, height: 116 }],
+};
+
+export const RuneRegeneration: Model = {
+  name: "Regeneration",
+  filename: "end4.gltf",
+  textures: [{ index: 0, filename: "end4_0.png", width: 184, height: 132 }],
+};
