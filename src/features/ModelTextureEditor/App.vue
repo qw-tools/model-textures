@@ -95,23 +95,29 @@ function onFiltersChange(filters: CssFilterSettings): void {
         >.
       </div>
 
-      <div class="grid gap-4 grid-cols-1">
+      <div class="grid gap-6 grid-cols-1 mb-8">
         <div
           v-for="item in store.items"
           :id="item.id"
           :key="item.id"
-          class="flex transition-opacity duration-300"
+          class="transition-opacity duration-300"
         >
-          <div class="-ml-12 mr-4">
-            <button
-              :title="`Remove ${item.model.name}`"
-              class="py-1 px-3 rounded shadow bg-gray-300 border border-gray-400 hover:bg-gray-200"
-              @click="() => store.removeItem(item)"
-            >
-              x
-            </button>
+          <div class="p-2 bg-gray-300 rounded-md">
+            <div class="flex items-center">
+              <button
+                :title="`Close ${item.model.name} editor`"
+                class="px-3 py-1 rounded shadow bg-gray-200 border border-gray-400 hover:bg-gray-100 mr-2"
+                @click="() => store.removeItem(item)"
+              >
+                x
+              </button>
+
+              <div class="font-bold">
+                {{ item.model.name }}
+              </div>
+            </div>
           </div>
-          <div class="fadeIn">
+          <div class="fadeIn mt-2">
             <ViewerAndTextureEditors
               :brush="lastBrush"
               :filters="lastFilters"
