@@ -8,6 +8,7 @@ import {
   player,
   powerups,
   projectiles,
+  runes,
   weapons,
 } from "./Item";
 
@@ -24,6 +25,7 @@ const itemsCategories = [
   { name: "Weapons", items: weapons },
   { name: "Backpack", items: [backpack] },
   { name: "Units", items: [player] },
+  { name: "Runes", items: runes },
 ];
 
 const props = defineProps<Props>();
