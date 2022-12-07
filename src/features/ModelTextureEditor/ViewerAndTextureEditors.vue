@@ -95,8 +95,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-8 gap-4">
-    <div class="col-span-2 app-border-dashed">
+  <div class="flex">
+    <div class="app-border-dashed" style="width: 370px">
       <model-viewer
         :id="viewerSettings.containerID"
         :orientation="`270deg 270deg ${props.item.viewerOrientation}deg`"
@@ -112,55 +112,57 @@ onBeforeUnmount(() => {
       >
       </model-viewer>
     </div>
-    <div
-      v-for="(editorSetting, index) in editorSettings"
-      :key="editorSetting.containerID"
-      class="col-span-3"
-    >
-      <div class="my-2 flex items-center space-x-4">
-        <div class="text-sm font-mono">
-          {{ props.item.model.textures[index].filename }}
-          [{{ props.item.model.textures[index].width }}x{{
-            props.item.model.textures[index].height
-          }}]
+    <div class="flex">
+      <div
+        v-for="(editorSetting, index) in editorSettings"
+        :key="editorSetting.containerID"
+        class="px-6 border-l border-l-gray-300 first:border-l-0"
+      >
+        <div class="my-2 flex items-center space-x-4">
+          <div class="text-sm font-mono">
+            {{ props.item.model.textures[index].filename }}
+            [{{ props.item.model.textures[index].width }}x{{
+              props.item.model.textures[index].height
+            }}]
+          </div>
+
+          <button
+            class="block border border-gray-400 hover:bg-blue-100 rounded-md py-1.5 px-3 bg-sky-100 shadow text-sm ml-auto"
+            @click="
+              () =>
+                editors[index]?.download(
+                  props.item.model.textures[index].filename
+                )
+            "
+          >
+            Download
+          </button>
         </div>
 
-        <button
-          class="block border border-gray-400 hover:bg-blue-100 rounded-md py-1.5 px-3 bg-sky-100 shadow text-sm ml-auto"
-          @click="
-            () =>
-              editors[index]?.download(
-                props.item.model.textures[index].filename
-              )
-          "
+        <div
+          :style="`width: ${editorSetting.width + 4}px; height: ${
+            editorSetting.height + 4
+          }px`"
+          class="app-border-dashed"
         >
-          Download
-        </button>
-      </div>
+          <div :id="editorSetting.containerID" />
+        </div>
 
-      <div
-        :style="`width: ${editorSetting.width + 4}px; height: ${
-          editorSetting.height + 4
-        }px`"
-        class="app-border-dashed"
-      >
-        <div :id="editorSetting.containerID" />
-      </div>
-
-      <div class="flex mt-2 space-x-4">
-        <button
-          class="block border border-gray-400 hover:bg-red-100 rounded-md py-1 px-2 bg-gray-200 shadow text-sm"
-          @click="() => editors[index]?.clearPaint()"
-        >
-          Clear paint
-        </button>
-        <label class="flex items-center">
-          <input
-            type="checkbox"
-            @click="() => editors[index]?.toggleTextureOutline()"
-          />
-          <strong class="text-sm">Show outline</strong>
-        </label>
+        <div class="flex mt-2 space-x-4">
+          <button
+            class="block border border-gray-400 hover:bg-red-100 rounded-md py-1 px-2 bg-gray-200 shadow text-sm"
+            @click="() => editors[index]?.clearPaint()"
+          >
+            Clear paint
+          </button>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              @click="() => editors[index]?.toggleTextureOutline()"
+            />
+            <strong class="text-sm">Show outline</strong>
+          </label>
+        </div>
       </div>
     </div>
   </div>
