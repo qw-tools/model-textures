@@ -223,7 +223,7 @@ export const RuneResistance: Model = {
 };
 
 export const RuneStrength: Model = {
-  name: "Regeneration",
+  name: "Strength",
   filename: "end2.gltf",
   textures: [{ index: 0, filename: "end2_0.png", width: 248, height: 156 }],
 };
