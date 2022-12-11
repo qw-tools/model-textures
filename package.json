@@ -12,6 +12,9 @@
     "lint": "eslint . --ext .ts,.vue"
   },
   "dependencies": {
+    "@types/pixi.js": "^5.0.0",
+    "pixi-filters": "^5.0.0",
+    "pixi.js": "^7.0.4",
     "vue": "^3.2.45"
   },
   "devDependencies": {
