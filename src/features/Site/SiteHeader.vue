@@ -3,7 +3,10 @@ const props = defineProps<{
   currentPage: string;
 }>();
 
-const pages = [{ url: "index", title: "Model Texture Editor" }];
+const pages = [
+  { url: "index", title: "Model Texture Editor" },
+  { url: "charset", title: "Charset Editor" },
+];
 </script>
 
 <template>

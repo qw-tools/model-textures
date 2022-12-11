@@ -21,6 +21,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         modelTextureEditor: resolve(__dirname, "index.html"),
+        CharsetEditor: resolve(__dirname, "charset.html"),
       },
     },
   },
