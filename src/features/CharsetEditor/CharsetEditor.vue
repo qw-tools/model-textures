@@ -10,6 +10,7 @@ import {
 } from "./chars";
 import { BevelFilter, DropShadowFilter, OutlineFilter } from "pixi-filters";
 import { getAvailableFonts } from "./fonts";
+import LoadingIndicator from "./LoadingIndicator.vue";
 
 let availableFonts: string[] = [];
 let app: PIXI.Application;
@@ -63,6 +64,8 @@ function getDefaultCharsetPreset(): CharsetPreset {
 let preset: CharsetPreset = getDefaultCharsetPreset();
 
 onMounted(async () => {
+  document.getElementById("loading")?.remove();
+
   // set fonts
   await document.fonts.ready;
   availableFonts = getAvailableFonts();
@@ -190,6 +193,10 @@ function resetSettings() {
 <template>
   <div class="flex space-x-8">
     <div>
+      <LoadingIndicator
+        id="loading"
+        :style="`width: ${preset.size}px; height: ${preset.size / 2}px`"
+      />
       <div class="app-checker border border-gray-300 shadow">
         <div id="pixi"></div>
       </div>
