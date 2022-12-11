@@ -128,7 +128,10 @@ function onCharsetSizeChange(e: Event): void {
 </script>
 <template>
   <div class="flex space-x-8">
-    <div id="pixi"></div>
+    <div class="app-checker border border-gray-300 shadow">
+      <div id="pixi"></div>
+    </div>
+
     <div class="space-y-4">
       <div class="space-x-4">
         <strong>Size</strong>
