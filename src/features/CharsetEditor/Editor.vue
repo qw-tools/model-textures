@@ -27,6 +27,7 @@ Object.values(charFilters).forEach((f) => {
 
 interface CharsetPreset {
   size: number;
+  offset: { x: number; y: number };
   fontScale: number;
   colors: ColorSettings;
   textStyle: PIXI.ITextStyle;
@@ -42,6 +43,7 @@ interface ColorSettings {
 let preset: CharsetPreset = {
   size: 1024,
   fontScale: 0.8,
+  offset: { x: 0, y: 0 },
   colors: {
     white: "#7b7b7b",
     brown: "#8f4333",
@@ -121,10 +123,16 @@ function renderCharset(): void {
       fill: preset.colors[char.theme],
     };
 
-    charText.x = char.index.column * cellSize + charText.width / 2;
-    charText.y = char.index.row * cellSize;
+    const cellPos = {
+      x: char.index.column * cellSize,
+      y: char.index.row * cellSize,
+    };
+    charText.x = cellPos.x + charText.width / 2;
+    charText.y = cellPos.y;
   }
 
+  charContainer.x = preset.offset.x;
+  charContainer.y = preset.offset.y;
   charContainer.filters = Object.values(charFilters);
 
   updateGrid(cellSize);
@@ -175,7 +183,7 @@ function onCharsetSizeChange(e: Event): void {
 
       <hr />
 
-      <div class="space-y-4">
+      <div>
         <strong>Font</strong>
 
         <div>
@@ -210,6 +218,39 @@ function onCharsetSizeChange(e: Event): void {
                 }
               "
             />
+          </div>
+
+          <div class="flex items-center">
+            <div class="w-20">Offset</div>
+
+            <div class="flex items-center">
+              <input
+                type="number"
+                class="w-10"
+                :value="preset.offset.x"
+                @change="
+                  (e) => {
+                    preset.offset.x = e.target.value;
+                    renderCharset();
+                  }
+                "
+              />
+            </div>
+
+            <div class="flex items-center">
+              <input
+                type="number"
+                class="w-10"
+                :value="preset.offset.y"
+                @change="
+                  (e) => {
+                    preset.offset.y = e.target.value;
+                    renderCharset();
+                  }
+                "
+              />
+              <span class="text-xs text-gray-400">(x, y) </span>
+            </div>
           </div>
         </div>
       </div>
