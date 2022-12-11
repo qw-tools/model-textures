@@ -9,7 +9,9 @@ import {
   CHARACTERS_PER_ROW,
 } from "./chars";
 import { BevelFilter, DropShadowFilter, OutlineFilter } from "pixi-filters";
+import { getAvailableFonts } from "./fonts";
 
+let availableFonts = [];
 let app: PIXI.Application;
 let charContainer: PIXI.Container;
 let grid: PIXI.Graphics;
@@ -56,7 +58,24 @@ let preset: CharsetPreset = {
   },
 };
 
-onMounted(() => {
+onMounted(async () => {
+  // set fonts
+  await document.fonts.ready;
+  availableFonts = getAvailableFonts();
+
+  const fontSelect = document.getElementById("fontSelect");
+
+  if (fontSelect) {
+    const option = document.createElement("option");
+    fontSelect.appendChild(option);
+
+    availableFonts.forEach((name) => {
+      const option = document.createElement("option");
+      option.textContent = name;
+      fontSelect.appendChild(option);
+    });
+  }
+
   const pixiElement = document.getElementById("pixi");
   if (!pixiElement) {
     return;
@@ -148,6 +167,10 @@ function onCharsetSizeChange(e: Event): void {
   preset.size = parseInt(e.target.value);
   renderCharset();
 }
+
+function getElement(id: string) {
+  return document.getElementById(id);
+}
 </script>
 <template>
   <div class="flex space-x-8">
@@ -186,70 +209,108 @@ function onCharsetSizeChange(e: Event): void {
       <div>
         <strong>Font</strong>
 
-        <div>
-          <label class="flex items-center">
-            <div class="w-20">Weight</div>
-
-            <input
-              type="checkbox"
-              @change="
-                (e) => {
-                  preset.textStyle.fontWeight = e.target.checked ? 'bold' : '';
-                  renderCharset();
-                }
-              "
-            />
-            Bold
-          </label>
-
+        <div class="space-y-2">
           <div class="flex items-center">
-            <div class="w-20">Scale</div>
+            <div class="w-20">Family</div>
 
-            <input
-              type="range"
-              :value="preset.fontScale"
-              min="0"
-              max="2"
-              step="0.1"
-              @change="
-                (e) => {
-                  preset.fontScale = e.target.value;
-                  renderCharset();
-                }
-              "
-            />
-          </div>
-
-          <div class="flex items-center">
-            <div class="w-20">Offset</div>
-
-            <div class="flex items-center">
-              <input
-                type="number"
-                class="w-10"
-                :value="preset.offset.x"
+            <div class="text-sm">
+              <select
+                id="fontSelect"
                 @change="
                   (e) => {
-                    preset.offset.x = e.target.value;
+                    preset.textStyle.fontFamily = e.target.value;
+                    getElement('customFontSelect')?.setAttribute(
+                      'value',
+                      e.target.value
+                    );
+                    renderCharset();
+                  }
+                "
+              ></select>
+
+              <input
+                type="text"
+                class="w-40"
+                id="customFontSelect"
+                @change="
+                  (e) => {
+                    preset.textStyle.fontFamily = e.target.value;
                     renderCharset();
                   }
                 "
               />
             </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center">
+              <div class="w-20">Weight</div>
+
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  @change="
+                    (e) => {
+                      preset.textStyle.fontWeight = e.target.checked
+                        ? 'bold'
+                        : '';
+                      renderCharset();
+                    }
+                  "
+                />
+                Bold</label
+              >
+            </div>
+
+            <!--            <div class="flex items-center">-->
+            <!--              <div class="w-20">Scale</div>-->
+
+            <!--              <input-->
+            <!--                type="range"-->
+            <!--                :value="preset.fontScale"-->
+            <!--                min="0"-->
+            <!--                max="2"-->
+            <!--                step="0.1"-->
+            <!--                @change="-->
+            <!--                  (e) => {-->
+            <!--                    preset.fontScale = e.target.value;-->
+            <!--                    renderCharset();-->
+            <!--                  }-->
+            <!--                "-->
+            <!--              />-->
+            <!--            </div>-->
 
             <div class="flex items-center">
-              <input
-                type="number"
-                class="w-10"
-                :value="preset.offset.y"
-                @change="
-                  (e) => {
-                    preset.offset.y = e.target.value;
-                    renderCharset();
-                  }
-                "
-              />
-              <span class="text-xs text-gray-400">(x, y) </span>
+              <div class="w-20">Offset</div>
+
+              <div class="flex items-center text-sm">
+                <input
+                  type="number"
+                  class="w-10"
+                  :value="preset.offset.x"
+                  @change="
+                    (e) => {
+                      preset.offset.x = e.target.value;
+                      renderCharset();
+                    }
+                  "
+                />
+              </div>
+
+              <div class="flex items-center text-sm">
+                <input
+                  type="number"
+                  class="w-10"
+                  :value="preset.offset.y"
+                  @change="
+                    (e) => {
+                      preset.offset.y = e.target.value;
+                      renderCharset();
+                    }
+                  "
+                />
+                <span class="text-xs text-gray-400">(x, y) </span>
+              </div>
             </div>
           </div>
         </div>
