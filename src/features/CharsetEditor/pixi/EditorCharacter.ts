@@ -40,13 +40,12 @@ export class EditorCharacter extends PIXI.Text {
   }
 
   toggleSelect(): void {
-    console.log("toggleSelect");
     this.isSelected ? this.deselect() : this.select();
   }
 
   select(): void {
     this.isSelected = true;
-    this.filters = [new OutlineFilter()];
+    this.filters = [new OutlineFilter(2)];
     this.onSelect(this);
   }
 
