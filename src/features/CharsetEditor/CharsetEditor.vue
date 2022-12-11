@@ -1,61 +1,15 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
-import * as PIXI from "pixi.js";
-import { CHARACTER_COUNT, CHARACTERS_PER_ROW } from "./pkg/chars";
-import { BevelFilter, DropShadowFilter, OutlineFilter } from "pixi-filters";
 import { getAvailableFonts } from "./pkg/fonts";
 import LoadingIndicator from "./LoadingIndicator.vue";
-import { EditorCharacter } from "./pixi/EditorCharacter";
-import { EditorApplication } from "./pixi/EditorApplication";
+import {
+  EditorApplication,
+  getDefaultEditorPreset,
+} from "./pixi/EditorApplication";
 
 let availableFonts: string[] = [];
 let app: EditorApplication;
-
-const charFilters = {
-  outline: new OutlineFilter(),
-  dropShadow: new DropShadowFilter({
-    distance: 2,
-    blur: 0,
-  }),
-  bevel: new BevelFilter(),
-};
-Object.values(charFilters).forEach((f) => {
-  f.enabled = false;
-});
-
-interface CharsetPreset {
-  size: number;
-  offset: { x: number; y: number };
-  fontScale: number;
-  colors: ColorSettings;
-  textStyle: PIXI.ITextStyle;
-}
-
-interface ColorSettings {
-  white: string;
-  brown: string;
-  green: string;
-  gold: string;
-}
-
-function getDefaultCharsetPreset(): CharsetPreset {
-  return {
-    size: 1024,
-    fontScale: 0.8,
-    offset: { x: 0, y: 0 },
-    colors: {
-      white: "#7b7b7b",
-      brown: "#8f4333",
-      green: "#73571f",
-      gold: "#8f6f23",
-    },
-    textStyle: new PIXI.TextStyle({
-      fontFamily: "monospace",
-    }),
-  };
-}
-
-let preset: CharsetPreset = getDefaultCharsetPreset();
+const preset = getDefaultEditorPreset();
 
 onMounted(async () => {
   document.getElementById("loading")?.remove();
@@ -78,55 +32,12 @@ onMounted(async () => {
     return;
   }
 
-  app = new EditorApplication({
-    width: preset.size,
-    height: preset.size,
-    backgroundAlpha: 0,
-  });
-
+  app = new EditorApplication(preset);
   pixiElement.appendChild(app.view as HTMLCanvasElement);
-  renderCharset();
 });
 
 function renderCharset(): void {
-  const cellSize = preset.size / CHARACTERS_PER_ROW;
-  const fontSize = preset.fontScale * cellSize;
-
-  for (let index = 0; index < CHARACTER_COUNT; index++) {
-    const charText = app.charContainer.getChildAt(index) as EditorCharacter;
-    charText.style = {
-      ...preset.textStyle,
-      fontSize,
-      fill: preset.colors[charText.char.theme],
-    };
-
-    const cellPos = {
-      x: charText.char.index.column * cellSize,
-      y: charText.char.index.row * cellSize,
-    };
-    const centerOffset = {
-      x: cellSize / 2 - charText.width / 2,
-      y: cellSize / 2 - charText.height / 2,
-    };
-    charText.x = cellPos.x + centerOffset.x;
-    charText.y = cellPos.y + centerOffset.y;
-
-    charText.hitArea = new PIXI.Rectangle(
-      -centerOffset.x,
-      -centerOffset.y,
-      cellSize,
-      cellSize
-    );
-  }
-
-  app.charContainer.x = preset.offset.x;
-  app.charContainer.y = preset.offset.y;
-  app.charContainer.filters = Object.values(charFilters);
-
-  app.grid.draw(cellSize, preset.size);
-  app.view.width = preset.size;
-  app.view.height = preset.size;
-  app.render();
+  app.applyPreset(preset);
 }
 
 function getEventValue(e: Event): any {
@@ -146,7 +57,7 @@ function onCharsetSizeChange(e: Event): void {
 
 function onFontFamilyChange(e: Event): void {
   const value = getEventValue(e);
-  preset.textStyle.fontFamily = value;
+  preset.characters.textStyle.fontFamily = value;
   document.getElementById("customFontSelect")?.setAttribute("value", value);
   renderCharset();
 }
@@ -237,7 +148,9 @@ function resetSettings() {
                   type="checkbox"
                   @change="
                     (e) => {
-                      preset.textStyle.fontWeight = getEventChecked(e)
+                      preset.characters.textStyle.fontWeight = getEventChecked(
+                        e
+                      )
                         ? 'bold'
                         : 'normal';
                       renderCharset();
@@ -253,13 +166,13 @@ function resetSettings() {
 
               <input
                 type="range"
-                :value="preset.fontScale"
+                :value="preset.characters.fontScale"
                 min="0"
                 max="2"
                 step="0.1"
                 @change="
                   (e) => {
-                    preset.fontScale = getEventValue(e);
+                    preset.characters.fontScale = getEventValue(e);
                     renderCharset();
                   }
                 "
@@ -273,10 +186,10 @@ function resetSettings() {
                 <input
                   type="number"
                   class="w-10"
-                  :value="preset.offset.x"
+                  :value="preset.characters.offset.x"
                   @change="
                     (e) => {
-                      preset.offset.x = getEventValue(e);
+                      preset.characters.offset.x = getEventValue(e);
                       renderCharset();
                     }
                   "
@@ -287,10 +200,10 @@ function resetSettings() {
                 <input
                   type="number"
                   class="w-10"
-                  :value="preset.offset.y"
+                  :value="preset.characters.offset.y"
                   @change="
                     (e) => {
-                      preset.offset.y = getEventValue(e);
+                      preset.characters.offset.y = getEventValue(e);
                       renderCharset();
                     }
                   "
@@ -334,7 +247,7 @@ function resetSettings() {
 
         <div>
           <label
-            v-for="[key, filter] in Object.entries(charFilters)"
+            v-for="[key, filter] in Object.entries(preset.filters)"
             :key="key"
             class="flex items-center"
           >

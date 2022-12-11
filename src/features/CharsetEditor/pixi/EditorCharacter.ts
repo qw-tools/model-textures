@@ -1,12 +1,33 @@
 import * as PIXI from "pixi.js";
+import { ITextStyle, TextStyle } from "pixi.js";
 import { Character } from "../pkg/chars";
 import { OutlineFilter } from "pixi-filters";
 
+export interface CharacterPreset {
+  offset: { x: number; y: number };
+  fontScale: number;
+  textStyle: ITextStyle;
+}
+
+export function getDefaultCharacterPreset(): CharacterPreset {
+  return {
+    fontScale: 0.8,
+    offset: { x: 0, y: 0 },
+    textStyle: new TextStyle({
+      fontFamily: "monospace",
+    }),
+  };
+}
+
+function nullOperation() {
+  // do nothing
+}
+
 export class EditorCharacter extends PIXI.Text {
   char: Character;
-  isSelected: boolean = false;
-  onSelect: (char: EditorCharacter) => void = () => {};
-  onDeselect: (char: EditorCharacter) => void = () => {};
+  isSelected = false;
+  onSelect: (char: EditorCharacter) => void = nullOperation;
+  onDeselect: (char: EditorCharacter) => void = nullOperation;
 
   constructor(char: Character) {
     super(char.value);

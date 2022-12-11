@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 export class GridLines extends PIXI.Graphics {
-  color: number = 0xff00ff;
+  color = 0xff00ff;
 
   draw(cellSize: number, length: number): void {
     this.clear();
