@@ -370,7 +370,7 @@ function resetSettings() {
               type="checkbox"
               @change="
                 (e) => {
-                  filter.enabled = getEventValue(e);
+                  filter.enabled = getEventChecked(e);
                 }
               "
             />
