@@ -1,18 +1,15 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import * as PIXI from "pixi.js";
-import { CHARACTER_COUNT, characters, CHARACTERS_PER_ROW } from "./pkg/chars";
+import { CHARACTER_COUNT, CHARACTERS_PER_ROW } from "./pkg/chars";
 import { BevelFilter, DropShadowFilter, OutlineFilter } from "pixi-filters";
 import { getAvailableFonts } from "./pkg/fonts";
 import LoadingIndicator from "./LoadingIndicator.vue";
-import { GridLines } from "./pixi/GridLines";
 import { EditorCharacter } from "./pixi/EditorCharacter";
-import { CharacterContainer } from "./pixi/CharacterContainer";
+import { EditorApplication } from "./pixi/EditorApplication";
 
 let availableFonts: string[] = [];
-let app: PIXI.Application;
-let charContainer = new CharacterContainer(characters);
-let grid: GridLines = new GridLines();
+let app: EditorApplication;
 
 const charFilters = {
   outline: new OutlineFilter(),
@@ -66,7 +63,6 @@ onMounted(async () => {
   // set fonts
   await document.fonts.ready;
   availableFonts = getAvailableFonts();
-
   const fontSelect = document.getElementById("fontSelect");
 
   if (fontSelect) {
@@ -82,17 +78,13 @@ onMounted(async () => {
     return;
   }
 
-  app = new PIXI.Application({
+  app = new EditorApplication({
     width: preset.size,
     height: preset.size,
     backgroundAlpha: 0,
   });
 
   pixiElement.appendChild(app.view as HTMLCanvasElement);
-
-  app.stage.addChild(charContainer);
-  app.stage.addChild(grid);
-
   renderCharset();
 });
 
@@ -101,7 +93,7 @@ function renderCharset(): void {
   const fontSize = preset.fontScale * cellSize;
 
   for (let index = 0; index < CHARACTER_COUNT; index++) {
-    const charText = charContainer.getChildAt(index) as EditorCharacter;
+    const charText = app.charContainer.getChildAt(index) as EditorCharacter;
     charText.style = {
       ...preset.textStyle,
       fontSize,
@@ -127,11 +119,11 @@ function renderCharset(): void {
     );
   }
 
-  charContainer.x = preset.offset.x;
-  charContainer.y = preset.offset.y;
-  charContainer.filters = Object.values(charFilters);
+  app.charContainer.x = preset.offset.x;
+  app.charContainer.y = preset.offset.y;
+  app.charContainer.filters = Object.values(charFilters);
 
-  grid.draw(cellSize, preset.size);
+  app.grid.draw(cellSize, preset.size);
   app.view.width = preset.size;
   app.view.height = preset.size;
   app.render();
