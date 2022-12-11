@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-export class SquareGrid extends PIXI.Graphics {
+export class GridLines extends PIXI.Graphics {
   color: number = 0xff00ff;
 
   draw(cellSize: number, length: number): void {
     this.clear();
     this.lineStyle(1, this.color);
 
-    const steps = Math.floor(length/cellSize);
+    const steps = Math.floor(length / cellSize);
 
     for (let colIndex = 1; colIndex < steps; colIndex++) {
       const x = colIndex * cellSize;

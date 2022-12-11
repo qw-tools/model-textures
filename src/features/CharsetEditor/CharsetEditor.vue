@@ -1,21 +1,17 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
 import * as PIXI from "pixi.js";
-import {
-  Character,
-  CHARACTER_COUNT,
-  characters,
-  CHARACTERS_PER_COLUMN,
-  CHARACTERS_PER_ROW,
-} from "./chars";
+import { CHARACTER_COUNT, characters, CHARACTERS_PER_ROW } from "./pkg/chars";
 import { BevelFilter, DropShadowFilter, OutlineFilter } from "pixi-filters";
-import { getAvailableFonts } from "./fonts";
+import { getAvailableFonts } from "./pkg/fonts";
 import LoadingIndicator from "./LoadingIndicator.vue";
+import { GridLines } from "./pixi/GridLines";
+import { EditorCharacter } from "./pixi/EditorCharacter";
 
 let availableFonts: string[] = [];
 let app: PIXI.Application;
 let charContainer: PIXI.Container;
-let grid: SquareGrid = new SquareGrid();
+let grid: GridLines = new GridLines();
 
 const charFilters = {
   outline: new OutlineFilter(),
@@ -103,32 +99,12 @@ onMounted(async () => {
 
 function initCharset(): void {
   charContainer = new PIXI.Container();
-  characters.forEach((char) => {
-    // const isWhiteSpace = ["", " "].includes(char.value);
-    //
-    // if (isWhiteSpace) {
-    //   return;
-    // }
+  charContainer.interactive = true;
+  charContainer.interactiveChildren = true;
 
-    const charText = new PIXI.Text(char.value);
+  for (let index = 0; index < characters.length; index++) {
+    const charText = new EditorCharacter(characters[index]);
     charContainer.addChild(charText);
-  });
-}
-
-function updateGrid(cellSize: number): void {
-  grid.clear();
-  grid.lineStyle(1, 0xff00ff);
-
-  for (let colIndex = 1; colIndex < CHARACTERS_PER_COLUMN; colIndex++) {
-    const x = colIndex * cellSize;
-    grid.moveTo(x, 0);
-    grid.lineTo(x, preset.size);
-  }
-
-  for (let rowIndex = 1; rowIndex < CHARACTERS_PER_ROW; rowIndex++) {
-    const y = rowIndex * cellSize;
-    grid.moveTo(0, y);
-    grid.lineTo(preset.size, y);
   }
 }
 
@@ -137,20 +113,30 @@ function renderCharset(): void {
   const fontSize = preset.fontScale * cellSize;
 
   for (let index = 0; index < CHARACTER_COUNT; index++) {
-    const char: Character = characters[index];
-    const charText: PIXI.Text = charContainer.getChildAt(index) as PIXI.Text;
+    const charText = charContainer.getChildAt(index) as EditorCharacter;
     charText.style = {
       ...preset.textStyle,
       fontSize,
-      fill: preset.colors[char.theme],
+      fill: preset.colors[charText.char.theme],
     };
 
     const cellPos = {
-      x: char.index.column * cellSize,
-      y: char.index.row * cellSize,
+      x: charText.char.index.column * cellSize,
+      y: charText.char.index.row * cellSize,
     };
-    charText.x = cellPos.x + cellSize / 2 - charText.width / 2;
-    charText.y = cellPos.y + cellSize / 2 - charText.height / 2;
+    const centerOffset = {
+      x: cellSize / 2 - charText.width / 2,
+      y: cellSize / 2 - charText.height / 2,
+    };
+    charText.x = cellPos.x + centerOffset.x;
+    charText.y = cellPos.y + centerOffset.y;
+
+    charText.hitArea = new PIXI.Rectangle(
+      -centerOffset.x,
+      -centerOffset.y,
+      cellSize,
+      cellSize
+    );
   }
 
   charContainer.x = preset.offset.x;
