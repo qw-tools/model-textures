@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import SiteHeader from "../Site/SiteHeader.vue";
 import SiteFooter from "../Site/SiteFooter.vue";
-import Editor from "./Editor.vue";
+import CharsetEditor from "./CharsetEditor.vue";
 </script>
 <template>
   <SiteHeader current-page="charset" />
@@ -14,7 +14,7 @@ import Editor from "./Editor.vue";
     </div>
 
     <div class="container fadeIn my-4">
-      <Editor />
+      <CharsetEditor />
     </div>
   </div>
 

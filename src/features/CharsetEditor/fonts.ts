@@ -126,14 +126,14 @@ const fontCheck = new Set(
   ].sort()
 );
 
-export function getAvailableFonts() {
-  const availableFonts = new Set();
+export function getAvailableFonts(): string[] {
+  const availableFonts: string[] = [];
 
   for (const font of fontCheck.values()) {
     if (document.fonts.check(`12px "${font}"`)) {
-      availableFonts.add(font);
+      availableFonts.push(font);
     }
   }
 
-  return [...availableFonts.values()];
+  return [...availableFonts];
 }

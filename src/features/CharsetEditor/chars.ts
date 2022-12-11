@@ -39,7 +39,7 @@ const ascii =
 
 function getCharByIndex(index: Index): Character {
   const themeRowIndex = index.row % ROWS_PER_THEME;
-  let theme = index.row < ROWS_PER_THEME ? Theme.WHITE : Theme.BROWN;
+  const theme = index.row < ROWS_PER_THEME ? Theme.WHITE : Theme.BROWN;
 
   if (0 === themeRowIndex) {
     return new Character(index, Type.GRAPHIC, "", theme);

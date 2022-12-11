@@ -11,11 +11,11 @@ import {
 import { BevelFilter, DropShadowFilter, OutlineFilter } from "pixi-filters";
 import { getAvailableFonts } from "./fonts";
 
-let availableFonts = [];
+let availableFonts: string[] = [];
 let app: PIXI.Application;
 let charContainer: PIXI.Container;
 let grid: PIXI.Graphics;
-let charFilters = {
+const charFilters = {
   outline: new OutlineFilter(),
   dropShadow: new DropShadowFilter({
     distance: 2,
@@ -39,10 +39,10 @@ interface ColorSettings {
   white: string;
   brown: string;
   green: string;
-  //gold: string;
+  gold: string;
 }
 
-let preset: CharsetPreset = {
+const preset: CharsetPreset = {
   size: 1024,
   fontScale: 0.8,
   offset: { x: 0, y: 0 },
@@ -50,12 +50,12 @@ let preset: CharsetPreset = {
     white: "#7b7b7b",
     brown: "#8f4333",
     green: "#73571f",
-    //gold: "#8f6f23",
+    gold: "#8f6f23",
   },
-  textStyle: {
+  textStyle: new PIXI.TextStyle({
     fontFamily: "monospace",
     trim: false,
-  },
+  }),
 };
 
 onMounted(async () => {
@@ -66,12 +66,9 @@ onMounted(async () => {
   const fontSelect = document.getElementById("fontSelect");
 
   if (fontSelect) {
-    const option = document.createElement("option");
-    fontSelect.appendChild(option);
-
     availableFonts.forEach((name) => {
-      const option = document.createElement("option");
-      option.textContent = name;
+      const option = document.createElement("option") as HTMLOptionElement;
+      option.text = name;
       fontSelect.appendChild(option);
     });
   }
@@ -160,22 +157,34 @@ function renderCharset(): void {
   app.render();
 }
 
+function getEventValue(e: Event): any {
+  const el = e.target as HTMLInputElement;
+  return el.value;
+}
+
+function getEventChecked(e: Event): any {
+  const el = e.target as HTMLInputElement;
+  return el.checked;
+}
+
 function onCharsetSizeChange(e: Event): void {
-  if (!e.target) {
-    return;
-  }
-  preset.size = parseInt(e.target.value);
+  preset.size = parseInt(getEventValue(e));
   renderCharset();
 }
 
-function getElement(id: string) {
-  return document.getElementById(id);
+function onFontFamilyChange(e: Event): void {
+  const value = getEventValue(e);
+  preset.textStyle.fontFamily = value;
+  document.getElementById("customFontSelect")?.setAttribute("value", value);
+  renderCharset();
 }
 </script>
 <template>
   <div class="flex space-x-8">
-    <div class="app-checker border border-gray-300 shadow">
-      <div id="pixi"></div>
+    <div>
+      <div class="app-checker border border-gray-300 shadow">
+        <div id="pixi"></div>
+      </div>
     </div>
 
     <div class="space-y-4">
@@ -214,30 +223,15 @@ function getElement(id: string) {
             <div class="w-20">Family</div>
 
             <div class="text-sm">
-              <select
-                id="fontSelect"
-                @change="
-                  (e) => {
-                    preset.textStyle.fontFamily = e.target.value;
-                    getElement('customFontSelect')?.setAttribute(
-                      'value',
-                      e.target.value
-                    );
-                    renderCharset();
-                  }
-                "
-              ></select>
+              <select id="fontSelect" @change="onFontFamilyChange">
+                <option></option>
+              </select>
 
               <input
                 type="text"
                 class="w-40"
                 id="customFontSelect"
-                @change="
-                  (e) => {
-                    preset.textStyle.fontFamily = e.target.value;
-                    renderCharset();
-                  }
-                "
+                @change="onFontFamilyChange"
               />
             </div>
           </div>
@@ -251,9 +245,9 @@ function getElement(id: string) {
                   type="checkbox"
                   @change="
                     (e) => {
-                      preset.textStyle.fontWeight = e.target.checked
+                      preset.textStyle.fontWeight = getEventChecked(e)
                         ? 'bold'
-                        : '';
+                        : 'normal';
                       renderCharset();
                     }
                   "
@@ -262,23 +256,23 @@ function getElement(id: string) {
               >
             </div>
 
-            <!--            <div class="flex items-center">-->
-            <!--              <div class="w-20">Scale</div>-->
+            <div class="flex items-center">
+              <div class="w-20">Scale</div>
 
-            <!--              <input-->
-            <!--                type="range"-->
-            <!--                :value="preset.fontScale"-->
-            <!--                min="0"-->
-            <!--                max="2"-->
-            <!--                step="0.1"-->
-            <!--                @change="-->
-            <!--                  (e) => {-->
-            <!--                    preset.fontScale = e.target.value;-->
-            <!--                    renderCharset();-->
-            <!--                  }-->
-            <!--                "-->
-            <!--              />-->
-            <!--            </div>-->
+              <input
+                type="range"
+                :value="preset.fontScale"
+                min="0"
+                max="2"
+                step="0.1"
+                @change="
+                  (e) => {
+                    preset.fontScale = getEventValue(e);
+                    renderCharset();
+                  }
+                "
+              />
+            </div>
 
             <div class="flex items-center">
               <div class="w-20">Offset</div>
@@ -290,7 +284,7 @@ function getElement(id: string) {
                   :value="preset.offset.x"
                   @change="
                     (e) => {
-                      preset.offset.x = e.target.value;
+                      preset.offset.x = getEventValue(e);
                       renderCharset();
                     }
                   "
@@ -304,7 +298,7 @@ function getElement(id: string) {
                   :value="preset.offset.y"
                   @change="
                     (e) => {
-                      preset.offset.y = e.target.value;
+                      preset.offset.y = getEventValue(e);
                       renderCharset();
                     }
                   "
@@ -323,6 +317,7 @@ function getElement(id: string) {
 
         <div
           v-for="(value, key) in preset.colors"
+          :key="key"
           class="space-x-4 flex items-center"
         >
           <span class="w-14 capitalize">{{ key }}</span>
@@ -332,7 +327,7 @@ function getElement(id: string) {
             :value="value"
             @change="
               (e) => {
-                preset.colors[key] = e.target.value;
+                preset.colors[key] = getEventValue(e);
                 renderCharset();
               }
             "
@@ -348,13 +343,14 @@ function getElement(id: string) {
         <div>
           <label
             v-for="[key, filter] in Object.entries(charFilters)"
+            :key="key"
             class="flex items-center"
           >
             <input
               type="checkbox"
               @change="
                 (e) => {
-                  filter.enabled = e.target.checked;
+                  filter.enabled = getEventValue(e);
                 }
               "
             />
@@ -375,7 +371,7 @@ function getElement(id: string) {
               checked
               @change="
                 (e) => {
-                  grid.visible = e.target.checked;
+                  grid.visible = getEventChecked(e);
                 }
               "
             />
