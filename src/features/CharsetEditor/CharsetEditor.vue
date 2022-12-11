@@ -42,21 +42,25 @@ interface ColorSettings {
   gold: string;
 }
 
-const preset: CharsetPreset = {
-  size: 1024,
-  fontScale: 0.8,
-  offset: { x: 0, y: 0 },
-  colors: {
-    white: "#7b7b7b",
-    brown: "#8f4333",
-    green: "#73571f",
-    gold: "#8f6f23",
-  },
-  textStyle: new PIXI.TextStyle({
-    fontFamily: "monospace",
-    trim: false,
-  }),
-};
+function getDefaultCharsetPreset(): CharsetPreset {
+  return {
+    size: 1024,
+    fontScale: 0.8,
+    offset: { x: 0, y: 0 },
+    colors: {
+      white: "#7b7b7b",
+      brown: "#8f4333",
+      green: "#73571f",
+      gold: "#8f6f23",
+    },
+    textStyle: new PIXI.TextStyle({
+      fontFamily: "monospace",
+      trim: false,
+    }),
+  };
+}
+
+let preset: CharsetPreset = getDefaultCharsetPreset();
 
 onMounted(async () => {
   // set fonts
@@ -178,6 +182,10 @@ function onFontFamilyChange(e: Event): void {
   document.getElementById("customFontSelect")?.setAttribute("value", value);
   renderCharset();
 }
+
+function resetSettings() {
+  window.location.reload();
+}
 </script>
 <template>
   <div class="flex space-x-8">
@@ -188,6 +196,18 @@ function onFontFamilyChange(e: Event): void {
     </div>
 
     <div class="space-y-4">
+      <div class="flex justify-between">
+        <div class="text-lg font-bold">Settings</div>
+        <button
+          class="rounded border border-gray-400 shadow bg-gray-300 hover:bg-gray-200 px-2 text-sm"
+          @click="resetSettings"
+        >
+          reset
+        </button>
+      </div>
+
+      <hr />
+
       <div class="space-x-4">
         <strong>Size</strong>
 
