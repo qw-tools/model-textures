@@ -16,6 +16,7 @@ export enum Theme {
 }
 
 export interface Index {
+  number: number;
   column: number;
   row: number;
 }
@@ -66,6 +67,7 @@ export const characters: Character[] = [
   ...new Array(CHARACTER_COUNT).keys(),
 ].map((n) =>
   getCharByIndex({
+    number: n,
     column: n % CHARACTERS_PER_COLUMN,
     row: Math.floor(n / CHARACTERS_PER_ROW),
   })
