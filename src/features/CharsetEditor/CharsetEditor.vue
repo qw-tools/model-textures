@@ -56,7 +56,6 @@ function getDefaultCharsetPreset(): CharsetPreset {
     },
     textStyle: new PIXI.TextStyle({
       fontFamily: "monospace",
-      trim: false,
     }),
   };
 }
@@ -150,8 +149,8 @@ function renderCharset(): void {
       x: char.index.column * cellSize,
       y: char.index.row * cellSize,
     };
-    charText.x = cellPos.x + charText.width / 2;
-    charText.y = cellPos.y;
+    charText.x = cellPos.x + cellSize / 2 - charText.width / 2;
+    charText.y = cellPos.y + cellSize / 2 - charText.height / 2;
   }
 
   charContainer.x = preset.offset.x;
