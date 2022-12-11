@@ -8,10 +8,22 @@ import {
   CHARACTERS_PER_COLUMN,
   CHARACTERS_PER_ROW,
 } from "./chars";
+import { BevelFilter, DropShadowFilter, OutlineFilter } from "pixi-filters";
 
 let app: PIXI.Application;
 let charContainer: PIXI.Container;
 let grid: PIXI.Graphics;
+let charFilters = {
+  outline: new OutlineFilter(),
+  dropShadow: new DropShadowFilter({
+    distance: 2,
+    blur: 0,
+  }),
+  bevel: new BevelFilter(),
+};
+Object.values(charFilters).forEach((f) => {
+  f.enabled = false;
+});
 
 interface CharsetPreset {
   size: number;
@@ -38,6 +50,7 @@ let preset: CharsetPreset = {
   },
   textStyle: {
     fontFamily: "monospace",
+    trim: false,
   },
 };
 
@@ -50,7 +63,7 @@ onMounted(() => {
   app = new PIXI.Application({
     width: preset.size,
     height: preset.size,
-    backgroundColor: "#000000",
+    backgroundAlpha: 0,
   });
 
   pixiElement.appendChild(app.view as HTMLCanvasElement);
@@ -80,7 +93,7 @@ function initCharset(): void {
 
 function updateGrid(cellSize: number): void {
   grid.clear();
-  grid.lineStyle(1, 0x00ff00, 0.5);
+  grid.lineStyle(1, 0xff00ff);
 
   for (let colIndex = 1; colIndex < CHARACTERS_PER_COLUMN; colIndex++) {
     const x = colIndex * cellSize;
@@ -108,9 +121,11 @@ function renderCharset(): void {
       fill: preset.colors[char.theme],
     };
 
-    charText.x = char.index.column * cellSize;
+    charText.x = char.index.column * cellSize + charText.width / 2;
     charText.y = char.index.row * cellSize;
   }
+
+  charContainer.filters = Object.values(charFilters);
 
   updateGrid(cellSize);
   app.view.width = preset.size;
@@ -161,35 +176,48 @@ function onCharsetSizeChange(e: Event): void {
       <hr />
 
       <div class="space-y-4">
+        <strong>Font</strong>
+
         <div>
-          <strong>Font</strong>
-        </div>
+          <label class="flex items-center">
+            <div class="w-20">Weight</div>
 
-        <div class="flex items-center">
-          <div class="w-14">Scale</div>
+            <input
+              type="checkbox"
+              @change="
+                (e) => {
+                  preset.textStyle.fontWeight = e.target.checked ? 'bold' : '';
+                  renderCharset();
+                }
+              "
+            />
+            Bold
+          </label>
 
-          <input
-            type="range"
-            :value="preset.fontScale"
-            min="0"
-            max="2"
-            step="0.1"
-            @change="
-              (e) => {
-                preset.fontScale = e.target.value;
-                renderCharset();
-              }
-            "
-          />
+          <div class="flex items-center">
+            <div class="w-20">Scale</div>
+
+            <input
+              type="range"
+              :value="preset.fontScale"
+              min="0"
+              max="2"
+              step="0.1"
+              @change="
+                (e) => {
+                  preset.fontScale = e.target.value;
+                  renderCharset();
+                }
+              "
+            />
+          </div>
         </div>
       </div>
 
       <hr />
 
       <div>
-        <div>
-          <strong>Text colors</strong>
-        </div>
+        <strong>Text colors</strong>
 
         <div
           v-for="(value, key) in preset.colors"
@@ -207,6 +235,50 @@ function onCharsetSizeChange(e: Event): void {
               }
             "
           />
+        </div>
+      </div>
+
+      <hr />
+
+      <div>
+        <strong>Effects</strong>
+
+        <div>
+          <label
+            v-for="[key, filter] in Object.entries(charFilters)"
+            class="flex items-center"
+          >
+            <input
+              type="checkbox"
+              @change="
+                (e) => {
+                  filter.enabled = e.target.checked;
+                }
+              "
+            />
+            <span class="capitalize">{{ key }}</span>
+          </label>
+        </div>
+      </div>
+
+      <hr />
+
+      <div>
+        <strong>Editor settings</strong>
+
+        <div class="space-y-4">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              checked
+              @change="
+                (e) => {
+                  grid.visible = e.target.checked;
+                }
+              "
+            />
+            Show grid
+          </label>
         </div>
       </div>
     </div>
