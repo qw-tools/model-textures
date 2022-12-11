@@ -7,10 +7,11 @@ import { getAvailableFonts } from "./pkg/fonts";
 import LoadingIndicator from "./LoadingIndicator.vue";
 import { GridLines } from "./pixi/GridLines";
 import { EditorCharacter } from "./pixi/EditorCharacter";
+import { CharacterContainer } from "./pixi/CharacterContainer";
 
 let availableFonts: string[] = [];
 let app: PIXI.Application;
-let charContainer: PIXI.Container;
+let charContainer = new CharacterContainer(characters);
 let grid: GridLines = new GridLines();
 
 const charFilters = {
@@ -89,24 +90,11 @@ onMounted(async () => {
 
   pixiElement.appendChild(app.view as HTMLCanvasElement);
 
-  initCharset();
   app.stage.addChild(charContainer);
-
   app.stage.addChild(grid);
 
   renderCharset();
 });
-
-function initCharset(): void {
-  charContainer = new PIXI.Container();
-  charContainer.interactive = true;
-  charContainer.interactiveChildren = true;
-
-  for (let index = 0; index < characters.length; index++) {
-    const charText = new EditorCharacter(characters[index]);
-    charContainer.addChild(charText);
-  }
-}
 
 function renderCharset(): void {
   const cellSize = preset.size / CHARACTERS_PER_ROW;
