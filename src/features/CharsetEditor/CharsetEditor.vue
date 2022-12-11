@@ -363,7 +363,7 @@ function resetSettings() {
               checked
               @change="
                 (e) => {
-                  grid.visible = getEventChecked(e);
+                  app.grid.visible = getEventChecked(e);
                 }
               "
             />
