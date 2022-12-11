@@ -196,7 +196,7 @@ function resetSettings() {
         id="loading"
         :style="`width: ${preset.size}px; height: ${preset.size / 2}px`"
       />
-      <div class="app-checker border border-gray-300 shadow">
+      <div class="app-checker border border-gray-300 shadow cursor-pointer">
         <div id="pixi"></div>
       </div>
     </div>
