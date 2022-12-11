@@ -8,6 +8,7 @@ export class EditorApplication extends Application {
   grid: GridLines = new GridLines();
 
   constructor(options: IApplicationOptions) {
+    options.backgroundAlpha = 0;
     super(options);
 
     this.stage.addChild(this.charContainer);
