@@ -15,7 +15,8 @@ import LoadingIndicator from "./LoadingIndicator.vue";
 let availableFonts: string[] = [];
 let app: PIXI.Application;
 let charContainer: PIXI.Container;
-let grid: PIXI.Graphics;
+let grid: SquareGrid = new SquareGrid();
+
 const charFilters = {
   outline: new OutlineFilter(),
   dropShadow: new DropShadowFilter({
@@ -95,7 +96,6 @@ onMounted(async () => {
   initCharset();
   app.stage.addChild(charContainer);
 
-  grid = new PIXI.Graphics();
   app.stage.addChild(grid);
 
   renderCharset();
@@ -157,7 +157,7 @@ function renderCharset(): void {
   charContainer.y = preset.offset.y;
   charContainer.filters = Object.values(charFilters);
 
-  updateGrid(cellSize);
+  grid.draw(cellSize, preset.size);
   app.view.width = preset.size;
   app.view.height = preset.size;
   app.render();
