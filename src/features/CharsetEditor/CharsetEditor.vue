@@ -40,12 +40,12 @@ function renderCharset(): void {
   app.applyPreset(preset);
 }
 
-function getEventValue(e: Event): any {
+function getEventValue(e: Event): string {
   const el = e.target as HTMLInputElement;
   return el.value;
 }
 
-function getEventChecked(e: Event): any {
+function getEventChecked(e: Event): boolean {
   const el = e.target as HTMLInputElement;
   return el.checked;
 }
