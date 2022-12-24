@@ -82,6 +82,9 @@ export class EditorApplication extends Application {
         fontSize,
         fill: preset.colors[charText.char.theme],
       };
+      charText.onSelect = () => {
+        this.render();
+      };
 
       const cellPos = {
         x: charText.char.index.column * cellSize,

@@ -256,6 +256,7 @@ function resetSettings() {
               @change="
                 (e) => {
                   filter.enabled = getEventChecked(e);
+                  app.render();
                 }
               "
             />
@@ -277,6 +278,7 @@ function resetSettings() {
               @change="
                 (e) => {
                   app.grid.visible = getEventChecked(e);
+                  app.render();
                 }
               "
             />
