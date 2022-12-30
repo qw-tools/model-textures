@@ -172,7 +172,7 @@ function resetSettings() {
                 step="0.1"
                 @change="
                   (e) => {
-                    preset.characters.fontScale = getEventValue(e);
+                    preset.characters.fontScale = parseFloat(getEventValue(e));
                     renderCharset();
                   }
                 "
@@ -189,7 +189,7 @@ function resetSettings() {
                   :value="preset.characters.offset.x"
                   @change="
                     (e) => {
-                      preset.characters.offset.x = getEventValue(e);
+                      preset.characters.offset.x = parseFloat(getEventValue(e));
                       renderCharset();
                     }
                   "
@@ -203,7 +203,7 @@ function resetSettings() {
                   :value="preset.characters.offset.y"
                   @change="
                     (e) => {
-                      preset.characters.offset.y = getEventValue(e);
+                      preset.characters.offset.y = parseFloat(getEventValue(e));
                       renderCharset();
                     }
                   "
