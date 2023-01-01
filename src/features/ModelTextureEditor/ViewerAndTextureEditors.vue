@@ -4,7 +4,7 @@ import { Item, itemToEditorSettings, itemToViewerSettings } from "./Item";
 import { ModelViewer } from "../../pkg/ModelViewer";
 import { Texture } from "../../pkg/quake/models";
 import { CssFilterSettings } from "../../pkg/CssFilter";
-import { PixiTextureEditor } from "./pixi/PixiTextureEditor";
+import { TextureEditor } from "./pixi/TextureEditor";
 import { Brush, EditorEvent } from "./pixi/types";
 
 interface Props {
@@ -18,10 +18,7 @@ const props = defineProps<Props>();
 let viewer: ModelViewer;
 const viewerSettings = itemToViewerSettings(props.item);
 
-const editors: PixiTextureEditor[] = new Array(
-  props.item.model.textures.length
-).fill(null);
-const outlines: TextureOutLine[] = new Array(
+const editors: TextureEditor[] = new Array(
   props.item.model.textures.length
 ).fill(null);
 const editorSettings = itemToEditorSettings(props.item);
@@ -42,7 +39,7 @@ onMounted(async () => {
     const editorPromise = new Promise<void>((resolve) => {
       const texture: Texture = props.item.model.textures[i];
 
-      editors[i] = new PixiTextureEditor({
+      editors[i] = new TextureEditor({
         height: editorSettings[i].height,
         width: editorSettings[i].width,
         texturePath: editorSettings[i].texturePath,
@@ -93,7 +90,7 @@ const onBrushChangeEvent = (e: Event) => {
   const event = e as CustomEvent;
 
   for (let i = 0; i < editors.length; i++) {
-    editors[i].paintLayer.brush = event.detail.brush;
+    editors[i].brush = event.detail.brush;
   }
 };
 

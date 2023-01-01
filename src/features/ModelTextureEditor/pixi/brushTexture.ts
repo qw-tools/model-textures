@@ -20,12 +20,12 @@ export function generateBrush(
   renderer: IRenderer,
   settings: Brush
 ): RenderTexture {
-  const { size, color } = settings;
+  const { size, color, smoothing } = settings;
 
   const filter = new Filter(undefined, fragment, {
     color: hex2rgb(string2hex(color)),
     size,
-    smoothing: 0.5,
+    smoothing,
   });
 
   const sprite = new Sprite();

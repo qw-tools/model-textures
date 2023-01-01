@@ -14,6 +14,7 @@ export class PaintLayer {
   private _paintTexture: PIXI.RenderTexture;
   private _lastPosition: Point2D = { x: 0, y: 0 };
   private _brush: Brush;
+  private _isDrawing = false;
   onChange: () => void = () => {
     // do nothing
   };
@@ -34,13 +35,16 @@ export class PaintLayer {
       size: 24,
       color: "#ff00ff",
       smoothing: 0.5,
-      shape: "round",
+      shape: "circle",
     };
     this.brush = this._brush;
 
     // events
     this._container.on("pointerdown", (e: PIXI.FederatedMouseEvent) => {
       this._onPointerDown(e);
+    });
+    this._container.on("pointerup", (e: PIXI.FederatedMouseEvent) => {
+      this._onPointerUp(e);
     });
     this._container.on("pointermove", (e: PIXI.FederatedMouseEvent) => {
       this._onPointerMove(e);
@@ -81,17 +85,8 @@ export class PaintLayer {
     this.onChange();
   }
 
-  private _onPointerMove(e: PIXI.FederatedMouseEvent): void {
-    const position = eventToPosition(e);
-
-    if (e.buttons > 0) {
-      this._paintBuffer.addLine(this._lastPosition, position);
-    }
-
-    this._lastPosition = position;
-  }
-
   private _onPointerDown(e: PIXI.FederatedMouseEvent): void {
+    this._isDrawing = true;
     this._lastPosition = eventToPosition(e);
 
     if (e.buttons === MouseEventButton.Primary) {
@@ -101,6 +96,20 @@ export class PaintLayer {
     }
 
     this._paintBuffer.addPoint(this._lastPosition);
+  }
+
+  private _onPointerUp(e: PIXI.FederatedMouseEvent): void {
+    this._isDrawing = false;
+  }
+
+  private _onPointerMove(e: PIXI.FederatedMouseEvent): void {
+    const position = eventToPosition(e);
+
+    if (this._isDrawing) {
+      this._paintBuffer.addLine(this._lastPosition, position);
+    }
+
+    this._lastPosition = position;
   }
 
   private _onPointerEnter(e: PIXI.FederatedMouseEvent): void {
