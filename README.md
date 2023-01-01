@@ -2,7 +2,7 @@
 
 > Tools for generating QuakeWorld graphics.
 
-Built with Vite, Tailwind CSS, Konva and model-viewer.
+Built with Vite, Tailwind CSS, PixiJS and model-viewer.
 
 ## Development
 

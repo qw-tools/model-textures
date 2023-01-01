@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import SiteHeader from "@/Site/SiteHeader.vue";
-import SiteFooter from "@/Site/SiteFooter.vue";
+import SiteHeader from "../Site/SiteHeader.vue";
+import SiteFooter from "../Site/SiteFooter.vue";
 import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
-import { Brush, getDefaultBrush } from "@/pkg/konva/Brush";
+import { Brush, EditorEvent, getDefaultBrush } from "./pixi/types";
 import FilterToolbar from "./FilterToolbar.vue";
 import { armors, Item } from "./Item";
-import { CssFilterSettings, getDefaultFilterSettings } from "@/pkg/CssFilter";
-import { EditorEvent } from "./events";
+import {
+  CssFilterSettings,
+  getDefaultFilterSettings,
+} from "../../pkg/CssFilter";
 import { reactive } from "vue";
 import ItemSelector from "./ModelSelector.vue";
 
@@ -63,7 +65,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
 }
 </script>
 <template>
-  <SiteHeader current-app="model-textures" />
+  <SiteHeader current-page="index" />
 
   <div class="bg-gray-100 border-b border-gray-300">
     <div class="bg-white shadow">
@@ -92,7 +94,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
         >.
       </div>
 
-      <div class="grid gap-6 grid-cols-1 mb-4">
+      <div class="grid gap-6 grid-cols-1 mb-8">
         <div
           v-for="item in store.items"
           :id="item.id"
@@ -126,9 +128,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
     </div>
   </div>
 
-  <div class="border-b">
-    <ItemSelector :on-item-click="(item: Item) => store.addItem(item)" />
-  </div>
+  <ItemSelector :on-item-click="(item: Item) => store.addItem(item)" />
 
   <SiteFooter />
 </template>

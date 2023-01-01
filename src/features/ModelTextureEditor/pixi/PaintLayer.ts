@@ -1,86 +1,131 @@
 import * as PIXI from "pixi.js";
-import { FederatedPointerEvent, LINE_CAP, LINE_JOIN } from "pixi.js";
+import { generateBrush } from "./brushTexture";
+import { PaintBuffer } from "./PaintBuffer";
+import { Brush, Point2D } from "./types";
 import { MouseEventButton } from "../../../pkg/domEvent";
 
-type PaintOperation = "add" | "erase";
-type Point2d = { x: number; y: number };
-
-export class PaintLayer extends PIXI.Graphics {
-  _lastPosition: Point2d | undefined;
-
-  public onPaint: () => void = () => {
-    // foo
+export class PaintLayer {
+  private readonly _width: number;
+  private readonly _height: number;
+  private readonly _renderer: PIXI.IRenderer;
+  private readonly _container: PIXI.Container;
+  private readonly _paintBuffer: PaintBuffer;
+  private readonly _paintSprite: PIXI.Sprite;
+  private _paintTexture: PIXI.RenderTexture;
+  private _lastPosition: Point2D = { x: 0, y: 0 };
+  private _brush: Brush;
+  onChange: () => void = () => {
+    // do nothing
   };
 
-  constructor(width: number, height: number) {
-    super();
+  constructor(renderer: PIXI.IRenderer, width: number, height: number) {
+    this._width = width;
+    this._height = height;
+    this._renderer = renderer;
+    this._paintBuffer = new PaintBuffer();
+    this._container = new PIXI.Container();
+    this._paintSprite = new PIXI.Sprite();
+    this._paintSprite.interactive = true;
+    this._paintTexture = PIXI.RenderTexture.create();
+    this._container.addChild(this._paintSprite);
+    this._reset();
 
-    this.interactive = true;
-    this.hitArea = new PIXI.Rectangle(0, 0, width, height);
-    //this.interactiveChildren = true;
+    this._brush = {
+      size: 24,
+      color: "#ff00ff",
+      smoothing: 0.5,
+      shape: "round",
+    };
+    this.brush = this._brush;
 
-    this.on("pointermove", this._onMouseEvent);
-    this.on("pointerdown", this._onMouseEvent);
-    this.on("pointerup", this._onMouseEvent);
-    this.on("pointerover", this._onMouseEvent);
-    this.on("pointerout", this._onMouseEvent);
+    // events
+    this._container.on("pointerdown", (e: PIXI.FederatedMouseEvent) => {
+      this._onPointerDown(e);
+    });
+    this._container.on("pointermove", (e: PIXI.FederatedMouseEvent) => {
+      this._onPointerMove(e);
+    });
+    this._container.on("pointerenter", (e: PIXI.FederatedMouseEvent) => {
+      this._onPointerEnter(e);
+    });
+    this._container.on("pointerleave", (e: PIXI.FederatedMouseEvent) => {
+      this._onPointerLeave(e);
+    });
+
+    // ticker
+    const ticker = new PIXI.Ticker();
+    ticker.add(() => this._onTick());
+    ticker.start();
   }
 
-  private _onMouseEvent(e: FederatedPointerEvent) {
-    e.originalEvent.preventDefault();
-    e.originalEvent.stopPropagation();
+  get container(): PIXI.Container {
+    return this._container;
+  }
 
-    const isPrimaryButton = e.buttons === MouseEventButton.Primary;
-    const isSecondaryButton = e.buttons === MouseEventButton.Secondary;
+  get brush(): Brush {
+    return this._brush;
+  }
 
-    if (!(isPrimaryButton || isSecondaryButton)) {
+  set brush(brush: Brush) {
+    this._brush = brush;
+    this._paintBuffer.brush = generateBrush(this._renderer, brush);
+  }
+
+  private _onTick(): void {
+    if (this._paintBuffer.isEmpty()) {
       return;
     }
 
-    const mousePosition = e.global;
-
-    console.log(e.type);
-
-    if ("pointermove" === e.type) {
-      this.paintExtend(mousePosition);
-    } else {
-      const paintType = isPrimaryButton ? "add" : "erase";
-      this.paintNew(mousePosition, paintType);
-    }
-    this.onPaint();
+    this._paintBuffer.renderTo(this._paintTexture, this._renderer);
+    this._paintBuffer.clear();
+    this.onChange();
   }
 
-  private paintNew(
-    pos: { x: number; y: number },
-    operation: PaintOperation
-  ): void {
-    console.log("paintNew()", pos, operation);
-    // const globalCompositeOperation =
-    //   operation === "add" ? "source-over" : "destination-out";
+  private _onPointerMove(e: PIXI.FederatedMouseEvent): void {
+    const position = eventToPosition(e);
 
-    this.drawLine(pos, pos);
-  }
-
-  private paintExtend(pos: Point2d): void {
-    console.log("paintExtend()", pos);
-
-    if (this._lastPosition === undefined) {
-      this._lastPosition = pos;
+    if (e.buttons > 0) {
+      this._paintBuffer.addLine(this._lastPosition, position);
     }
 
-    this.drawLine(this._lastPosition, pos);
-    this._lastPosition = pos;
+    this._lastPosition = position;
   }
 
-  private drawLine(from: Point2d, to: Point2d): void {
-    this.lineStyle({
-      width: 10,
-      color: 0xff0000,
-      cap: LINE_CAP.ROUND,
-      join: LINE_JOIN.ROUND,
+  private _onPointerDown(e: PIXI.FederatedMouseEvent): void {
+    this._lastPosition = eventToPosition(e);
+
+    if (e.buttons === MouseEventButton.Primary) {
+      this._paintBuffer.blendMode = PIXI.BLEND_MODES.NORMAL;
+    } else if (e.buttons === MouseEventButton.Secondary) {
+      this._paintBuffer.blendMode = PIXI.BLEND_MODES.ERASE;
+    }
+
+    this._paintBuffer.addPoint(this._lastPosition);
+  }
+
+  private _onPointerEnter(e: PIXI.FederatedMouseEvent): void {
+    this._lastPosition = eventToPosition(e);
+  }
+
+  private _onPointerLeave(e: PIXI.FederatedMouseEvent): void {
+    this._lastPosition = eventToPosition(e);
+  }
+
+  private _reset(): void {
+    this._paintTexture.destroy(true);
+    this._paintTexture = PIXI.RenderTexture.create({
+      width: this._width,
+      height: this._height,
     });
-    this.moveTo(from.x, from.y);
-    this.lineTo(to.x + 10, to.y + 10);
-    this.onPaint();
+    this._paintSprite.texture = this._paintTexture;
   }
+
+  clear(): void {
+    this._reset();
+    this.onChange();
+  }
+}
+
+function eventToPosition(e: PIXI.FederatedMouseEvent): Point2D {
+  return { x: e.global.x, y: e.global.y };
 }
