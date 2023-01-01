@@ -4,16 +4,16 @@ import {
   armors,
   backpack,
   healthPacks,
-  Item,
+  Items,
   player,
   powerups,
   projectiles,
   runes,
   weapons,
-} from "./Item";
+} from "./pkg/items";
 
 interface Props {
-  onItemClick: (item: Item) => void;
+  onItemClick: (item: Items) => void;
 }
 
 const itemsCategories = [

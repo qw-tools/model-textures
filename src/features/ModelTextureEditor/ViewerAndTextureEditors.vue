@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from "vue";
-import { Item, itemToEditorSettings, itemToViewerSettings } from "./Item";
+import { Items, itemToEditorSettings, itemToViewerSettings } from "./pkg/items";
 import { ModelViewer } from "../../pkg/ModelViewer";
 import { Texture } from "../../pkg/quake/models";
 import { CssFilterSettings } from "../../pkg/CssFilter";
@@ -8,7 +8,7 @@ import { TextureEditor } from "./pixi/TextureEditor";
 import { Brush, EditorEvent } from "./pixi/types";
 
 interface Props {
-  item: Item;
+  item: Items;
   filters: CssFilterSettings;
   brush: Brush;
 }
