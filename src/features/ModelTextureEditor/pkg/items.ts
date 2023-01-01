@@ -1,12 +1,12 @@
-import { slugify } from "../../pkg/stringUtil";
-import { TextureEditorSettings } from "./pixi/TextureEditor";
-import { ModelViewerSettings } from "../../pkg/ModelViewer";
-import { publicUrl } from "../../pkg/viteUtil";
-import * as quakeModels from "../../pkg/quake/models";
-import { Model } from "../../pkg/quake/models";
+import { slugify } from "../../../pkg/stringUtil";
+import { TextureEditorSettings } from "../pixi/TextureEditor";
+import { ModelViewerSettings } from "../../../pkg/ModelViewer";
+import { publicUrl } from "../../../pkg/viteUtil";
+import * as quakeModels from "../../../pkg/quake/models";
+import { Model } from "../../../pkg/quake/models";
 
 // types
-export interface Item {
+export interface Items {
   category: string;
   id: string;
   model: Model;
@@ -17,7 +17,7 @@ export function modelFilenamePath(filename: string): string {
   return publicUrl(`/assets/models/${filename}`);
 }
 
-function getEditorHeightByItem(item: Item): number {
+function getEditorHeightByItem(item: Items): number {
   if (item.model.name === player.model.name) {
     return 520;
   }
@@ -25,7 +25,7 @@ function getEditorHeightByItem(item: Item): number {
 }
 
 // methods
-export function itemToEditorSettings(item: Item): TextureEditorSettings[] {
+export function itemToEditorSettings(item: Items): TextureEditorSettings[] {
   return item.model.textures.map(function (texture) {
     const editorScale = getEditorHeightByItem(item) / texture.height;
     const containerID = slugify(
@@ -46,7 +46,7 @@ export function itemToEditorSettings(item: Item): TextureEditorSettings[] {
   });
 }
 
-export function itemToViewerSettings(item: Item): ModelViewerSettings {
+export function itemToViewerSettings(item: Items): ModelViewerSettings {
   return {
     containerID: slugify(`viewer ${item.id}`),
     modelPath: modelFilenamePath(item.model.filename),
@@ -60,7 +60,7 @@ function modelToId(model: Model): string {
 }
 
 // items
-const GreenArmor: Item = {
+const GreenArmor: Items = {
   category: "Armors",
   id: modelToId(quakeModels.GreenArmor),
   model: quakeModels.GreenArmor,
@@ -78,10 +78,10 @@ const RedArmor = {
   model: quakeModels.RedArmor,
   viewerOrientation: 45,
 };
-export const armors: Item[] = [GreenArmor, YellowArmor, RedArmor];
+export const armors: Items[] = [GreenArmor, YellowArmor, RedArmor];
 
 // Units
-export const player: Item = {
+export const player: Items = {
   category: "Units",
   id: modelToId(quakeModels.Player),
   model: quakeModels.Player,
@@ -91,49 +91,49 @@ export const player: Item = {
 // weapon models
 const weaponOrientation = 45;
 
-const SuperShotgun: Item = {
+const SuperShotgun: Items = {
   category: "Weapons",
   id: modelToId(quakeModels.SuperShotgun),
   model: quakeModels.SuperShotgun,
   viewerOrientation: weaponOrientation,
 };
 
-const NailGun: Item = {
+const NailGun: Items = {
   category: "Weapons",
   id: modelToId(quakeModels.Nailgun),
   model: quakeModels.Nailgun,
   viewerOrientation: weaponOrientation,
 };
 
-const SuperNailGun: Item = {
+const SuperNailGun: Items = {
   category: "Weapons",
   id: modelToId(quakeModels.SuperNailgun),
   model: quakeModels.SuperNailgun,
   viewerOrientation: weaponOrientation,
 };
 
-const GrenadeLauncher: Item = {
+const GrenadeLauncher: Items = {
   category: "Weapons",
   id: modelToId(quakeModels.GrenadeLauncher),
   model: quakeModels.GrenadeLauncher,
   viewerOrientation: weaponOrientation,
 };
 
-const RocketLauncher: Item = {
+const RocketLauncher: Items = {
   category: "Weapons",
   id: modelToId(quakeModels.RocketLauncher),
   model: quakeModels.RocketLauncher,
   viewerOrientation: weaponOrientation,
 };
 
-const LightningGun: Item = {
+const LightningGun: Items = {
   category: "Weapons",
   id: modelToId(quakeModels.LightningGun),
   model: quakeModels.LightningGun,
   viewerOrientation: weaponOrientation,
 };
 
-export const weapons: Item[] = [
+export const weapons: Items[] = [
   SuperShotgun,
   NailGun,
   SuperNailGun,
@@ -142,45 +142,45 @@ export const weapons: Item[] = [
   LightningGun,
 ];
 
-const Grenade: Item = {
+const Grenade: Items = {
   category: "Projectiles",
   id: modelToId(quakeModels.Grenade),
   model: quakeModels.Grenade,
   viewerOrientation: 90,
 };
 
-const Missile: Item = {
+const Missile: Items = {
   category: "Projectiles",
   id: modelToId(quakeModels.Missile),
   model: quakeModels.Missile,
   viewerOrientation: 90,
 };
-export const projectiles: Item[] = [Grenade, Missile];
+export const projectiles: Items[] = [Grenade, Missile];
 
-const Quad: Item = {
+const Quad: Items = {
   category: "Powerups",
   id: modelToId(quakeModels.Quad),
   model: quakeModels.Quad,
   viewerOrientation: 30,
 };
-const Pent: Item = {
+const Pent: Items = {
   category: "Powerups",
   id: modelToId(quakeModels.Pent),
   model: quakeModels.Pent,
   viewerOrientation: 30,
 };
-const Ring: Item = {
+const Ring: Items = {
   category: "Powerups",
   id: modelToId(quakeModels.Ring),
   model: quakeModels.Ring,
   viewerOrientation: 30,
 };
 
-export const powerups: Item[] = [Quad, Pent, Ring];
+export const powerups: Items[] = [Quad, Pent, Ring];
 
 // misc
 
-export const backpack: Item = {
+export const backpack: Items = {
   category: "Misc",
   id: modelToId(quakeModels.Backpack),
   model: quakeModels.Backpack,
@@ -210,7 +210,7 @@ const SmallHealth = {
   viewerOrientation: 45,
 };
 
-export const healthPacks: Item[] = [SmallHealth, LargeHealth, MegaHealth];
+export const healthPacks: Items[] = [SmallHealth, LargeHealth, MegaHealth];
 
 // ammo
 
@@ -270,7 +270,7 @@ const LargeCells = {
   viewerOrientation: 45,
 };
 
-export const ammo: Item[] = [
+export const ammo: Items[] = [
   SmallShells,
   LargeShells,
   SmallNails,
@@ -310,7 +310,7 @@ const RuneStrength = {
   viewerOrientation: 45,
 };
 
-export const runes: Item[] = [
+export const runes: Items[] = [
   RuneHaste,
   RuneRegeneration,
   RuneResistance,

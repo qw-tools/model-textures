@@ -5,7 +5,7 @@ import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
 import { Brush, EditorEvent, getDefaultBrush } from "./pixi/types";
 import FilterToolbar from "./FilterToolbar.vue";
-import { armors, Item } from "./Item";
+import { armors, Items } from "./pkg/items";
 import {
   CssFilterSettings,
   getDefaultFilterSettings,
@@ -14,9 +14,9 @@ import { reactive } from "vue";
 import ItemSelector from "./ModelSelector.vue";
 
 interface AppStore {
-  items: Item[];
-  addItem: (item: Item) => void;
-  removeItem: (item: Item) => void;
+  items: Items[];
+  addItem: (item: Items) => void;
+  removeItem: (item: Items) => void;
 }
 
 let lastBrush: Brush = getDefaultBrush();
@@ -24,7 +24,7 @@ let lastFilters: CssFilterSettings = getDefaultFilterSettings();
 
 const store = reactive<AppStore>({
   items: [],
-  addItem(item: Item): void {
+  addItem(item: Items): void {
     if (this.items.includes(item)) {
       const el = document.getElementById(item.id);
       if (el) {
@@ -34,7 +34,7 @@ const store = reactive<AppStore>({
       this.items.push(item);
     }
   },
-  removeItem(item: Item): void {
+  removeItem(item: Items): void {
     const itemIndex = this.items.indexOf(item);
     if (itemIndex >= 0) {
       const el = document.getElementById(item.id);
@@ -128,7 +128,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
     </div>
   </div>
 
-  <ItemSelector :on-item-click="(item: Item) => store.addItem(item)" />
+  <ItemSelector :on-item-click="(item: Items) => store.addItem(item)" />
 
   <SiteFooter />
 </template>
