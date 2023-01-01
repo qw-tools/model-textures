@@ -96,6 +96,7 @@ export class TextureEditor extends PIXI.Application {
   }
 
   download(filename = ""): void {
+    this.render();
     saveAs(this.toDataUrl(), filename || "download");
   }
 
