@@ -3,14 +3,13 @@ import SiteHeader from "../Site/SiteHeader.vue";
 import SiteFooter from "../Site/SiteFooter.vue";
 import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
-import { Brush, getDefaultBrush } from "../../pkg/konva/Brush";
+import { Brush, EditorEvent, getDefaultBrush } from "./pixi/types";
 import FilterToolbar from "./FilterToolbar.vue";
 import { armors, Item } from "./Item";
 import {
   CssFilterSettings,
   getDefaultFilterSettings,
 } from "../../pkg/CssFilter";
-import { EditorEvent } from "./events";
 import { reactive } from "vue";
 import ItemSelector from "./ModelSelector.vue";
 

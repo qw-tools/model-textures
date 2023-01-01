@@ -2,11 +2,10 @@
 import { onBeforeUnmount, onMounted } from "vue";
 import { Item, itemToEditorSettings, itemToViewerSettings } from "./Item";
 import { ModelViewer } from "../../pkg/ModelViewer";
-import { EditorEvent } from "./events";
 import { Texture } from "../../pkg/quake/models";
 import { CssFilterSettings } from "../../pkg/CssFilter";
-import { Brush } from "../../pkg/konva/Brush";
 import { PixiTextureEditor } from "./pixi/PixiTextureEditor";
+import { Brush, EditorEvent } from "./pixi/types";
 
 interface Props {
   item: Item;
@@ -20,6 +19,9 @@ let viewer: ModelViewer;
 const viewerSettings = itemToViewerSettings(props.item);
 
 const editors: PixiTextureEditor[] = new Array(
+  props.item.model.textures.length
+).fill(null);
+const outlines: TextureOutLine[] = new Array(
   props.item.model.textures.length
 ).fill(null);
 const editorSettings = itemToEditorSettings(props.item);
@@ -44,10 +46,9 @@ onMounted(async () => {
         height: editorSettings[i].height,
         width: editorSettings[i].width,
         texturePath: editorSettings[i].texturePath,
-        onChange: () => console.log(`Pixi onChange ${texture.index}`),
-        // onChange: () => {
-        //   viewer.setTextureByURI(editors[i].toURI(), texture.index);
-        // },
+        onChange: () => {
+          viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
+        },
         onReady: () => resolve(),
       });
 
@@ -81,6 +82,8 @@ onMounted(async () => {
 function onFiltersChangeEvent(e: Event): void {
   const event = e as CustomEvent;
 
+  console.log(event.detail.filters);
+
   for (let i = 0; i < editors.length; i++) {
     //editors[i].applyCSSFilters(event.detail.filters);
   }
@@ -90,7 +93,7 @@ const onBrushChangeEvent = (e: Event) => {
   const event = e as CustomEvent;
 
   for (let i = 0; i < editors.length; i++) {
-    //editors[i].brush = event.detail.brush;
+    editors[i].paintLayer.brush = event.detail.brush;
   }
 };
 
@@ -160,7 +163,7 @@ onBeforeUnmount(() => {
         <div class="flex mt-2 space-x-4">
           <button
             class="block border border-gray-400 hover:bg-red-100 rounded-md py-1 px-2 bg-gray-200 shadow text-sm"
-            @click="() => editors[index]?.clearPaint()"
+            @click="() => editors[index]?.paintLayer.clear()"
           >
             Clear paint
           </button>

@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { OutlineFilter } from "pixi-filters";
 import { PaintLayer } from "./PaintLayer";
+import { saveAs } from "file-saver";
 
 export interface TextureEditorSettings {
   width: number;
@@ -16,10 +17,10 @@ const nullOperation = () => {
 
 export class PixiTextureEditor extends PIXI.Application {
   private readonly _settings: TextureEditorSettings;
-  _outlineFilter: OutlineFilter;
-  _textureSprite: PIXI.Sprite | undefined;
-  _textureContainer: PIXI.Container = new PIXI.Container();
-  _paintLayer: PaintLayer;
+  private _textureSprite: PIXI.Sprite | undefined;
+  private _textureContainer: PIXI.Container = new PIXI.Container();
+  outline: OutlineFilter;
+  paintLayer: PaintLayer;
   onReady: () => void = nullOperation;
   onChange: () => void = nullOperation;
 
@@ -30,50 +31,66 @@ export class PixiTextureEditor extends PIXI.Application {
       backgroundAlpha: 0,
     });
 
-    // this.stage.interactive = true;
-    // this.stage.addEventListener("contextmenu", (e) => {
-    //   e.preventDefault();
-    // });
+    (this.view as HTMLCanvasElement).addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
 
     this._settings = settings;
 
-    this._outlineFilter = new OutlineFilter(4, 0xff0000);
-    this._outlineFilter.enabled = true;
-    this._textureContainer.filters = [this._outlineFilter];
+    this.outline = new OutlineFilter(4, 0xff0000);
+    this.outline.enabled = true;
+    this._textureContainer.filters = [this.outline];
 
     this.stage.addChild(this._textureContainer);
     this.loadTexture(settings.texturePath);
 
-    this._paintLayer = new PaintLayer(settings.width, settings.height);
-    this._paintLayer.onPaint = () => this.render();
-    this.stage.addChild(this._paintLayer);
+    this.paintLayer = new PaintLayer(
+      this.renderer,
+      settings.width,
+      settings.height
+    );
+    this.paintLayer.onChange = () => {
+      this.render();
+      this.onChange();
+    };
+    this.stage.addChild(this.paintLayer.container);
+
+    this.onChange = () => {
+      this.render();
+      settings.onChange();
+    };
+
+    this.onReady = () => {
+      settings.onReady();
+    };
   }
 
   loadTexture(url: string): void {
     PIXI.Assets.load(url).then((texture: PIXI.Texture) => {
       this._textureContainer.removeChildren();
       const sprite = PIXI.Sprite.from(texture);
-      sprite.anchor.set(0.5);
-      sprite.x = this._settings.width / 2;
-      sprite.y = this._settings.height / 2;
       sprite.scale.x = this._settings.width / texture.orig.width;
       sprite.scale.y = this._settings.height / texture.orig.height;
       sprite.roundPixels = false;
       this._textureSprite = sprite;
       this._textureContainer.addChild(this._textureSprite);
 
-      this.render();
+      this.onChange();
       this.onReady();
     });
   }
 
   toggleOutline(): void {
-    this._outlineFilter.enabled = !this._outlineFilter.enabled;
-    this.render();
+    this.outline.enabled = !this.outline.enabled;
+    this.onChange();
   }
 
-  clearPaint(): void {
-    this._paintLayer.clear();
-    this.render();
+  download(filename = ""): void {
+    this.onChange();
+    saveAs(this.toDataUrl(), filename || "download");
+  }
+
+  toDataUrl(): string {
+    return (this.view as HTMLCanvasElement).toDataURL();
   }
 }
