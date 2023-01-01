@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { OutlineFilter } from "pixi-filters";
 import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
+import { Brush } from "./types";
 
 export interface TextureEditorSettings {
   width: number;
@@ -15,10 +16,11 @@ const nullOperation = () => {
   // do nothing
 };
 
-export class PixiTextureEditor extends PIXI.Application {
+export class TextureEditor extends PIXI.Application {
   private readonly _settings: TextureEditorSettings;
   private _textureSprite: PIXI.Sprite | undefined;
   private _textureContainer: PIXI.Container = new PIXI.Container();
+  //private _cursor: Cursor = new Cursor();
   outline: OutlineFilter;
   paintLayer: PaintLayer;
   onReady: () => void = nullOperation;
@@ -31,38 +33,47 @@ export class PixiTextureEditor extends PIXI.Application {
       backgroundAlpha: 0,
     });
 
-    (this.view as HTMLCanvasElement).addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    });
-
     this._settings = settings;
 
+    // texture
     this.outline = new OutlineFilter(4, 0xff0000);
     this.outline.enabled = true;
     this._textureContainer.filters = [this.outline];
 
     this.stage.addChild(this._textureContainer);
-    this.loadTexture(settings.texturePath);
 
+    // paint
     this.paintLayer = new PaintLayer(
       this.renderer,
       settings.width,
       settings.height
     );
     this.paintLayer.onChange = () => {
-      this.render();
-      this.onChange();
+      this._onChange();
     };
+
     this.stage.addChild(this.paintLayer.container);
 
-    this.onChange = () => {
-      this.render();
-      settings.onChange();
-    };
+    // events
+    this.getCanvas().addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
 
-    this.onReady = () => {
-      settings.onReady();
-    };
+    this.onChange = settings.onChange;
+
+    // load texture
+    this.loadTexture(settings.texturePath);
+  }
+
+  _onChange(): void {
+    this.render();
+    this.onChange();
+  }
+
+  set brush(brush: Brush) {
+    this.paintLayer.brush = brush;
+
+    //this.getCanvas().style.cursor = this._cursor.toCss(this.renderer, brush);
   }
 
   loadTexture(url: string): void {
@@ -75,22 +86,25 @@ export class PixiTextureEditor extends PIXI.Application {
       this._textureSprite = sprite;
       this._textureContainer.addChild(this._textureSprite);
 
-      this.onChange();
+      this._onChange();
       this.onReady();
     });
   }
 
   toggleOutline(): void {
     this.outline.enabled = !this.outline.enabled;
-    this.onChange();
+    this._onChange();
   }
 
   download(filename = ""): void {
-    this.onChange();
     saveAs(this.toDataUrl(), filename || "download");
   }
 
   toDataUrl(): string {
-    return (this.view as HTMLCanvasElement).toDataURL();
+    return this.getCanvas().toDataURL();
+  }
+
+  getCanvas(): HTMLCanvasElement {
+    return this.view as HTMLCanvasElement;
   }
 }

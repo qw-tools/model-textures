@@ -7,14 +7,14 @@ export type Brush = {
   size: number;
   color: string;
   smoothing: number;
-  shape: string;
+  shape: "circle" | "square";
 };
 
 export function getDefaultBrush(): Brush {
   return {
     color: "#ff0000",
     size: 24,
-    shape: "round",
+    shape: "circle",
     smoothing: 0.5,
   };
 }

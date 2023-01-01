@@ -36,7 +36,7 @@ watch(() => ({ ...store }), throttle(props.onChange, 50));
 
     <div class="text-xs">
       <label
-        ><input v-model="store.shape" type="radio" value="round" />
+        ><input v-model="store.shape" type="radio" value="circle" />
         Circle</label
       ><br />
       <label
@@ -49,7 +49,7 @@ watch(() => ({ ...store }), throttle(props.onChange, 50));
       class="flex items-center justify-center border border-gray-400 w-12 h-12 ml-4"
     >
       <div
-        :class="store.shape === 'round' ? 'rounded-full' : ''"
+        :class="store.shape === 'circle' ? 'rounded-full' : ''"
         :style="`background-color: ${store.color}; width: ${store.size}px; height: ${store.size}px`"
       ></div>
     </div>

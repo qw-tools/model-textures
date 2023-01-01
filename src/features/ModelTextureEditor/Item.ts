@@ -1,9 +1,9 @@
-import { slugify } from "@/pkg/stringUtil";
-import { TextureEditorSettings } from "@/pkg/konva/TextureEditor";
-import { ModelViewerSettings } from "@/pkg/ModelViewer";
-import { publicUrl } from "@/pkg/viteUtil";
-import * as quakeModels from "@/pkg/quake/models";
-import { Model } from "@/pkg/quake/models";
+import { slugify } from "../../pkg/stringUtil";
+import { TextureEditorSettings } from "./pixi/TextureEditor";
+import { ModelViewerSettings } from "../../pkg/ModelViewer";
+import { publicUrl } from "../../pkg/viteUtil";
+import * as quakeModels from "../../pkg/quake/models";
+import { Model } from "../../pkg/quake/models";
 
 // types
 export interface Item {
@@ -36,6 +36,12 @@ export function itemToEditorSettings(item: Item): TextureEditorSettings[] {
       texturePath: modelFilenamePath(texture.filename),
       width: editorScale * texture.width,
       height: editorScale * texture.height,
+      onChange: () => {
+        // he
+      },
+      onReady: () => {
+        // eh
+      },
     };
   });
 }
