@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Brush } from "./types";
+import { Brush } from "./brush";
 import { string2hex } from "@pixi/utils";
 
 export class Cursor extends PIXI.Graphics {

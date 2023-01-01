@@ -2,7 +2,10 @@ import * as PIXI from "pixi.js";
 import { OutlineFilter } from "pixi-filters";
 import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
-import { Brush } from "./types";
+import { Brush } from "./brush";
+import { slugify } from "../../../pkg/stringUtil";
+import { Items, modelFilenamePath, player } from "../../../pkg/quake/items";
+import { nullOperation } from "../../../pkg/functions";
 
 export interface TextureEditorSettings {
   width: number;
@@ -11,10 +14,6 @@ export interface TextureEditorSettings {
   onReady: () => void;
   onChange: () => void;
 }
-
-const nullOperation = () => {
-  // do nothing
-};
 
 export class TextureEditor extends PIXI.Application {
   private readonly _settings: TextureEditorSettings;
@@ -107,4 +106,34 @@ export class TextureEditor extends PIXI.Application {
   getCanvas(): HTMLCanvasElement {
     return this.view as HTMLCanvasElement;
   }
+}
+
+// methods
+export function itemToEditorSettings(item: Items): TextureEditorSettings[] {
+  return item.model.textures.map(function (texture) {
+    const editorScale = getEditorHeightByItem(item) / texture.height;
+    const containerID = slugify(
+      `editor ${item.model.filename} ${texture.filename}`
+    );
+    return {
+      containerID,
+      texturePath: modelFilenamePath(texture.filename),
+      width: editorScale * texture.width,
+      height: editorScale * texture.height,
+      onChange: nullOperation,
+      onReady: nullOperation,
+    };
+  });
+}
+
+function getEditorHeightByItem(item: Items): number {
+  if (item.model.name === player.model.name) {
+    return 520;
+  }
+  return 240;
+}
+
+export enum TextureEditorEvent {
+  BRUSH_CHANGE = "Editor.BRUSH_CHANGE",
+  FILTERS_CHANGE = "Editor.FILTERS_CHANGE",
 }

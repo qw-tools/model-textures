@@ -1,8 +1,10 @@
 import * as PIXI from "pixi.js";
 import { generateBrush } from "./brushTexture";
 import { PaintBuffer } from "./PaintBuffer";
-import { Brush, Point2D } from "./types";
+import { Brush } from "./brush";
 import { MouseEventButton } from "../../../pkg/domEvent";
+import { Point2D } from "../../../pkg/math";
+import { nullOperation } from "../../../pkg/functions";
 
 export class PaintLayer {
   private readonly _width: number;
@@ -15,9 +17,7 @@ export class PaintLayer {
   private _lastPosition: Point2D = { x: 0, y: 0 };
   private _brush: Brush;
   private _isDrawing = false;
-  onChange: () => void = () => {
-    // do nothing
-  };
+  onChange: () => void = nullOperation;
 
   constructor(renderer: PIXI.IRenderer, width: number, height: number) {
     this._width = width;

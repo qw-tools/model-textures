@@ -1,5 +1,7 @@
 import { ModelViewerElement } from "@google/model-viewer";
 import { Texture } from "@google/model-viewer/lib/features/scene-graph/texture";
+import { slugify } from "./stringUtil";
+import { Items, modelFilenamePath } from "./quake/items";
 
 export interface ModelViewerTexture {
   path: string;
@@ -70,4 +72,12 @@ export class ModelViewer {
   //   const textureURI = await dataURLFromFile(textureFile);
   //   return this.setTextureByURI(textureURI);
   // }
+}
+
+export function itemToViewerSettings(item: Items): ModelViewerSettings {
+  return {
+    containerID: slugify(`viewer ${item.id}`),
+    modelPath: modelFilenamePath(item.model.filename),
+    // skip passing textures, apply from texture editor instead
+  };
 }
