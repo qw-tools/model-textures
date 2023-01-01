@@ -1,4 +1,6 @@
 // types
+import { slugify } from "../stringUtil";
+
 export interface Texture {
   index: number;
   filename: string;
@@ -10,6 +12,11 @@ export interface Model {
   name: string;
   filename: string;
   textures: Texture[];
+}
+
+export function modelToId(model: Model): string {
+  const textureNames = model.textures.map((t) => t.filename).join(" ");
+  return slugify(`${model.filename} ${textureNames}`);
 }
 
 // armors

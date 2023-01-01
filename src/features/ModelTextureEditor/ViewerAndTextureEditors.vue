@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from "vue";
-import { Items, itemToEditorSettings, itemToViewerSettings } from "./pkg/items";
-import { ModelViewer } from "../../pkg/ModelViewer";
+import { Items } from "../../pkg/quake/items";
+import { itemToViewerSettings, ModelViewer } from "../../pkg/ModelViewer";
 import { Texture } from "../../pkg/quake/models";
 import { CssFilterSettings } from "../../pkg/CssFilter";
-import { TextureEditor } from "./pixi/TextureEditor";
-import { Brush, EditorEvent } from "./pixi/types";
+import { TextureEditorEvent, itemToEditorSettings, TextureEditor } from "./pixi/TextureEditor";
+import { Brush } from "./pixi/brush";
 
 interface Props {
   item: Items;
@@ -72,8 +72,8 @@ onMounted(async () => {
   }
 
   // events
-  document.addEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
-  document.addEventListener(EditorEvent.FILTERS_CHANGE, onFiltersChangeEvent);
+  document.addEventListener(TextureEditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
+  document.addEventListener(TextureEditorEvent.FILTERS_CHANGE, onFiltersChangeEvent);
 });
 
 function onFiltersChangeEvent(e: Event): void {
@@ -95,9 +95,9 @@ const onBrushChangeEvent = (e: Event) => {
 };
 
 onBeforeUnmount(() => {
-  document.removeEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
+  document.removeEventListener(TextureEditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
   document.removeEventListener(
-    EditorEvent.FILTERS_CHANGE,
+    TextureEditorEvent.FILTERS_CHANGE,
     onFiltersChangeEvent
   );
 });

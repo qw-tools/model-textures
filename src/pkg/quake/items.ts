@@ -1,9 +1,6 @@
-import { slugify } from "../../../pkg/stringUtil";
-import { TextureEditorSettings } from "../pixi/TextureEditor";
-import { ModelViewerSettings } from "../../../pkg/ModelViewer";
-import { publicUrl } from "../../../pkg/viteUtil";
-import * as quakeModels from "../../../pkg/quake/models";
-import { Model } from "../../../pkg/quake/models";
+import { publicUrl } from "../viteUtil";
+import * as quakeModels from "./models";
+import { Model, modelToId } from "./models";
 
 // types
 export interface Items {
@@ -15,48 +12,6 @@ export interface Items {
 
 export function modelFilenamePath(filename: string): string {
   return publicUrl(`/assets/models/${filename}`);
-}
-
-function getEditorHeightByItem(item: Items): number {
-  if (item.model.name === player.model.name) {
-    return 520;
-  }
-  return 240;
-}
-
-// methods
-export function itemToEditorSettings(item: Items): TextureEditorSettings[] {
-  return item.model.textures.map(function (texture) {
-    const editorScale = getEditorHeightByItem(item) / texture.height;
-    const containerID = slugify(
-      `editor ${item.model.filename} ${texture.filename}`
-    );
-    return {
-      containerID,
-      texturePath: modelFilenamePath(texture.filename),
-      width: editorScale * texture.width,
-      height: editorScale * texture.height,
-      onChange: () => {
-        // he
-      },
-      onReady: () => {
-        // eh
-      },
-    };
-  });
-}
-
-export function itemToViewerSettings(item: Items): ModelViewerSettings {
-  return {
-    containerID: slugify(`viewer ${item.id}`),
-    modelPath: modelFilenamePath(item.model.filename),
-    // skip passing textures, apply from texture editor instead
-  };
-}
-
-function modelToId(model: Model): string {
-  const textureNames = model.textures.map((t) => t.filename).join(" ");
-  return slugify(`${model.filename} ${textureNames}`);
 }
 
 // items

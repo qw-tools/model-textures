@@ -3,15 +3,16 @@ import SiteHeader from "../Site/SiteHeader.vue";
 import SiteFooter from "../Site/SiteFooter.vue";
 import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
-import { Brush, EditorEvent, getDefaultBrush } from "./pixi/types";
+import { Brush, getDefaultBrush } from "./pixi/brush";
 import FilterToolbar from "./FilterToolbar.vue";
-import { armors, Items } from "./pkg/items";
+import { armors, Items } from "../../pkg/quake/items";
 import {
   CssFilterSettings,
   getDefaultFilterSettings,
 } from "../../pkg/CssFilter";
 import { reactive } from "vue";
 import ItemSelector from "./ModelSelector.vue";
+import { TextureEditorEvent } from "./pixi/TextureEditor";
 
 interface AppStore {
   items: Items[];
@@ -47,7 +48,7 @@ const store = reactive<AppStore>({
 });
 
 function onBrushChange(brush: Brush): void {
-  const event = new CustomEvent(EditorEvent.BRUSH_CHANGE, {
+  const event = new CustomEvent(TextureEditorEvent.BRUSH_CHANGE, {
     bubbles: true,
     detail: { brush },
   });
@@ -56,7 +57,7 @@ function onBrushChange(brush: Brush): void {
 }
 
 function onFiltersChange(filters: CssFilterSettings): void {
-  const event = new CustomEvent(EditorEvent.FILTERS_CHANGE, {
+  const event = new CustomEvent(TextureEditorEvent.FILTERS_CHANGE, {
     bubbles: true,
     detail: { filters },
   });

@@ -1,6 +1,6 @@
 import type { IRenderer } from "pixi.js";
 import { Filter, RenderTexture, Sprite } from "pixi.js";
-import { Brush } from "./types";
+import { Brush } from "./brush";
 import { hex2rgb, string2hex } from "@pixi/utils";
 
 const fragment = `

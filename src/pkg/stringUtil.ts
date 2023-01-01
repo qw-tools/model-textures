@@ -1,6 +1,4 @@
-export function nullOperation() {
-  // do nothing
-}
+
 
 export function slugify(text: string): string {
   return text

@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { ITextStyle, TextStyle } from "pixi.js";
 import { Character } from "../pkg/chars";
 import { OutlineFilter } from "pixi-filters";
+import { nullOperation } from "../../../pkg/functions";
 
 export interface CharacterPreset {
   offset: { x: number; y: number };
@@ -17,10 +18,6 @@ export function getDefaultCharacterPreset(): CharacterPreset {
       fontFamily: "monospace",
     }),
   };
-}
-
-function nullOperation() {
-  // do nothing
 }
 
 export class EditorCharacter extends PIXI.Text {
