@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted } from "vue";
+import { onMounted } from "vue";
 import { Items } from "../../pkg/quake/items";
 import { itemToViewerSettings, ModelViewer } from "../../pkg/ModelViewer";
 import { Texture } from "../../pkg/quake/models";
-import { CssFilterSettings } from "../../pkg/CssFilter";
-import { TextureEditorEvent, itemToEditorSettings, TextureEditor } from "./pixi/TextureEditor";
+import { itemToEditorSettings, TextureEditor } from "./pixi/TextureEditor";
 import { Brush } from "./pixi/brush";
+import { FilterInputs } from "./pixi/filter";
+import { EditorEvent } from "./pixi/events";
 
 interface Props {
   item: Items;
-  filters: CssFilterSettings;
+  filters: FilterInputs;
   brush: Brush;
 }
 
@@ -40,13 +41,14 @@ onMounted(async () => {
       const texture: Texture = props.item.model.textures[i];
 
       editors[i] = new TextureEditor({
+        containerID: editorSettings[i].containerID,
         height: editorSettings[i].height,
         width: editorSettings[i].width,
         texturePath: editorSettings[i].texturePath,
         onChange: () => {
           viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
         },
-        onReady: () => resolve(),
+        onReady: resolve,
       });
 
       const pixiElement = document.getElementById(
@@ -66,41 +68,32 @@ onMounted(async () => {
   await Promise.all(allPromises);
 
   // apply textures
-  for (let i = 0; i < props.item.model.textures.length; i++) {
-    // const texture: Texture = props.item.model.textures[i];
-    // await viewer.setTextureByURI(editors[i].toURI(), texture.index);
-  }
+  // for (let i = 0; i < props.item.model.textures.length; i++) {
+  //   // const texture: Texture = props.item.model.textures[i];
+  //   // await viewer.setTextureByURI(editors[i].toURI(), texture.index);
+  // }
 
   // events
-  document.addEventListener(TextureEditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
-  document.addEventListener(TextureEditorEvent.FILTERS_CHANGE, onFiltersChangeEvent);
+  document.addEventListener(EditorEvent.FILTERS_CHANGE, onFiltersChange);
+
+  console.log("listening");
 });
 
-function onFiltersChangeEvent(e: Event): void {
+function onFiltersChange(e: Event): void {
   const event = e as CustomEvent;
-
-  console.log(event.detail.filters);
 
   for (let i = 0; i < editors.length; i++) {
     //editors[i].applyCSSFilters(event.detail.filters);
   }
 }
 
-const onBrushChangeEvent = (e: Event) => {
-  const event = e as CustomEvent;
-
-  for (let i = 0; i < editors.length; i++) {
-    editors[i].brush = event.detail.brush;
-  }
-};
-
-onBeforeUnmount(() => {
-  document.removeEventListener(TextureEditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
-  document.removeEventListener(
-    TextureEditorEvent.FILTERS_CHANGE,
-    onFiltersChangeEvent
-  );
-});
+// onBeforeUnmount(() => {
+//   document.removeEventListener(TextureEditorEvent.BRUSH_CHANGE, onBrushChange);
+//   document.removeEventListener(
+//     TextureEditorEvent.FILTERS_CHANGE,
+//     onFiltersChange
+//   );
+// });
 </script>
 
 <template>

@@ -6,8 +6,10 @@ import { Brush } from "./brush";
 import { slugify } from "../../../pkg/stringUtil";
 import { Items, modelFilenamePath, player } from "../../../pkg/quake/items";
 import { nullOperation } from "../../../pkg/functions";
+import { BrushChange, EditorEvent } from "./events";
 
 export interface TextureEditorSettings {
+  containerID: string;
   width: number;
   height: number;
   texturePath: string;
@@ -54,11 +56,16 @@ export class TextureEditor extends PIXI.Application {
     this.stage.addChild(this.paintLayer.container);
 
     // events
-    this.getCanvas().addEventListener("contextmenu", (e) => {
+    const canvas = this.getCanvas();
+    canvas.addEventListener("contextmenu", (e) => {
       e.preventDefault();
+    });
+    document.addEventListener(EditorEvent.BRUSH_CHANGE, (e) => {
+      this.brush = (e as BrushChange).brush;
     });
 
     this.onChange = settings.onChange;
+    this.onReady = settings.onReady;
 
     // load texture
     this.loadTexture(settings.texturePath);
@@ -132,9 +139,4 @@ function getEditorHeightByItem(item: Items): number {
     return 520;
   }
   return 240;
-}
-
-export enum TextureEditorEvent {
-  BRUSH_CHANGE = "Editor.BRUSH_CHANGE",
-  FILTERS_CHANGE = "Editor.FILTERS_CHANGE",
 }

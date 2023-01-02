@@ -6,26 +6,23 @@ import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "./pixi/brush";
 import FilterToolbar from "./FilterToolbar.vue";
 import { armors, Items } from "../../pkg/quake/items";
-import {
-  CssFilterSettings,
-  getDefaultFilterSettings,
-} from "../../pkg/CssFilter";
+import { FilterInputs, getDefaultFilterInputs } from "./pixi/filter";
 import { reactive } from "vue";
 import ItemSelector from "./ModelSelector.vue";
-import { TextureEditorEvent } from "./pixi/TextureEditor";
+import { BrushChange, FiltersChange } from "./pixi/events";
 
-interface AppStore {
+interface ItemStore {
   items: Items[];
-  addItem: (item: Items) => void;
-  removeItem: (item: Items) => void;
+  add: (item: Items) => void;
+  remove: (item: Items) => void;
 }
 
 let lastBrush: Brush = getDefaultBrush();
-let lastFilters: CssFilterSettings = getDefaultFilterSettings();
+let lastFilters: FilterInputs = getDefaultFilterInputs();
 
-const store = reactive<AppStore>({
+const store = reactive<ItemStore>({
   items: [],
-  addItem(item: Items): void {
+  add(item: Items): void {
     if (this.items.includes(item)) {
       const el = document.getElementById(item.id);
       if (el) {
@@ -35,7 +32,7 @@ const store = reactive<AppStore>({
       this.items.push(item);
     }
   },
-  removeItem(item: Items): void {
+  remove(item: Items): void {
     const itemIndex = this.items.indexOf(item);
     if (itemIndex >= 0) {
       const el = document.getElementById(item.id);
@@ -48,20 +45,12 @@ const store = reactive<AppStore>({
 });
 
 function onBrushChange(brush: Brush): void {
-  const event = new CustomEvent(TextureEditorEvent.BRUSH_CHANGE, {
-    bubbles: true,
-    detail: { brush },
-  });
-  document.dispatchEvent(event);
+  document.dispatchEvent(new BrushChange(brush));
   lastBrush = brush;
 }
 
-function onFiltersChange(filters: CssFilterSettings): void {
-  const event = new CustomEvent(TextureEditorEvent.FILTERS_CHANGE, {
-    bubbles: true,
-    detail: { filters },
-  });
-  document.dispatchEvent(event);
+function onFiltersChange(filters: FilterInputs): void {
+  document.dispatchEvent(new FiltersChange(filters));
   lastFilters = filters;
 }
 </script>
@@ -90,7 +79,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
         <strong>Click an item below to load editor</strong>, for example:
         <span
           class="hover:cursor-pointer font-bold text-sky-600 hover:text-sky-800"
-          @click="() => store.addItem(armors[0])"
+          @click="() => store.add(armors[0])"
           >Green Armor</span
         >.
       </div>
@@ -107,7 +96,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
               <button
                 :title="`Close ${item.model.name} editor`"
                 class="px-3 py-1 rounded shadow bg-gray-200 border border-gray-400 hover:bg-gray-100 mr-2"
-                @click="() => store.removeItem(item)"
+                @click="() => store.remove(item)"
               >
                 x
               </button>
@@ -129,7 +118,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
     </div>
   </div>
 
-  <ItemSelector :on-item-click="(item: Items) => store.addItem(item)" />
+  <ItemSelector :on-item-click="(item: Items) => store.add(item)" />
 
   <SiteFooter />
 </template>

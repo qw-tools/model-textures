@@ -6,15 +6,12 @@ import {
   Sprite,
 } from "pixi.js";
 import { Point2D } from "../../../pkg/math";
-import { nullOperation } from "../../../pkg/functions";
 
 export class PaintBuffer {
   private readonly _container: Container = new Container();
   private _brush: RenderTexture | undefined;
   //private _brushSprite: Sprite;
   private _blendMode: number = BLEND_MODES.NORMAL;
-
-  onChange: () => void = nullOperation;
 
   get brush(): RenderTexture | undefined {
     return this._brush;
