@@ -45,7 +45,7 @@ watch(filters, throttle(props.onChange, 20));
         :disabled="!filters.saturation.enabled"
         :max="filters.saturation.maxValue"
         :min="filters.saturation.minValue"
-        :step="10"
+        :step="0.1"
         class="w-20"
         type="range"
       />
@@ -61,7 +61,7 @@ watch(filters, throttle(props.onChange, 20));
         :disabled="!filters.brightness.enabled"
         :max="filters.brightness.maxValue"
         :min="filters.brightness.minValue"
-        :step="10"
+        :step="0.1"
         class="w-20"
         type="range"
       />
@@ -77,6 +77,7 @@ watch(filters, throttle(props.onChange, 20));
         :disabled="!filters.contrast.enabled"
         :max="filters.contrast.maxValue"
         :min="filters.contrast.minValue"
+        :step="0.1"
         class="w-20"
         type="range"
       />

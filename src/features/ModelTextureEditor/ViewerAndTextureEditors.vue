@@ -25,26 +25,45 @@ const editorSettings = itemToEditorSettings(props.item);
 
 onMounted(async () => {
   // viewer
-  viewer = new ModelViewer(viewerSettings);
+  const viewerPromise = new Promise<void>((resolve) => {
+    viewer = new ModelViewer({
+      ...viewerSettings,
+      onLoad: resolve,
+    });
+  });
 
   // editors
+  const editorPromises: Promise<void>[] = [];
+
   for (let i = 0; i < props.item.model.textures.length; i++) {
-    const texture: Texture = props.item.model.textures[i];
-    const settings = editorSettings[i];
+    const ePromise = new Promise<void>((resolve) => {
+      const texture: Texture = props.item.model.textures[i];
+      const settings = editorSettings[i];
 
-    editors[i] = new TextureEditor({
-      ...settings,
-      onChange: () => {
-        viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
-      },
-      onReady: () => {
-        editors[i].brush = props.brush;
-      },
+      editors[i] = new TextureEditor({
+        ...settings,
+        onChange: async () => {
+          await viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
+        },
+        onReady: () => {
+          editors[i].brush = props.brush;
+          resolve();
+        },
+      });
+
+      document
+        .getElementById(settings.containerID)
+        ?.append(editors[i].getCanvas());
     });
+    editorPromises.push(ePromise);
+  }
 
-    document
-      .getElementById(settings.containerID)
-      ?.append(editors[i].getCanvas());
+  const allPromises = [viewerPromise].concat(editorPromises);
+  await Promise.all(allPromises);
+
+  // trigger change to update modelviewer
+  for (let i = 0; i < editors.length; i++) {
+    editors[i].filters = props.filters;
   }
 });
 

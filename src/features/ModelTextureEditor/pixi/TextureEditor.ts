@@ -5,8 +5,10 @@ import { Brush, getDefaultBrush } from "./brush";
 import { slugify } from "../../../pkg/stringUtil";
 import { Items, modelFilenamePath, player } from "../../../pkg/quake/items";
 import { nullOperation } from "../../../pkg/functions";
-import { BrushChange, EditorEvent } from "./events";
+import { BrushChange, EditorEvent, FiltersChange } from "./events";
 import { createOutline } from "../../../pkg/pixi";
+import { FilterInputs } from "./filter";
+import { AdjustmentFilter } from "pixi-filters";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -20,6 +22,7 @@ export interface TextureEditorSettings {
 export class TextureEditor extends PIXI.Application {
   private readonly _outline: HTMLImageElement;
   private readonly _settings: TextureEditorSettings;
+  private readonly _adjustmentFilter: AdjustmentFilter;
   private _textureSprite: PIXI.Sprite | undefined;
   private _textureContainer: PIXI.Container = new PIXI.Container();
   readonly paint: PaintLayer;
@@ -32,6 +35,8 @@ export class TextureEditor extends PIXI.Application {
     this._settings = settings;
 
     // texture
+    this._adjustmentFilter = new AdjustmentFilter();
+    this._textureContainer.filters = [this._adjustmentFilter];
     this.stage.addChild(this._textureContainer);
 
     // paint
@@ -75,11 +80,21 @@ export class TextureEditor extends PIXI.Application {
 
     this._onBrushChange = this._onBrushChange.bind(this);
     document.addEventListener(EditorEvent.BRUSH_CHANGE, this._onBrushChange);
+
+    this._onFiltersChange = this._onFiltersChange.bind(this);
+    document.addEventListener(
+      EditorEvent.FILTERS_CHANGE,
+      this._onFiltersChange
+    );
   }
 
   private _unlisten(): void {
     this.getCanvas().removeEventListener("contextmenu", this._preventDefault);
     document.removeEventListener(EditorEvent.BRUSH_CHANGE, this._onBrushChange);
+    document.removeEventListener(
+      EditorEvent.FILTERS_CHANGE,
+      this._onFiltersChange
+    );
   }
 
   private _onChange(): void {
@@ -91,12 +106,23 @@ export class TextureEditor extends PIXI.Application {
     this.brush = (e as BrushChange).brush;
   }
 
+  private _onFiltersChange(e: Event): void {
+    this.filters = (e as FiltersChange).filters;
+  }
+
   private _preventDefault(e: Event): void {
     e.preventDefault();
   }
 
   set brush(brush: Brush) {
     this.paint.brush = brush;
+  }
+
+  set filters(filters: FilterInputs) {
+    Object.values(filters).forEach((f) => {
+      this._adjustmentFilter[f.name] = f.enabled ? f.value : f.defaultValue;
+    });
+    this._onChange();
   }
 
   loadTexture(url: string): void {
