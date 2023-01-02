@@ -5,6 +5,7 @@ import { Brush } from "./brush";
 import { MouseEventButton } from "../../../pkg/domEvent";
 import { Point2D } from "../../../pkg/math";
 import { nullOperation } from "../../../pkg/functions";
+import { eventToPosition } from "../../../pkg/pixi";
 
 export class PaintLayer {
   private readonly _width: number;
@@ -123,8 +124,4 @@ export class PaintLayer {
     this._reset();
     this.onChange();
   }
-}
-
-function eventToPosition(e: PIXI.FederatedMouseEvent): Point2D {
-  return { x: e.global.x, y: e.global.y };
 }
