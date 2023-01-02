@@ -24,8 +24,8 @@ export class PaintLayer {
     this._width = width;
     this._height = height;
     this._renderer = renderer;
-    this._paintBuffer = new PaintBuffer();
     this._container = new PIXI.Container();
+    this._paintBuffer = new PaintBuffer();
     this._paintSprite = new PIXI.Sprite();
     this._paintSprite.interactive = true;
     this._paintTexture = PIXI.RenderTexture.create();
