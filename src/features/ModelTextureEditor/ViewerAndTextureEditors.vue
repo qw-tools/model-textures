@@ -39,20 +39,22 @@ onMounted(async () => {
     const editorPromise = new Promise<void>((resolve) => {
       const texture: Texture = props.item.model.textures[i];
 
+      const settings = editorSettings[i];
       editors[i] = new TextureEditor({
-        containerID: editorSettings[i].containerID,
-        height: editorSettings[i].height,
-        width: editorSettings[i].width,
-        texturePath: editorSettings[i].texturePath,
+        containerID: settings.containerID,
+        height: settings.height,
+        width: settings.width,
+        texturePath: settings.texturePath,
         onChange: () => {
           viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
         },
-        onReady: resolve,
+        onReady: () => {
+          editors[i].brush = props.brush;
+          resolve();
+        },
       });
 
-      const pixiElement = document.getElementById(
-        editorSettings[i].containerID
-      );
+      const pixiElement = document.getElementById(settings.containerID);
       if (!pixiElement) {
         return;
       }
