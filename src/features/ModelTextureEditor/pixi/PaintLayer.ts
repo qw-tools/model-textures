@@ -3,7 +3,7 @@ import { generateBrush } from "./brushTexture";
 import { PaintBuffer } from "./PaintBuffer";
 import { Brush } from "./brush";
 import { MouseEventButton } from "../../../pkg/domEvent";
-import { Point2D } from "../../../pkg/math";
+import { Point2D } from "../../../pkg/geometry";
 import { nullOperation } from "../../../pkg/functions";
 import { eventToPosition } from "../../../pkg/pixi";
 
