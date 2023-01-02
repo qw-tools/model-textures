@@ -68,7 +68,7 @@ function onFiltersChange(filters: FilterInputs): void {
       <div
         class="flex px-4 py-3 my-4 items-center rounded border shadow bg-white space-x-8"
       >
-        <BrushSettings :brush="getDefaultBrush()" :on-change="onBrushChange" />
+        <BrushSettings :on-change="onBrushChange" />
         <FilterToolbar :on-change="onFiltersChange" />
       </div>
 

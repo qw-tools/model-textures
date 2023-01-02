@@ -86,7 +86,7 @@ export class TextureEditor extends PIXI.Application {
   }
 
   private _onBrushChange(e: Event): void {
-    this.paintLayer.brush = (e as BrushChange).brush;
+    this.brush = (e as BrushChange).brush;
   }
 
   private _preventDefault(e: Event): void {
@@ -102,22 +102,18 @@ export class TextureEditor extends PIXI.Application {
     PIXI.Assets.load(url).then(async (texture: PIXI.Texture) => {
       const { width, height } = this._settings;
 
+      // texture
       this._textureSprite?.destroy();
       this._textureSprite = PIXI.Sprite.from(texture);
       this._textureSprite.scale.x = width / texture.orig.width;
       this._textureSprite.scale.y = height / texture.orig.height;
       this._textureContainer.addChild(this._textureSprite);
 
-      const outlineSprite = await createOutline(
-        this.renderer,
-        texture,
-        width,
-        height
-      );
-      this._outline.src = this.renderer.plugins.extract
-        .canvas(outlineSprite)
-        .toDataURL();
+      // outline
+      const o = await createOutline(this.renderer, texture, width, height);
+      this._outline.src = this.renderer.plugins.extract.canvas(o).toDataURL();
 
+      // callbacks
       this._onChange();
       this.onReady();
     });
