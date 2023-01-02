@@ -100,14 +100,12 @@ export class TextureEditor extends PIXI.Application {
 
   loadTexture(url: string): void {
     PIXI.Assets.load(url).then(async (texture: PIXI.Texture) => {
-      this._textureContainer.removeChildren();
-
       const { width, height } = this._settings;
 
-      const sprite = PIXI.Sprite.from(texture);
-      sprite.scale.x = width / texture.orig.width;
-      sprite.scale.y = height / texture.orig.height;
-      this._textureSprite = sprite;
+      this._textureSprite?.destroy();
+      this._textureSprite = PIXI.Sprite.from(texture);
+      this._textureSprite.scale.x = width / texture.orig.width;
+      this._textureSprite.scale.y = height / texture.orig.height;
       this._textureContainer.addChild(this._textureSprite);
 
       const outline = await createOutline(
