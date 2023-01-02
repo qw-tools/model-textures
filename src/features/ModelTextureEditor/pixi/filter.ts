@@ -19,18 +19,18 @@ export class Blur implements FilterInput {
 export class Brightness implements FilterInput {
   name = "brightness";
   enabled = false;
-  defaultValue = 100;
+  defaultValue = 1;
   minValue = 0;
-  maxValue = 1000;
+  maxValue = 5;
   value = this.defaultValue;
 }
 
 export class Contrast implements FilterInput {
   name = "contrast";
   enabled = false;
-  defaultValue = 100;
+  defaultValue = 1;
   minValue = 0;
-  maxValue = 500;
+  maxValue = 5;
   value = this.defaultValue;
 }
 
@@ -45,11 +45,11 @@ export class Hue implements FilterInput {
 }
 
 export class Saturation implements FilterInput {
-  name = "saturate";
+  name = "saturation";
   enabled = false;
-  defaultValue = 100;
+  defaultValue = 1;
   minValue = 0;
-  maxValue = 1000;
+  maxValue = 5;
   value = this.defaultValue;
 }
 
