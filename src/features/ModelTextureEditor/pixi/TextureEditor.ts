@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
-import { Brush } from "./brush";
+import { Brush, getDefaultBrush } from "./brush";
 import { slugify } from "../../../pkg/stringUtil";
 import { Items, modelFilenamePath, player } from "../../../pkg/quake/items";
 import { nullOperation } from "../../../pkg/functions";
@@ -53,6 +53,9 @@ export class TextureEditor extends PIXI.Application {
     // callbacks
     this.onChange = settings.onChange;
     this.onReady = settings.onReady;
+
+    // brush
+    this.brush = getDefaultBrush();
 
     // load texture
     this.loadTexture(settings.texturePath);
