@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { FederatedMouseEvent } from "pixi.js";
-import { Point2D } from "./math";
+import { Point2D } from "./geometry";
 import { OutlineFilter } from "pixi-filters";
 
 export function eventToPosition(e: FederatedMouseEvent): Point2D {
