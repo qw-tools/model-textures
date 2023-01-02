@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
         <div class="flex mt-2 space-x-4">
           <button
             class="block border border-gray-400 hover:bg-red-100 rounded-md py-1 px-2 bg-gray-200 shadow text-sm"
-            @click="() => editors[index]?.paintLayer.clear()"
+            @click="() => editors[index]?.paint.clear()"
           >
             Clear paint
           </button>

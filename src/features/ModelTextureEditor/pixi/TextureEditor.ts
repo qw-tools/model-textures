@@ -18,12 +18,11 @@ export interface TextureEditorSettings {
 }
 
 export class TextureEditor extends PIXI.Application {
+  private readonly _outline: HTMLImageElement;
   private readonly _settings: TextureEditorSettings;
   private _textureSprite: PIXI.Sprite | undefined;
   private _textureContainer: PIXI.Container = new PIXI.Container();
-  private readonly _outline: HTMLImageElement;
-  //private _cursor: Cursor = new Cursor();
-  readonly paintLayer: PaintLayer;
+  readonly paint: PaintLayer;
   onReady: () => void = nullOperation;
   onChange: () => void = nullOperation;
 
@@ -36,9 +35,9 @@ export class TextureEditor extends PIXI.Application {
     this.stage.addChild(this._textureContainer);
 
     // paint
-    this.paintLayer = new PaintLayer(this.renderer, width, height);
-    this.paintLayer.onChange = () => this._onChange();
-    this.stage.addChild(this.paintLayer.container);
+    this.paint = new PaintLayer(this.renderer, width, height);
+    this.paint.onChange = () => this._onChange();
+    this.stage.addChild(this.paint.container);
 
     // outline
     this._outline = document.createElement("img");
@@ -97,8 +96,7 @@ export class TextureEditor extends PIXI.Application {
   }
 
   set brush(brush: Brush) {
-    this.paintLayer.brush = brush;
-    //this.getCanvas().style.cursor = this._cursor.toCss(this.renderer, brush);
+    this.paint.brush = brush;
   }
 
   loadTexture(url: string): void {
