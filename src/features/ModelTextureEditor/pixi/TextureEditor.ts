@@ -21,7 +21,7 @@ export class TextureEditor extends PIXI.Application {
   private readonly _settings: TextureEditorSettings;
   private _textureSprite: PIXI.Sprite | undefined;
   private _textureContainer: PIXI.Container = new PIXI.Container();
-  private readonly _outlineImg: HTMLImageElement;
+  private readonly _outline: HTMLImageElement;
   //private _cursor: Cursor = new Cursor();
   readonly paintLayer: PaintLayer;
   onReady: () => void = nullOperation;
@@ -41,11 +41,11 @@ export class TextureEditor extends PIXI.Application {
     this.stage.addChild(this.paintLayer.container);
 
     // outline
-    this._outlineImg = document.createElement("img");
-    this._outlineImg.style.display = "none";
-    this._outlineImg.style.pointerEvents = "none";
-    this._outlineImg.style.position = "absolute";
-    document.getElementById(containerID)?.append(this._outlineImg);
+    this._outline = document.createElement("img");
+    this._outline.style.display = "none";
+    this._outline.style.pointerEvents = "none";
+    this._outline.style.position = "absolute";
+    document.getElementById(containerID)?.append(this._outline);
 
     // events
     this._listen();
@@ -108,14 +108,14 @@ export class TextureEditor extends PIXI.Application {
       this._textureSprite.scale.y = height / texture.orig.height;
       this._textureContainer.addChild(this._textureSprite);
 
-      const outline = await createOutline(
+      const outlineSprite = await createOutline(
         this.renderer,
         texture,
         width,
         height
       );
-      this._outlineImg.src = this.renderer.plugins.extract
-        .canvas(outline)
+      this._outline.src = this.renderer.plugins.extract
+        .canvas(outlineSprite)
         .toDataURL();
 
       this._onChange();
@@ -124,8 +124,8 @@ export class TextureEditor extends PIXI.Application {
   }
 
   toggleOutline(): void {
-    const d = this._outlineImg.style.display;
-    this._outlineImg.style.display = d === "none" ? "block" : "none";
+    const d = this._outline.style.display;
+    this._outline.style.display = d === "none" ? "block" : "none";
   }
 
   download(filename = ""): void {
