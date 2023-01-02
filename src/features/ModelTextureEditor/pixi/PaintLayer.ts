@@ -104,6 +104,9 @@ export class PaintLayer {
   }
 
   private _onPointerEnter(e: PIXI.FederatedMouseEvent): void {
+    if (e.buttons === MouseEventButton.None) {
+      this._isDrawing = false;
+    }
     this._lastPosition = eventToPosition(e);
   }
 
