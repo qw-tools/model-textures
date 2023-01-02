@@ -89,7 +89,7 @@ export class PaintLayer {
     this._paintBuffer.addPoint(this._lastPosition);
   }
 
-  private _onPointerUp(e: PIXI.FederatedMouseEvent): void {
+  private _onPointerUp(): void {
     this._isDrawing = false;
   }
 
