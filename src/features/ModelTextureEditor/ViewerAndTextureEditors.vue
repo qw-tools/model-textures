@@ -25,55 +25,27 @@ const editorSettings = itemToEditorSettings(props.item);
 
 onMounted(async () => {
   // viewer
-  const viewerPromise = new Promise<void>((resolve) => {
-    viewer = new ModelViewer({
-      ...viewerSettings,
-      onLoad: resolve,
-    });
-  });
+  viewer = new ModelViewer(viewerSettings);
 
   // editors
-  const editorPromises: Promise<void>[] = [];
-
   for (let i = 0; i < props.item.model.textures.length; i++) {
-    const editorPromise = new Promise<void>((resolve) => {
-      const texture: Texture = props.item.model.textures[i];
+    const texture: Texture = props.item.model.textures[i];
+    const settings = editorSettings[i];
 
-      const settings = editorSettings[i];
-      editors[i] = new TextureEditor({
-        containerID: settings.containerID,
-        height: settings.height,
-        width: settings.width,
-        texturePath: settings.texturePath,
-        onChange: () => {
-          viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
-        },
-        onReady: () => {
-          editors[i].brush = props.brush;
-          resolve();
-        },
-      });
-
-      const pixiElement = document.getElementById(settings.containerID);
-      if (!pixiElement) {
-        return;
-      }
-      pixiElement.append(editors[i].view as HTMLCanvasElement);
+    editors[i] = new TextureEditor({
+      ...settings,
+      onChange: () => {
+        viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
+      },
+      onReady: () => {
+        editors[i].brush = props.brush;
+      },
     });
 
-    editorPromises.push(editorPromise);
+    document
+      .getElementById(settings.containerID)
+      ?.append(editors[i].getCanvas());
   }
-
-  // wait until viewer and all texture editors are ready
-  const allPromises = [viewerPromise].concat(editorPromises);
-  await Promise.all(allPromises);
-
-  // apply textures
-  // for (let i = 0; i < props.item.model.textures.length; i++) {
-  //   // const texture: Texture = props.item.model.textures[i];
-  //   // await viewer.setTextureByURI(editors[i].toURI(), texture.index);
-  // }
-  console.log("listening");
 });
 
 onBeforeUnmount(() => {
