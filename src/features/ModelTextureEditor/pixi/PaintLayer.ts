@@ -40,21 +40,11 @@ export class PaintLayer {
     this.brush = this._brush;
 
     // events
-    this._container.on("pointerdown", (e: PIXI.FederatedMouseEvent) => {
-      this._onPointerDown(e);
-    });
-    this._container.on("pointerup", (e: PIXI.FederatedMouseEvent) => {
-      this._onPointerUp(e);
-    });
-    this._container.on("pointermove", (e: PIXI.FederatedMouseEvent) => {
-      this._onPointerMove(e);
-    });
-    this._container.on("pointerenter", (e: PIXI.FederatedMouseEvent) => {
-      this._onPointerEnter(e);
-    });
-    this._container.on("pointerleave", (e: PIXI.FederatedMouseEvent) => {
-      this._onPointerLeave(e);
-    });
+    this._container.on("pointerdown", this._onPointerDown.bind(this));
+    this._container.on("pointerup", this._onPointerUp.bind(this));
+    this._container.on("pointermove", this._onPointerMove.bind(this));
+    this._container.on("pointerenter", this._onPointerEnter.bind(this));
+    this._container.on("pointerleave", this._onPointerLeave.bind(this));
 
     // ticker
     const ticker = new PIXI.Ticker();
