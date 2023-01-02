@@ -145,7 +145,6 @@ onBeforeUnmount(() => {
           <label class="flex items-center">
             <input
               type="checkbox"
-              checked
               @click="() => editors[index]?.toggleOutline()"
             />
             <strong class="text-sm">Show outline</strong>
