@@ -22,37 +22,25 @@ export class TextureEditor extends PIXI.Application {
   private _textureSprite: PIXI.Sprite | undefined;
   private _textureContainer: PIXI.Container = new PIXI.Container();
   //private _cursor: Cursor = new Cursor();
-  outline: OutlineFilter;
-  paintLayer: PaintLayer;
+  readonly outline: OutlineFilter;
+  readonly paintLayer: PaintLayer;
   onReady: () => void = nullOperation;
   onChange: () => void = nullOperation;
 
   constructor(settings: TextureEditorSettings) {
-    super({
-      width: settings.width,
-      height: settings.height,
-      backgroundAlpha: 0,
-    });
-
+    const { width, height } = settings;
+    super({ width, height, backgroundAlpha: 0 });
     this._settings = settings;
 
     // texture
     this.outline = new OutlineFilter(4, 0xff0000);
     this.outline.enabled = true;
     this._textureContainer.filters = [this.outline];
-
     this.stage.addChild(this._textureContainer);
 
     // paint
-    this.paintLayer = new PaintLayer(
-      this.renderer,
-      settings.width,
-      settings.height
-    );
-    this.paintLayer.onChange = () => {
-      this._onChange();
-    };
-
+    this.paintLayer = new PaintLayer(this.renderer, width, height);
+    this.paintLayer.onChange = () => this._onChange();
     this.stage.addChild(this.paintLayer.container);
 
     // events
@@ -78,6 +66,8 @@ export class TextureEditor extends PIXI.Application {
 
   private _listen(): void {
     this.getCanvas().addEventListener("contextmenu", this._preventDefault);
+
+    this._onBrushChange = this._onBrushChange.bind(this);
     document.addEventListener(EditorEvent.BRUSH_CHANGE, this._onBrushChange);
   }
 
@@ -92,7 +82,7 @@ export class TextureEditor extends PIXI.Application {
   }
 
   private _onBrushChange(e: Event): void {
-    this.brush = (e as BrushChange).brush;
+    this.paintLayer.brush = (e as BrushChange).brush;
   }
 
   private _preventDefault(e: Event): void {
@@ -101,7 +91,6 @@ export class TextureEditor extends PIXI.Application {
 
   set brush(brush: Brush) {
     this.paintLayer.brush = brush;
-
     //this.getCanvas().style.cursor = this._cursor.toCss(this.renderer, brush);
   }
 
