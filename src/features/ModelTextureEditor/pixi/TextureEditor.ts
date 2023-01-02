@@ -45,7 +45,7 @@ export class TextureEditor extends PIXI.Application {
     this._outlineImg.style.display = "none";
     this._outlineImg.style.pointerEvents = "none";
     this._outlineImg.style.position = "absolute";
-    document.getElementById(containerID).append(this._outlineImg);
+    document.getElementById(containerID)?.append(this._outlineImg);
 
     // events
     this._listen();
