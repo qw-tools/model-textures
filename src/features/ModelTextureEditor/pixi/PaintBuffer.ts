@@ -10,7 +10,6 @@ import { Point2D } from "../../../pkg/math";
 export class PaintBuffer {
   private readonly _container: Container = new Container();
   private _brush: RenderTexture | undefined;
-  //private _brushSprite: Sprite;
   private _blendMode: number = BLEND_MODES.NORMAL;
 
   get brush(): RenderTexture | undefined {
@@ -19,7 +18,6 @@ export class PaintBuffer {
 
   set brush(brush: RenderTexture | undefined) {
     this._brush = brush;
-    //this._brushSprite = Sprite.from(brush);
   }
 
   get blendMode(): number {
