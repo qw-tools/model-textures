@@ -56,14 +56,9 @@ export class TextureEditor extends PIXI.Application {
     this.stage.addChild(this.paintLayer.container);
 
     // events
-    const canvas = this.getCanvas();
-    canvas.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    });
-    document.addEventListener(EditorEvent.BRUSH_CHANGE, (e) => {
-      this.brush = (e as BrushChange).brush;
-    });
+    this._listen();
 
+    // callbacks
     this.onChange = settings.onChange;
     this.onReady = settings.onReady;
 
@@ -71,9 +66,37 @@ export class TextureEditor extends PIXI.Application {
     this.loadTexture(settings.texturePath);
   }
 
-  _onChange(): void {
+  destroy(): void {
+    this._unlisten();
+
+    super.destroy(true, {
+      baseTexture: true,
+      children: true,
+      texture: true,
+    });
+  }
+
+  private _listen(): void {
+    this.getCanvas().addEventListener("contextmenu", this._preventDefault);
+    document.addEventListener(EditorEvent.BRUSH_CHANGE, this._onBrushChange);
+  }
+
+  private _unlisten(): void {
+    this.getCanvas().removeEventListener("contextmenu", this._preventDefault);
+    document.removeEventListener(EditorEvent.BRUSH_CHANGE, this._onBrushChange);
+  }
+
+  private _onChange(): void {
     this.render();
     this.onChange();
+  }
+
+  private _onBrushChange(e: Event): void {
+    this.brush = (e as BrushChange).brush;
+  }
+
+  private _preventDefault(e: Event): void {
+    e.preventDefault();
   }
 
   set brush(brush: Brush) {

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onBeforeUnmount, onMounted } from "vue";
 import { Items } from "../../pkg/quake/items";
 import { itemToViewerSettings, ModelViewer } from "../../pkg/ModelViewer";
 import { Texture } from "../../pkg/quake/models";
 import { itemToEditorSettings, TextureEditor } from "./pixi/TextureEditor";
 import { Brush } from "./pixi/brush";
 import { FilterInputs } from "./pixi/filter";
-import { EditorEvent } from "./pixi/events";
 
 interface Props {
   item: Items;
@@ -72,28 +71,14 @@ onMounted(async () => {
   //   // const texture: Texture = props.item.model.textures[i];
   //   // await viewer.setTextureByURI(editors[i].toURI(), texture.index);
   // }
-
-  // events
-  document.addEventListener(EditorEvent.FILTERS_CHANGE, onFiltersChange);
-
   console.log("listening");
 });
 
-function onFiltersChange(e: Event): void {
-  const event = e as CustomEvent;
-
+onBeforeUnmount(() => {
   for (let i = 0; i < editors.length; i++) {
-    //editors[i].applyCSSFilters(event.detail.filters);
+    editors[i].destroy();
   }
-}
-
-// onBeforeUnmount(() => {
-//   document.removeEventListener(TextureEditorEvent.BRUSH_CHANGE, onBrushChange);
-//   document.removeEventListener(
-//     TextureEditorEvent.FILTERS_CHANGE,
-//     onFiltersChange
-//   );
-// });
+});
 </script>
 
 <template>
