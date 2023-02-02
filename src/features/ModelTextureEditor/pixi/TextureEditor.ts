@@ -125,25 +125,24 @@ export class TextureEditor extends PIXI.Application {
     this._onChange();
   }
 
-  loadTexture(url: string): void {
-    PIXI.Assets.load(url).then(async (texture: PIXI.Texture) => {
-      const { width, height } = this._settings;
+  async loadTexture(url: string): Promise<void> {
+    // texture
+    const texture: PIXI.Texture = await PIXI.Texture.fromURL(url);
+    const { width, height } = this._settings;
 
-      // texture
-      this._textureSprite?.destroy();
-      this._textureSprite = PIXI.Sprite.from(texture);
-      this._textureSprite.scale.x = width / texture.orig.width;
-      this._textureSprite.scale.y = height / texture.orig.height;
-      this._textureContainer.addChild(this._textureSprite);
+    this._textureSprite?.destroy();
+    this._textureSprite = PIXI.Sprite.from(texture);
+    this._textureSprite.scale.x = width / texture.orig.width;
+    this._textureSprite.scale.y = height / texture.orig.height;
+    this._textureContainer.addChild(this._textureSprite);
 
-      // outline
-      const o = await createOutline(this.renderer, texture, width, height);
-      this._outline.src = this.renderer.plugins.extract.canvas(o).toDataURL();
+    // outline
+    const o = await createOutline(this.renderer, texture, width, height);
+    this._outline.src = this.renderer.plugins.extract.canvas(o).toDataURL();
 
-      // callbacks
-      this._onChange();
-      this.onReady();
-    });
+    // callbacks
+    this._onChange();
+    this.onReady();
   }
 
   toggleOutline(): void {
