@@ -100,10 +100,10 @@ onBeforeUnmount(() => {
       >
         <div class="my-2 flex items-center space-x-4">
           <div class="text-sm font-mono">
-            {{ props.item.model.textures[index].filename }}
-            [{{ props.item.model.textures[index].width }}x{{
+            <span class="text-gray-500 text-xs">{{props.item.model.textureDirPath}}/</span><strong>{{ props.item.model.textures[index].filename }}</strong>
+             <span class="text-gray-500 text-xs ml-2">[{{ props.item.model.textures[index].width }}x{{
               props.item.model.textures[index].height
-            }}]
+              }}]</span>
           </div>
 
           <button
