@@ -35,11 +35,11 @@ watch(() => ({ ...brush }), throttle(props.onChange, 50));
 
     <div class="text-xs">
       <label
-      ><input v-model="brush.shape" type="radio" value="circle" />
+        ><input v-model="brush.shape" type="radio" value="circle" />
         Circle</label
       ><br />
       <label
-      ><input v-model="brush.shape" type="radio" value="square" />
+        ><input v-model="brush.shape" type="radio" value="square" />
         Square</label
       >
     </div>
