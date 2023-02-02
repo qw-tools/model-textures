@@ -3,11 +3,7 @@ import { Brush } from "./brush";
 import { string2hex } from "@pixi/utils";
 
 export class Cursor extends PIXI.Graphics {
-  constructor() {
-    super();
-  }
-
-  toCss(renderer: PIXI.IRenderer, brush: Brush): string {
+  toCss(renderer: PIXI.Renderer, brush: Brush): string {
     console.log("toCss", brush);
     this.clear();
 
@@ -21,8 +17,8 @@ export class Cursor extends PIXI.Graphics {
       this.drawRect(0, 0, brush.size, brush.size);
     }
 
-    const cursorCanvas = renderer.plugins.extract.canvas(this);
+    const cursorCanvas = renderer.extract.canvas(this);
 
-    return `url(${cursorCanvas.toDataURL()}) ${sideLength} ${sideLength}, auto`;
+    return `url(${cursorCanvas.toDataURL?.()}) ${sideLength} ${sideLength}, auto`;
   }
 }
