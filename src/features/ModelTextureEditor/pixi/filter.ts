@@ -7,7 +7,7 @@ export interface FilterInput {
   value: number;
 }
 
-export class Blur implements FilterInput {
+export class BlurFilterInput implements FilterInput {
   name = "blur";
   enabled = false;
   defaultValue = 0;
@@ -16,7 +16,7 @@ export class Blur implements FilterInput {
   value = this.defaultValue;
 }
 
-export class Brightness implements FilterInput {
+export class BrightnessFilterInput implements FilterInput {
   name = "brightness";
   enabled = false;
   defaultValue = 1;
@@ -25,7 +25,7 @@ export class Brightness implements FilterInput {
   value = this.defaultValue;
 }
 
-export class Contrast implements FilterInput {
+export class ContrastFilterInput implements FilterInput {
   name = "contrast";
   enabled = false;
   defaultValue = 1;
@@ -34,7 +34,7 @@ export class Contrast implements FilterInput {
   value = this.defaultValue;
 }
 
-export class Hue implements FilterInput {
+export class HueFilterInput implements FilterInput {
   name = "hue-rotate";
   enabled = false;
   defaultValue = 0;
@@ -44,7 +44,7 @@ export class Hue implements FilterInput {
   colorize = false;
 }
 
-export class Saturation implements FilterInput {
+export class SaturationFilterInput implements FilterInput {
   name = "saturation";
   enabled = false;
   defaultValue = 1;
@@ -54,19 +54,19 @@ export class Saturation implements FilterInput {
 }
 
 export type FilterInputs = {
-  blur: Blur;
-  hue: Hue;
-  saturation: Saturation;
-  brightness: Brightness;
-  contrast: Contrast;
+  blur: BlurFilterInput;
+  hue: HueFilterInput;
+  saturation: SaturationFilterInput;
+  brightness: BrightnessFilterInput;
+  contrast: ContrastFilterInput;
 };
 
 export function getDefaultFilterInputs(): FilterInputs {
   return {
-    blur: new Blur(),
-    hue: new Hue(),
-    saturation: new Saturation(),
-    brightness: new Brightness(),
-    contrast: new Contrast(),
+    blur: new BlurFilterInput(),
+    hue: new HueFilterInput(),
+    saturation: new SaturationFilterInput(),
+    brightness: new BrightnessFilterInput(),
+    contrast: new ContrastFilterInput(),
   };
 }
