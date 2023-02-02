@@ -22,7 +22,8 @@ export interface TextureEditorSettings {
 export class TextureEditor extends PIXI.Application {
   private readonly _outline: HTMLImageElement;
   private readonly _settings: TextureEditorSettings;
-  private readonly _adjustmentFilter: AdjustmentFilter;
+  private readonly _adjustmentFilter: AdjustmentFilter = new AdjustmentFilter();
+  private readonly _blurFilter: PIXI.BlurFilter = new PIXI.BlurFilter();
   private _textureSprite: PIXI.Sprite | undefined;
   private _textureContainer: PIXI.Container = new PIXI.Container();
   readonly paint: PaintLayer;
@@ -35,8 +36,8 @@ export class TextureEditor extends PIXI.Application {
     this._settings = settings;
 
     // texture
-    this._adjustmentFilter = new AdjustmentFilter();
-    this._textureContainer.filters = [this._adjustmentFilter];
+    this._blurFilter.enabled = false;
+    this._textureContainer.filters = [this._adjustmentFilter, this._blurFilter];
     this.stage.addChild(this._textureContainer);
 
     // paint
@@ -119,9 +120,17 @@ export class TextureEditor extends PIXI.Application {
   }
 
   set filters(filters: FilterInputs) {
-    Object.values(filters).forEach((f) => {
-      this._adjustmentFilter[f.name] = f.enabled ? f.value : f.defaultValue;
+    // blur
+    this._blurFilter.blur = filters.blur.value;
+    this._blurFilter.enabled = filters.blur.enabled;
+
+    // adjustment
+    ["brightness", "contrast", "saturation"].forEach((key) => {
+      this._adjustmentFilter[key] = filters[key].enabled
+        ? filters[key].value
+        : filters[key].defaultValue;
     });
+
     this._onChange();
   }
 
