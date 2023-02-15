@@ -12,7 +12,7 @@ const vuePlugin = vue({
 });
 
 export default defineConfig({
-  base: "https://vikpe.org/qw-gfx/",
+  base: "https://tools.quake.world/graphics/",
   define: {
     "process.env": process.env,
   },
