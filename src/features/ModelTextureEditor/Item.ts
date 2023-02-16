@@ -1,9 +1,9 @@
-import { slugify } from "../../pkg/stringUtil";
-import { TextureEditorSettings } from "../../pkg/konva/TextureEditor";
-import { ModelViewerSettings } from "../../pkg/ModelViewer";
-import { publicUrl } from "../../pkg/viteUtil";
-import * as quakeModels from "../../pkg/quake/models";
-import { Model } from "../../pkg/quake/models";
+import { slugify } from "@/pkg/stringUtil";
+import { TextureEditorSettings } from "@/pkg/konva/TextureEditor";
+import { ModelViewerSettings } from "@/pkg/ModelViewer";
+import { publicUrl } from "@/pkg/viteUtil";
+import * as quakeModels from "@/pkg/quake/models";
+import { Model } from "@/pkg/quake/models";
 
 // types
 export interface Item {

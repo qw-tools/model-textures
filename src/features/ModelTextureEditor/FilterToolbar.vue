@@ -4,7 +4,7 @@ import { throttle } from "@google/model-viewer/lib/utilities";
 import {
   CssFilterSettings,
   getDefaultFilterSettings,
-} from "../../pkg/CssFilter";
+} from "@/pkg/CssFilter";
 
 interface Props {
   onChange: (

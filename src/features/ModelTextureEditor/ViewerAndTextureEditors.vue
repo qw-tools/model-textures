@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from "vue";
 import { Item, itemToEditorSettings, itemToViewerSettings } from "./Item";
-import { ModelViewer } from "../../pkg/ModelViewer";
-import { TextureEditor } from "../../pkg/konva/TextureEditor";
+import { ModelViewer } from "@/pkg/ModelViewer";
+import { TextureEditor } from "@/pkg/konva/TextureEditor";
 import { EditorEvent } from "./events";
-import { Texture } from "../../pkg/quake/models";
-import { CssFilterSettings } from "../../pkg/CssFilter";
-import { Brush } from "../../pkg/konva/Brush";
+import { Texture } from "@/pkg/quake/models";
+import { CssFilterSettings } from "@/pkg/CssFilter";
+import { Brush } from "@/pkg/konva/Brush";
 
 interface Props {
   item: Item;
