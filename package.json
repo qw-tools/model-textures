@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build --base=https://tools.quake.world/graphics/",
+    "build": "vue-tsc && vite build --base=https://tools.quake.world/model-textures/",
     "preview": "vite preview",
     "format": "yarn prettier --write src",
     "lint": "eslint . --ext .ts,.vue"
