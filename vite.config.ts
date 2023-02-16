@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
+import analyze from "rollup-plugin-analyzer";
 
 // https://vitejs.dev/config/
 const vuePlugin = vue({
@@ -12,6 +13,11 @@ const vuePlugin = vue({
 });
 
 export default defineConfig({
+   build: {
+    rollupOptions: {
+      plugins: [analyze({ limit: 10 })],
+    },
+  },
   define: {
     "process.env": process.env,
   },
