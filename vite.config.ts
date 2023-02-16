@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
 import vue from "@vitejs/plugin-vue";
+import path from "path";
 
 // https://vitejs.dev/config/
 const vuePlugin = vue({
@@ -12,17 +12,13 @@ const vuePlugin = vue({
 });
 
 export default defineConfig({
-  base: "https://tools.quake.world/graphics/",
   define: {
     "process.env": process.env,
   },
   plugins: [vuePlugin],
-  build: {
-    rollupOptions: {
-      input: {
-        modelTextureEditor: resolve(__dirname, "index.html"),
-        CharsetEditor: resolve(__dirname, "charset.html"),
-      },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
