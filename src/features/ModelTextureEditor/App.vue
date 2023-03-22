@@ -6,10 +6,7 @@ import BrushSettings from "./BrushSettings.vue";
 import { Brush, getDefaultBrush } from "@/pkg/konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
 import { armors, Item } from "./Item";
-import {
-  CssFilterSettings,
-  getDefaultFilterSettings,
-} from "@/pkg/CssFilter";
+import { CssFilterSettings, getDefaultFilterSettings } from "@/pkg/CssFilter";
 import { EditorEvent } from "./events";
 import { reactive } from "vue";
 import ItemSelector from "./ModelSelector.vue";

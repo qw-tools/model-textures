@@ -16,6 +16,7 @@ const props = defineProps<{
         <div class="text-gray-400 mr-6 font-mono">Graphics</div>
         <a
           v-for="page in pages"
+          :key="page.url"
           :href="page.url"
           class="flex px-2 h-full items-center hover:text-yellow-100"
           :class="

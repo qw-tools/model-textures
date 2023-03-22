@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { reactive, watch } from "vue";
 import { throttle } from "@google/model-viewer/lib/utilities";
-import {
-  CssFilterSettings,
-  getDefaultFilterSettings,
-} from "@/pkg/CssFilter";
+import { CssFilterSettings, getDefaultFilterSettings } from "@/pkg/CssFilter";
 
 interface Props {
   onChange: (

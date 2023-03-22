@@ -13,7 +13,7 @@ const vuePlugin = vue({
 });
 
 export default defineConfig({
-   build: {
+  build: {
     rollupOptions: {
       plugins: [analyze({ limit: 10 })],
     },
