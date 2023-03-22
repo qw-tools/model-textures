@@ -5,7 +5,7 @@ import {
   RenderTexture,
   Sprite,
 } from "pixi.js";
-import { Point2D } from "../../../pkg/geometry";
+import { Point2D } from "@/pkg/geometry";
 
 export class PaintBuffer {
   private readonly _container: Container = new Container();

@@ -10,7 +10,7 @@ import {
   projectiles,
   runes,
   weapons,
-} from "../../pkg/quake/items";
+} from "@/pkg/quake/items";
 
 interface Props {
   onItemClick: (item: Items) => void;

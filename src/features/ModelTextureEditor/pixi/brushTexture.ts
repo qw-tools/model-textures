@@ -1,7 +1,6 @@
 import type { IRenderer } from "pixi.js";
-import { Filter, RenderTexture, Sprite } from "pixi.js";
+import { Filter, RenderTexture, Sprite, Color } from "pixi.js";
 import { Brush } from "./brush";
-import { hex2rgb, string2hex } from "@pixi/utils";
 
 const fragment = `
 uniform float size;
@@ -23,7 +22,7 @@ export function generateBrush(
   const { size, color, smoothing } = settings;
 
   const filter = new Filter(undefined, fragment, {
-    color: hex2rgb(string2hex(color)),
+    color: new Color(color),
     size,
     smoothing,
   });

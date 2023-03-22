@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from "vue";
-import { Items } from "../../pkg/quake/items";
-import { itemToViewerSettings, ModelViewer } from "../../pkg/ModelViewer";
-import { Texture } from "../../pkg/quake/models";
+import { Items } from "@/pkg/quake/items";
+import { itemToViewerSettings, ModelViewer } from "@/pkg/ModelViewer";
+import { Texture } from "@/pkg/quake/models";
 import { itemToEditorSettings, TextureEditor } from "./pixi/TextureEditor";
 import { Brush } from "./pixi/brush";
 import { FilterInputs } from "./pixi/filter";

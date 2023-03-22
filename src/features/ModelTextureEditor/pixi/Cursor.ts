@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import { Brush } from "./brush";
-import { string2hex } from "@pixi/utils";
 
 export class Cursor extends PIXI.Graphics {
   toCss(renderer: PIXI.Renderer, brush: Brush): string {
@@ -9,7 +8,7 @@ export class Cursor extends PIXI.Graphics {
 
     const sideLength = brush.size / 2;
 
-    this.lineStyle(2, string2hex(brush.color));
+    this.lineStyle(2, new PIXI.Color(brush.color));
 
     if (brush.shape === "circle") {
       this.drawCircle(0, 0, sideLength);

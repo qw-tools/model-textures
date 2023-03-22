@@ -1,9 +1,8 @@
 import * as PIXI from "pixi.js";
-import { FederatedMouseEvent } from "pixi.js";
 import { Point2D } from "./geometry";
 import { OutlineFilter } from "pixi-filters";
 
-export function eventToPosition(e: FederatedMouseEvent): Point2D {
+export function eventToPosition(e: PIXI.FederatedMouseEvent): Point2D {
   return { x: e.global.x, y: e.global.y };
 }
 
@@ -29,24 +28,4 @@ export async function createOutline(
   renderer.render(textureSprite, { renderTexture, clear: false });
 
   return PIXI.Sprite.from(renderTexture);
-}
-
-export function hasTransparency(canvas: HTMLCanvasElement): boolean {
-  const ctx = canvas.getContext("2d");
-
-  if (!ctx) {
-    console.log("no context");
-    return false;
-  }
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
-
-  for (let i = 3; i < data.length; i += 4) {
-    if (data[i] === 0) {
-      return true;
-    }
-  }
-
-  return false;
 }

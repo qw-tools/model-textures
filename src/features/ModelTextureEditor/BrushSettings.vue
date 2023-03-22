@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Brush, getDefaultBrush } from "./pixi/brush";
 import { reactive, watch } from "vue";
+import { Brush, getDefaultBrush } from "./pixi/brush";
 import { throttle } from "@google/model-viewer/lib/utilities";
 
 interface Props {

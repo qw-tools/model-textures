@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import SiteHeader from "../Site/SiteHeader.vue";
-import SiteFooter from "../Site/SiteFooter.vue";
+import { reactive } from "vue";
+import { FilterInputs, getDefaultFilterInputs } from "./pixi/filter";
+import { BrushChange, FiltersChange } from "./pixi/events";
+import { Brush, getDefaultBrush } from "./pixi/brush";
+import SiteHeader from "@/Site/SiteHeader.vue";
+import SiteFooter from "@/Site/SiteFooter.vue";
 import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
-import { Brush, getDefaultBrush } from "./pixi/brush";
 import FilterToolbar from "./FilterToolbar.vue";
-import { armors, Items } from "../../pkg/quake/items";
-import { FilterInputs, getDefaultFilterInputs } from "./pixi/filter";
-import { reactive } from "vue";
+import { armors, Items } from "@/pkg/quake/items";
 import ItemSelector from "./ModelSelector.vue";
-import { BrushChange, FiltersChange } from "./pixi/events";
 
 interface ItemStore {
   items: Items[];
@@ -55,7 +55,7 @@ function onFiltersChange(filters: FilterInputs): void {
 }
 </script>
 <template>
-  <SiteHeader current-page="index" />
+  <SiteHeader current-app="model-textures" />
 
   <div class="bg-gray-100 border-b border-gray-300">
     <div class="bg-white shadow">

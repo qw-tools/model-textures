@@ -2,13 +2,13 @@ import * as PIXI from "pixi.js";
 import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
 import { Brush, getDefaultBrush } from "./brush";
-import { slugify } from "../../../pkg/stringUtil";
-import { Items, modelFilenamePath, player } from "../../../pkg/quake/items";
-import { nullOperation } from "../../../pkg/functions";
+import { slugify } from "@/pkg/stringUtil";
+import { Items, modelFilenamePath, player } from "@/pkg/quake/items";
+import { nullOperation } from "@/pkg/functions";
 import { BrushChange, EditorEvent, FiltersChange } from "./events";
-import { createOutline } from "../../../pkg/pixi";
+import { createOutline } from "@/pkg/pixi";
 import { FilterInputs } from "./filter";
-import { AdjustmentFilter } from "pixi-filters";
+import { AdjustmentFilter, HslAdjustmentFilter } from "pixi-filters";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -22,6 +22,7 @@ export interface TextureEditorSettings {
 export class TextureEditor extends PIXI.Application {
   private readonly _outline: HTMLImageElement;
   private readonly _settings: TextureEditorSettings;
+  private readonly _hslAdjustmentFilter: HslAdjustmentFilter = new HslAdjustmentFilter();
   private readonly _adjustmentFilter: AdjustmentFilter = new AdjustmentFilter();
   private readonly _blurFilter: PIXI.BlurFilter = new PIXI.BlurFilter();
   private _textureSprite: PIXI.Sprite | undefined;
@@ -37,7 +38,7 @@ export class TextureEditor extends PIXI.Application {
 
     // texture
     this._blurFilter.enabled = false;
-    this._textureContainer.filters = [this._adjustmentFilter, this._blurFilter];
+    this._textureContainer.filters = [this._hslAdjustmentFilter, this._adjustmentFilter, this._blurFilter];
     this.stage.addChild(this._textureContainer);
 
     // paint
@@ -125,11 +126,19 @@ export class TextureEditor extends PIXI.Application {
     this._blurFilter.enabled = filters.blur.enabled;
 
     // adjustment
-    ["brightness", "contrast", "saturation"].forEach((key) => {
+    ["brightness", "contrast"].forEach((key) => {
       this._adjustmentFilter[key] = filters[key].enabled
         ? filters[key].value
         : filters[key].defaultValue;
     });
+
+    // hsl adjustment
+    ["hue", "saturation", "lightness"].forEach((key) => {
+      this._hslAdjustmentFilter[key] = filters[key].enabled
+        ? filters[key].value
+        : filters[key].defaultValue;
+    });
+    this._hslAdjustmentFilter.colorize = filters.hue.enabled && filters.hue.colorize;
 
     this._onChange();
   }
@@ -147,7 +156,7 @@ export class TextureEditor extends PIXI.Application {
 
     // outline
     const o = await createOutline(this.renderer, texture, width, height);
-    this._outline.src = this.renderer.plugins.extract.canvas(o).toDataURL();
+    this._outline.src = this.renderer.extract.canvas(o).toDataURL();
 
     // callbacks
     this._onChange();

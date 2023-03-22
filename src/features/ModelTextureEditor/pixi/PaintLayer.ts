@@ -2,10 +2,10 @@ import * as PIXI from "pixi.js";
 import { generateBrush } from "./brushTexture";
 import { PaintBuffer } from "./PaintBuffer";
 import { Brush } from "./brush";
-import { MouseEventButton } from "../../../pkg/domEvent";
-import { Point2D } from "../../../pkg/geometry";
-import { nullOperation } from "../../../pkg/functions";
-import { eventToPosition } from "../../../pkg/pixi";
+import { MouseEventButton } from "@/pkg/domEvent";
+import { Point2D } from "@/pkg/geometry";
+import { nullOperation } from "@/pkg/functions";
+import { eventToPosition } from "@/pkg/pixi";
 
 export class PaintLayer {
   private readonly _width: number;
@@ -27,7 +27,7 @@ export class PaintLayer {
     this._container = new PIXI.Container();
     this._paintBuffer = new PaintBuffer();
     this._paintSprite = new PIXI.Sprite();
-    this._paintSprite.interactive = true;
+    this._paintSprite.eventMode = "static";
     this._paintTexture = PIXI.RenderTexture.create();
     this._container.addChild(this._paintSprite);
     this._reset();
@@ -94,6 +94,7 @@ export class PaintLayer {
   }
 
   private _onPointerMove(e: PIXI.FederatedMouseEvent): void {
+    console.log("_onPointerMove")
     const position = eventToPosition(e);
 
     if (this._isDrawing) {
