@@ -66,7 +66,7 @@ function onFiltersChange(filters: FilterInputs): void {
 
     <div class="container fadeIn my-4">
       <div
-        class="flex px-4 py-3 my-4 items-center rounded border shadow bg-white space-x-8"
+        class="my-4 px-4 py-3 rounded border shadow bg-white grid gap-2 sm:gap-8 sm:grid-flow-col sm:auto-cols-max"
       >
         <BrushSettings :on-change="onBrushChange" />
         <FilterToolbar :on-change="onFiltersChange" />

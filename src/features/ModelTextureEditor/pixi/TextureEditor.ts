@@ -22,7 +22,8 @@ export interface TextureEditorSettings {
 export class TextureEditor extends PIXI.Application {
   private readonly _outline: HTMLImageElement;
   private readonly _settings: TextureEditorSettings;
-  private readonly _hslAdjustmentFilter: HslAdjustmentFilter = new HslAdjustmentFilter();
+  private readonly _hslAdjustmentFilter: HslAdjustmentFilter =
+    new HslAdjustmentFilter();
   private readonly _adjustmentFilter: AdjustmentFilter = new AdjustmentFilter();
   private readonly _blurFilter: PIXI.BlurFilter = new PIXI.BlurFilter();
   private _textureSprite: PIXI.Sprite | undefined;
@@ -38,7 +39,11 @@ export class TextureEditor extends PIXI.Application {
 
     // texture
     this._blurFilter.enabled = false;
-    this._textureContainer.filters = [this._hslAdjustmentFilter, this._adjustmentFilter, this._blurFilter];
+    this._textureContainer.filters = [
+      this._hslAdjustmentFilter,
+      this._adjustmentFilter,
+      this._blurFilter,
+    ];
     this.stage.addChild(this._textureContainer);
 
     // paint
@@ -133,12 +138,13 @@ export class TextureEditor extends PIXI.Application {
     });
 
     // hsl adjustment
-    ["hue", "saturation", "lightness"].forEach((key) => {
+    ["hue", "saturation"].forEach((key) => {
       this._hslAdjustmentFilter[key] = filters[key].enabled
         ? filters[key].value
         : filters[key].defaultValue;
     });
-    this._hslAdjustmentFilter.colorize = filters.hue.enabled && filters.hue.colorize;
+    this._hslAdjustmentFilter.colorize =
+      filters.hue.enabled && filters.hue.colorize;
 
     this._onChange();
   }

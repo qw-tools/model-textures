@@ -47,19 +47,10 @@ export class SaturationFilterInput implements FilterInput {
   value = this.defaultValue;
 }
 
-export class LightnessFilterInput implements FilterInput {
-  enabled = false;
-  defaultValue = 0;
-  minValue = -1;
-  maxValue = 1;
-  value = this.defaultValue;
-}
-
 export type FilterInputs = {
   blur: BlurFilterInput;
   hue: HueFilterInput;
   saturation: SaturationFilterInput;
-  lightness: LightnessFilterInput;
   brightness: BrightnessFilterInput;
   contrast: ContrastFilterInput;
 };
@@ -68,7 +59,6 @@ export function getDefaultFilterInputs(): FilterInputs {
   return {
     hue: new HueFilterInput(),
     saturation: new SaturationFilterInput(),
-    lightness: new LightnessFilterInput(),
     contrast: new ContrastFilterInput(),
     brightness: new BrightnessFilterInput(),
     blur: new BlurFilterInput(),

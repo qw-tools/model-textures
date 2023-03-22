@@ -94,7 +94,7 @@ export class PaintLayer {
   }
 
   private _onPointerMove(e: PIXI.FederatedMouseEvent): void {
-    console.log("_onPointerMove")
+    console.log("_onPointerMove");
     const position = eventToPosition(e);
 
     if (this._isDrawing) {
