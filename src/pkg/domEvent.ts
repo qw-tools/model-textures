@@ -1,11 +1,5 @@
 export enum MouseEventButton {
+  None = 0,
   Primary = 1,
   Secondary = 2,
-}
-
-export enum MouseEventType {
-  Move = "mousemove",
-  Down = "mousedown",
-  Enter = "mouseenter",
-  Leave = "mouseleave",
 }

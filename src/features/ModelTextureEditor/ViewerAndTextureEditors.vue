@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from "vue";
-import { Item, itemToEditorSettings, itemToViewerSettings } from "./Item";
-import { ModelViewer } from "@/pkg/ModelViewer";
-import { TextureEditor } from "@/pkg/konva/TextureEditor";
-import { EditorEvent } from "./events";
+import { Items } from "@/pkg/quake/items";
+import { itemToViewerSettings, ModelViewer } from "@/pkg/ModelViewer";
 import { Texture } from "@/pkg/quake/models";
-import { CssFilterSettings } from "@/pkg/CssFilter";
-import { Brush } from "@/pkg/konva/Brush";
+import { itemToEditorSettings, TextureEditor } from "./pixi/TextureEditor";
+import { Brush } from "./pixi/brush";
+import { FilterInputs } from "./pixi/filter";
 
 interface Props {
-  item: Item;
-  filters: CssFilterSettings;
+  item: Items;
+  filters: FilterInputs;
   brush: Brush;
 }
 
@@ -37,60 +36,41 @@ onMounted(async () => {
   const editorPromises: Promise<void>[] = [];
 
   for (let i = 0; i < props.item.model.textures.length; i++) {
-    const editorPromise = new Promise<void>((resolve) => {
+    const ePromise = new Promise<void>((resolve) => {
       const texture: Texture = props.item.model.textures[i];
-      editors[i] = new TextureEditor({
-        ...editorSettings[i],
-        filters: props.filters,
-        brush: props.brush,
-        onChange: () => {
-          viewer.setTextureByURI(editors[i].toURI(), texture.index);
-        },
-        onLoad: resolve,
-      });
-      editors[i].modelTextureOutline.hide();
-    });
+      const settings = editorSettings[i];
 
-    editorPromises.push(editorPromise);
+      editors[i] = new TextureEditor({
+        ...settings,
+        onChange: async () => {
+          await viewer.setTextureByURI(editors[i].toDataUrl(), texture.index);
+        },
+        onReady: () => {
+          editors[i].brush = props.brush;
+          resolve();
+        },
+      });
+
+      document
+        .getElementById(settings.containerID)
+        ?.append(editors[i].getCanvas());
+    });
+    editorPromises.push(ePromise);
   }
 
-  // wait until viewer and all texture editors are ready
   const allPromises = [viewerPromise].concat(editorPromises);
   await Promise.all(allPromises);
 
-  // apply textures
-  for (let i = 0; i < props.item.model.textures.length; i++) {
-    const texture: Texture = props.item.model.textures[i];
-    await viewer.setTextureByURI(editors[i].toURI(), texture.index);
+  // trigger change to update modelviewer
+  for (let i = 0; i < editors.length; i++) {
+    editors[i].filters = props.filters;
   }
-
-  // events
-  document.addEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
-  document.addEventListener(EditorEvent.FILTERS_CHANGE, onFiltersChangeEvent);
 });
 
-function onFiltersChangeEvent(e: Event): void {
-  const event = e as CustomEvent;
-
-  for (let i = 0; i < editors.length; i++) {
-    editors[i].applyCSSFilters(event.detail.filters);
-  }
-}
-
-const onBrushChangeEvent = (e: Event) => {
-  const event = e as CustomEvent;
-
-  for (let i = 0; i < editors.length; i++) {
-    editors[i].brush = event.detail.brush;
-  }
-};
-
 onBeforeUnmount(() => {
-  document.removeEventListener(EditorEvent.BRUSH_CHANGE, onBrushChangeEvent);
-  document.removeEventListener(
-    EditorEvent.FILTERS_CHANGE,
-    onFiltersChangeEvent
-  );
+  for (let i = 0; i < editors.length; i++) {
+    editors[i].destroy();
+  }
 });
 </script>
 
@@ -147,22 +127,22 @@ onBeforeUnmount(() => {
           :style="`width: ${editorSetting.width + 4}px; height: ${
             editorSetting.height + 4
           }px`"
-          class="app-border-dashed"
+          class="app-border-dashed app-checker"
         >
-          <div :id="editorSetting.containerID" />
+          <div :id="`${editorSetting.containerID}`" />
         </div>
 
         <div class="flex mt-2 space-x-4">
           <button
             class="block border border-gray-400 hover:bg-red-100 rounded-md py-1 px-2 bg-gray-200 shadow text-sm"
-            @click="() => editors[index]?.clearPaint()"
+            @click="() => editors[index]?.paint.clear()"
           >
             Clear paint
           </button>
           <label class="flex items-center">
             <input
               type="checkbox"
-              @click="() => editors[index]?.toggleTextureOutline()"
+              @click="() => editors[index]?.toggleOutline()"
             />
             <strong class="text-sm">Show outline</strong>
           </label>

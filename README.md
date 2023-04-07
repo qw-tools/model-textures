@@ -2,7 +2,7 @@
 
 > Tools for generating QuakeWorld graphics.
 
-Built with Vite, Tailwind CSS, Konva and model-viewer.
+Built with Vite, Tailwind CSS, PixiJS and model-viewer.
 
 ## Development
 
@@ -10,8 +10,8 @@ Built with Vite, Tailwind CSS, Konva and model-viewer.
 
 ```shell
 # clone repo
-git clone git@github.com:vikpe/qw-gfx.git
-cd qw-gfx
+git clone git@github.com:qw-tools/model-textures.git
+cd model-textures
 
 # install dependencies
 yarn install

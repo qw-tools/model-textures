@@ -1,99 +1,98 @@
 <script lang="ts" setup>
 import { reactive, watch } from "vue";
 import { throttle } from "@google/model-viewer/lib/utilities";
-import { CssFilterSettings, getDefaultFilterSettings } from "@/pkg/CssFilter";
+import { FilterInputs, getDefaultFilterInputs } from "./pixi/filter";
 
 interface Props {
-  onChange: (
-    newFilters: CssFilterSettings,
-    oldFilters: CssFilterSettings
-  ) => void;
+  onChange: (newFilters: FilterInputs, oldFilters: FilterInputs) => void;
 }
 
 const props = defineProps<Props>();
-const store: CssFilterSettings = reactive(getDefaultFilterSettings());
+const filters: FilterInputs = reactive(getDefaultFilterInputs());
 
-watch(store, throttle(props.onChange, 20));
+watch(filters, throttle(props.onChange, 20));
 </script>
 <template>
-  <div class="grid md:grid-cols-2 xl:flex items-center space-x-6">
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-y-1 gap-x-4">
     <div class="flex items-center space-x-2">
-      <label>
-        <input v-model="store.hue.enabled" type="checkbox" />
+      <label class="text-sm whitespace-nowrap">
+        <input v-model="filters.hue.enabled" type="checkbox" />
         <strong>HUE</strong>
       </label>
       <input
-        v-model.number="store.hue.value"
-        :disabled="!store.hue.enabled"
-        :max="store.hue.maxValue"
-        :min="store.hue.minValue"
+        v-model.number="filters.hue.value"
+        :disabled="!filters.hue.enabled"
+        :max="filters.hue.maxValue"
+        :min="filters.hue.minValue"
         :step="10"
         class="w-20"
         type="range"
       />
 
-      <label v-if="store.hue.enabled" class="text-sm fadeIn"
-        ><input v-model="store.hue.colorize" type="checkbox" /> Colorize</label
-      >
+      <label v-if="filters.hue.enabled" class="text-xs whitespace-nowrap">
+        <input v-model="filters.hue.colorize" type="checkbox" />
+        Colorize
+      </label>
     </div>
 
     <div class="flex items-center space-x-2">
-      <label>
-        <input v-model="store.saturation.enabled" type="checkbox" />
+      <label class="text-sm whitespace-nowrap">
+        <input v-model="filters.saturation.enabled" type="checkbox" />
         <strong>Saturation</strong>
       </label>
       <input
-        v-model.number="store.saturation.value"
-        :disabled="!store.saturation.enabled"
-        :max="store.saturation.maxValue"
-        :min="store.saturation.minValue"
-        :step="10"
+        v-model.number="filters.saturation.value"
+        :disabled="!filters.saturation.enabled"
+        :max="filters.saturation.maxValue"
+        :min="filters.saturation.minValue"
+        :step="0.05"
         class="w-20"
         type="range"
       />
     </div>
 
     <div class="flex items-center space-x-2">
-      <label>
-        <input v-model="store.brightness.enabled" type="checkbox" />
-        <strong>Brightness</strong>
-      </label>
-      <input
-        v-model.number="store.brightness.value"
-        :disabled="!store.brightness.enabled"
-        :max="store.brightness.maxValue"
-        :min="store.brightness.minValue"
-        :step="10"
-        class="w-20"
-        type="range"
-      />
-    </div>
-
-    <div class="flex items-center space-x-2">
-      <label>
-        <input v-model="store.contrast.enabled" type="checkbox" />
+      <label class="text-sm whitespace-nowrap">
+        <input v-model="filters.contrast.enabled" type="checkbox" />
         <strong>Contrast</strong>
       </label>
       <input
-        v-model.number="store.contrast.value"
-        :disabled="!store.contrast.enabled"
-        :max="store.contrast.maxValue"
-        :min="store.contrast.minValue"
+        v-model.number="filters.contrast.value"
+        :disabled="!filters.contrast.enabled"
+        :max="filters.contrast.maxValue"
+        :min="filters.contrast.minValue"
+        :step="0.1"
         class="w-20"
         type="range"
       />
     </div>
 
     <div class="flex items-center space-x-2">
-      <label>
-        <input v-model="store.blur.enabled" type="checkbox" />
+      <label class="text-sm whitespace-nowrap">
+        <input v-model="filters.brightness.enabled" type="checkbox" />
+        <strong>Brightness</strong>
+      </label>
+      <input
+        v-model.number="filters.brightness.value"
+        :disabled="!filters.brightness.enabled"
+        :max="filters.brightness.maxValue"
+        :min="filters.brightness.minValue"
+        :step="0.1"
+        class="w-20"
+        type="range"
+      />
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <label class="text-sm whitespace-nowrap">
+        <input v-model="filters.blur.enabled" type="checkbox" />
         <strong>Blur</strong>
       </label>
       <input
-        v-model.number="store.blur.value"
-        :disabled="!store.blur.enabled"
-        :max="store.blur.maxValue"
-        :min="store.blur.minValue"
+        v-model.number="filters.blur.value"
+        :disabled="!filters.blur.enabled"
+        :max="filters.blur.maxValue"
+        :min="filters.blur.minValue"
         class="w-20"
         type="range"
       />

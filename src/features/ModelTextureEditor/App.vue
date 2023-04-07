@@ -1,28 +1,28 @@
 <script lang="ts" setup>
+import { reactive } from "vue";
+import { FilterInputs, getDefaultFilterInputs } from "./pixi/filter";
+import { BrushChange, FiltersChange } from "./pixi/events";
+import { Brush, getDefaultBrush } from "./pixi/brush";
 import SiteHeader from "@/Site/SiteHeader.vue";
 import SiteFooter from "@/Site/SiteFooter.vue";
 import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
 import BrushSettings from "./BrushSettings.vue";
-import { Brush, getDefaultBrush } from "@/pkg/konva/Brush";
 import FilterToolbar from "./FilterToolbar.vue";
-import { armors, Item } from "./Item";
-import { CssFilterSettings, getDefaultFilterSettings } from "@/pkg/CssFilter";
-import { EditorEvent } from "./events";
-import { reactive } from "vue";
+import { armors, Items } from "@/pkg/quake/items";
 import ItemSelector from "./ModelSelector.vue";
 
-interface AppStore {
-  items: Item[];
-  addItem: (item: Item) => void;
-  removeItem: (item: Item) => void;
+interface ItemStore {
+  items: Items[];
+  add: (item: Items) => void;
+  remove: (item: Items) => void;
 }
 
 let lastBrush: Brush = getDefaultBrush();
-let lastFilters: CssFilterSettings = getDefaultFilterSettings();
+let lastFilters: FilterInputs = getDefaultFilterInputs();
 
-const store = reactive<AppStore>({
+const store = reactive<ItemStore>({
   items: [],
-  addItem(item: Item): void {
+  add(item: Items): void {
     if (this.items.includes(item)) {
       const el = document.getElementById(item.id);
       if (el) {
@@ -32,7 +32,7 @@ const store = reactive<AppStore>({
       this.items.push(item);
     }
   },
-  removeItem(item: Item): void {
+  remove(item: Items): void {
     const itemIndex = this.items.indexOf(item);
     if (itemIndex >= 0) {
       const el = document.getElementById(item.id);
@@ -45,20 +45,12 @@ const store = reactive<AppStore>({
 });
 
 function onBrushChange(brush: Brush): void {
-  const event = new CustomEvent(EditorEvent.BRUSH_CHANGE, {
-    bubbles: true,
-    detail: { brush },
-  });
-  document.dispatchEvent(event);
+  document.dispatchEvent(new BrushChange(brush));
   lastBrush = brush;
 }
 
-function onFiltersChange(filters: CssFilterSettings): void {
-  const event = new CustomEvent(EditorEvent.FILTERS_CHANGE, {
-    bubbles: true,
-    detail: { filters },
-  });
-  document.dispatchEvent(event);
+function onFiltersChange(filters: FilterInputs): void {
+  document.dispatchEvent(new FiltersChange(filters));
   lastFilters = filters;
 }
 </script>
@@ -74,9 +66,9 @@ function onFiltersChange(filters: CssFilterSettings): void {
 
     <div class="container fadeIn my-4">
       <div
-        class="flex px-4 py-3 my-4 items-center rounded border shadow bg-white space-x-8"
+        class="my-4 px-4 py-3 rounded border shadow bg-white grid gap-2 sm:gap-8 sm:grid-flow-col sm:auto-cols-max"
       >
-        <BrushSettings :brush="getDefaultBrush()" :on-change="onBrushChange" />
+        <BrushSettings :on-change="onBrushChange" />
         <FilterToolbar :on-change="onFiltersChange" />
       </div>
 
@@ -87,12 +79,12 @@ function onFiltersChange(filters: CssFilterSettings): void {
         <strong>Click an item below to load editor</strong>, for example:
         <span
           class="hover:cursor-pointer font-bold text-sky-600 hover:text-sky-800"
-          @click="() => store.addItem(armors[0])"
+          @click="() => store.add(armors[0])"
           >Green Armor</span
         >.
       </div>
 
-      <div class="grid gap-6 grid-cols-1 mb-4">
+      <div class="grid gap-6 grid-cols-1 mb-8">
         <div
           v-for="item in store.items"
           :id="item.id"
@@ -104,7 +96,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
               <button
                 :title="`Close ${item.model.name} editor`"
                 class="px-3 py-1 rounded shadow bg-gray-200 border border-gray-400 hover:bg-gray-100 mr-2"
-                @click="() => store.removeItem(item)"
+                @click="() => store.remove(item)"
               >
                 x
               </button>
@@ -126,9 +118,7 @@ function onFiltersChange(filters: CssFilterSettings): void {
     </div>
   </div>
 
-  <div class="border-b">
-    <ItemSelector :on-item-click="(item: Item) => store.addItem(item)" />
-  </div>
+  <ItemSelector :on-item-click="(item: Items) => store.add(item)" />
 
   <SiteFooter />
 </template>
