@@ -10,8 +10,8 @@ Built with Vite, Tailwind CSS, PixiJS and model-viewer.
 
 ```shell
 # clone repo
-git clone git@github.com:vikpe/qw-gfx.git
-cd qw-gfx
+git clone git@github.com:qw-tools/model-textures.git
+cd model-textures
 
 # install dependencies
 yarn install
