@@ -41,11 +41,11 @@ export class PaintLayer {
     this.brush = this._brush;
 
     // events
-    this._container.on("pointerdown", this._onPointerDown.bind(this));
-    this._container.on("pointerup", this._onPointerUp.bind(this));
-    this._container.on("pointermove", this._onPointerMove.bind(this));
-    this._container.on("pointerenter", this._onPointerEnter.bind(this));
-    this._container.on("pointerleave", this._onPointerLeave.bind(this));
+    this._paintSprite.on("pointerdown", this._onPointerDown.bind(this));
+    this._paintSprite.on("pointerup", this._onPointerUp.bind(this));
+    this._paintSprite.on("pointermove", this._onPointerMove.bind(this));
+    this._paintSprite.on("pointerenter", this._onPointerEnter.bind(this));
+    this._paintSprite.on("pointerleave", this._onPointerLeave.bind(this));
 
     // ticker
     const ticker = new PIXI.Ticker();
@@ -63,7 +63,7 @@ export class PaintLayer {
 
   set brush(brush: Brush) {
     this._brush = brush;
-    this._paintBuffer.brush = generateBrush(this._renderer, brush);
+    this._paintBuffer.brush = generateBrush(this._renderer, this._brush);
   }
 
   private _onTick(): void {
@@ -94,7 +94,6 @@ export class PaintLayer {
   }
 
   private _onPointerMove(e: PIXI.FederatedMouseEvent): void {
-    console.log("_onPointerMove");
     const position = eventToPosition(e);
 
     if (this._isDrawing) {

@@ -1,8 +1,8 @@
 import type { IRenderer } from "pixi.js";
-import { Filter, RenderTexture, Sprite, Color } from "pixi.js";
+import { Color, Filter, Graphics, RenderTexture, Sprite } from "pixi.js";
 import { Brush } from "./brush";
 
-const fragment = `
+const circleFragment = `
 uniform float size;
 uniform vec3 color;
 uniform float smoothing;
@@ -19,20 +19,40 @@ export function generateBrush(
   renderer: IRenderer,
   settings: Brush
 ): RenderTexture {
-  const { size, color, smoothing } = settings;
+  const renderTexture = RenderTexture.create({
+    width: settings.size,
+    height: settings.size,
+  });
 
-  const filter = new Filter(undefined, fragment, {
+  if (settings.shape === "circle") {
+    const circleSprite = generateCircle(settings);
+    renderer.render(circleSprite, { renderTexture });
+  } else {
+    const square = generateSquare(settings);
+    renderer.render(square, { renderTexture });
+  }
+  return renderTexture;
+}
+
+function generateCircle(settings: Brush): Sprite {
+  const { size, color, smoothing } = settings;
+  const sprite = new Sprite();
+  sprite.width = sprite.height = size;
+  const circleFilter = new Filter(undefined, circleFragment, {
     color: new Color(color),
     size,
     smoothing,
   });
 
-  const sprite = new Sprite();
-  sprite.width = size;
-  sprite.height = size;
-  sprite.filters = [filter];
+  sprite.filters = [circleFilter];
+  return sprite;
+}
 
-  const renderTexture = RenderTexture.create({ width: size, height: size });
-  renderer.render(sprite, { renderTexture });
-  return renderTexture;
+function generateSquare(settings: Brush): Graphics {
+  const { size, color } = settings;
+  const graphics = new Graphics();
+  graphics.beginFill(new Color(color));
+  graphics.drawRect(0, 0, size, size);
+  graphics.endFill();
+  return graphics;
 }
