@@ -56,7 +56,11 @@ export class TextureEditor extends PIXI.Application {
     this._outline.style.display = "none";
     this._outline.style.pointerEvents = "none";
     this._outline.style.position = "absolute";
-    document.getElementById(containerID)?.append(this._outline);
+
+    // set canvas attributes
+    const canvas = this.getCanvas();
+    canvas.classList.add(..."editor-canvas app-border-dashed".split(" "));
+    canvas.id = `${containerID}-canvas`;
 
     // events
     this._listen();
@@ -83,7 +87,22 @@ export class TextureEditor extends PIXI.Application {
   }
 
   private _listen(): void {
-    this.getCanvas().addEventListener("contextmenu", this._preventDefault);
+    const canvas = this.getCanvas();
+    canvas.addEventListener("dragenter", function (event) {
+      //console.log("dragenter");
+      canvas.classList.add(..."bg-green-400/25 opacity-25".split(" "));
+    });
+    canvas.addEventListener("dragleave", function (event) {
+      //console.log("dragleave");
+      canvas.classList.remove(..."bg-green-400/25 opacity-25".split(" "));
+    });
+    canvas.addEventListener("drop", function (event) {
+      event.preventDefault();
+      console.log("DROPPI", event);
+      canvas.classList.remove(..."bg-green-400/25 opacity-25".split(" "));
+    });
+
+    canvas.addEventListener("contextmenu", this._preventDefault);
 
     this._onBrushChange = this._onBrushChange.bind(this);
     document.addEventListener(EditorEvent.BRUSH_CHANGE, this._onBrushChange);
@@ -131,18 +150,20 @@ export class TextureEditor extends PIXI.Application {
     this._blurFilter.enabled = filters.blur.enabled;
 
     // adjustment
-    ["brightness", "contrast"].forEach((key) => {
-      this._adjustmentFilter[key] = filters[key].enabled
-        ? filters[key].value
-        : filters[key].defaultValue;
-    });
+    this._adjustmentFilter.brightness = filters.brightness.enabled
+      ? filters.brightness.value
+      : filters.brightness.defaultValue;
+    this._adjustmentFilter.contrast = filters.contrast.enabled
+      ? filters.contrast.value
+      : filters.contrast.defaultValue;
 
     // hsl adjustment
-    ["hue", "saturation"].forEach((key) => {
-      this._hslAdjustmentFilter[key] = filters[key].enabled
-        ? filters[key].value
-        : filters[key].defaultValue;
-    });
+    this._hslAdjustmentFilter.hue = filters.hue.enabled
+      ? filters.hue.value
+      : filters.hue.defaultValue;
+    this._hslAdjustmentFilter.saturation = filters.saturation.enabled
+      ? filters.saturation.value
+      : filters.hue.defaultValue;
     this._hslAdjustmentFilter.colorize =
       filters.hue.enabled && filters.hue.colorize;
 
