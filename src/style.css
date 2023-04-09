@@ -9,7 +9,7 @@
   }
 
   code {
-    font-family: monospace;
+    @apply font-mono;
   }
 }
 
@@ -68,9 +68,8 @@ label:hover code {
 }
 
 model-viewer {
+  @apply w-full h-full;
   min-width: 120px;
-  width: 100%;
-  height: 100%;
 }
 
 .app-border-dashed {
