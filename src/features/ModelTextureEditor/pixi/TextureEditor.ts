@@ -1,4 +1,9 @@
 import * as PIXI from "pixi.js";
+import {
+  AdjustmentFilter,
+  HslAdjustmentFilter,
+  OutlineFilter,
+} from "pixi-filters";
 import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
 import { Brush, getDefaultBrush } from "./brush";
@@ -6,9 +11,7 @@ import { slugify } from "@/pkg/stringUtil";
 import { Items, modelFilenamePath, player } from "@/pkg/quake/items";
 import { nullOperation } from "@/pkg/functions";
 import { BrushChange, EditorEvent, FiltersChange } from "./events";
-import { createOutline } from "@/pkg/pixi";
 import { FilterInputs } from "./filter";
-import { AdjustmentFilter, HslAdjustmentFilter } from "pixi-filters";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -26,7 +29,8 @@ export class TextureEditor extends PIXI.Application {
     new HslAdjustmentFilter();
   private readonly _adjustmentFilter: AdjustmentFilter = new AdjustmentFilter();
   private readonly _blurFilter: PIXI.BlurFilter = new PIXI.BlurFilter();
-  private _textureSprite: PIXI.Sprite | undefined;
+  private _outlineContainer: PIXI.Container = new PIXI.Container();
+  private _textureSprite: PIXI.Sprite = new PIXI.Sprite();
   private _textureContainer: PIXI.Container = new PIXI.Container();
   readonly paint: PaintLayer;
   onReady: () => void = nullOperation;
@@ -52,10 +56,11 @@ export class TextureEditor extends PIXI.Application {
     this.stage.addChild(this.paint.container);
 
     // outline
-    this._outline = document.createElement("img");
-    this._outline.style.display = "none";
-    this._outline.style.pointerEvents = "none";
-    this._outline.style.position = "absolute";
+    this._outlineContainer.visible = false;
+    this._outlineContainer.filters = [
+      new OutlineFilter(1, 0x000000, 1, 1, true),
+    ];
+    this.stage.addChild(this._outlineContainer);
 
     // set canvas attributes
     const canvas = this.getCanvas();
@@ -73,7 +78,11 @@ export class TextureEditor extends PIXI.Application {
     this.brush = getDefaultBrush();
 
     // load texture
-    this.loadTexture(settings.texturePath);
+    this.loadTexture(settings.texturePath).then((texture: PIXI.Texture) => {
+      // outline
+      this._outlineContainer.scale = this._textureSprite.scale;
+      this._outlineContainer.addChild(PIXI.Sprite.from(texture));
+    });
   }
 
   destroy(): void {
@@ -170,29 +179,26 @@ export class TextureEditor extends PIXI.Application {
     this._onChange();
   }
 
-  async loadTexture(url: string): Promise<void> {
-    // texture
+  async loadTexture(url: string): Promise<PIXI.Texture> {
     const texture: PIXI.Texture = await PIXI.Texture.fromURL(url);
-    const { width, height } = this._settings;
-
     this._textureSprite?.destroy();
     this._textureSprite = PIXI.Sprite.from(texture);
+
+    const { width, height } = this._settings;
     this._textureSprite.scale.x = width / texture.orig.width;
     this._textureSprite.scale.y = height / texture.orig.height;
-    this._textureContainer.addChild(this._textureSprite);
 
-    // outline
-    const o = await createOutline(this.renderer, texture, width, height);
-    this._outline.src = this.renderer.extract.canvas(o).toDataURL();
+    this._textureContainer.addChild(this._textureSprite);
 
     // callbacks
     this._onChange();
     this.onReady();
+
+    return texture;
   }
 
   toggleOutline(): void {
-    const d = this._outline.style.display;
-    this._outline.style.display = d === "none" ? "block" : "none";
+    this._outlineContainer.visible = !this._outlineContainer.visible;
   }
 
   download(filename = ""): void {
