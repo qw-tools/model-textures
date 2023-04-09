@@ -1,4 +1,9 @@
 import * as PIXI from "pixi.js";
+import {
+  AdjustmentFilter,
+  HslAdjustmentFilter,
+  OutlineFilter,
+} from "pixi-filters";
 import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
 import { Brush, getDefaultBrush } from "./brush";
@@ -6,9 +11,7 @@ import { slugify } from "@/pkg/stringUtil";
 import { Items, modelFilenamePath, player } from "@/pkg/quake/items";
 import { nullOperation } from "@/pkg/functions";
 import { BrushChange, EditorEvent, FiltersChange } from "./events";
-import { createOutline } from "@/pkg/pixi";
 import { FilterInputs } from "./filter";
-import { AdjustmentFilter, HslAdjustmentFilter } from "pixi-filters";
 
 export interface TextureEditorSettings {
   containerID: string;
@@ -20,13 +23,14 @@ export interface TextureEditorSettings {
 }
 
 export class TextureEditor extends PIXI.Application {
-  private readonly _outline: HTMLImageElement;
+  private readonly _containerDiv: HTMLElement;
   private readonly _settings: TextureEditorSettings;
   private readonly _hslAdjustmentFilter: HslAdjustmentFilter =
     new HslAdjustmentFilter();
   private readonly _adjustmentFilter: AdjustmentFilter = new AdjustmentFilter();
   private readonly _blurFilter: PIXI.BlurFilter = new PIXI.BlurFilter();
-  private _textureSprite: PIXI.Sprite | undefined;
+  private _outlineContainer: PIXI.Container = new PIXI.Container();
+  private _textureSprite: PIXI.Sprite = new PIXI.Sprite();
   private _textureContainer: PIXI.Container = new PIXI.Container();
   readonly paint: PaintLayer;
   onReady: () => void = nullOperation;
@@ -52,11 +56,18 @@ export class TextureEditor extends PIXI.Application {
     this.stage.addChild(this.paint.container);
 
     // outline
-    this._outline = document.createElement("img");
-    this._outline.style.display = "none";
-    this._outline.style.pointerEvents = "none";
-    this._outline.style.position = "absolute";
-    document.getElementById(containerID)?.append(this._outline);
+    this._outlineContainer.visible = false;
+    this._outlineContainer.filters = [
+      new OutlineFilter(1, 0x000000, 1, 1, true),
+    ];
+    this.stage.addChild(this._outlineContainer);
+
+    // HTML elements
+    this._containerDiv = document.getElementById(containerID) as HTMLElement;
+
+    const canvas = this.getCanvas();
+    canvas.id = `${containerID}-canvas`;
+    canvas.classList.add(..."editor-canvas app-dropzone".split(" "));
 
     // events
     this._listen();
@@ -69,7 +80,11 @@ export class TextureEditor extends PIXI.Application {
     this.brush = getDefaultBrush();
 
     // load texture
-    this.loadTexture(settings.texturePath);
+    this.loadTexture(settings.texturePath).then((texture: PIXI.Texture) => {
+      // outline
+      this._outlineContainer.scale = this._textureSprite.scale;
+      this._outlineContainer.addChild(PIXI.Sprite.from(texture));
+    });
   }
 
   destroy(): void {
@@ -83,7 +98,19 @@ export class TextureEditor extends PIXI.Application {
   }
 
   private _listen(): void {
-    this.getCanvas().addEventListener("contextmenu", this._preventDefault);
+    const canvas = this.getCanvas();
+    const container = this._containerDiv;
+
+    canvas.addEventListener("dragenter", () => {
+      container.classList.add("editor-drag");
+    });
+    canvas.addEventListener("dragleave", () => {
+      container.classList.remove("editor-drag");
+    });
+    this._onFileDrop = this._onFileDrop.bind(this);
+    canvas.addEventListener("drop", this._onFileDrop);
+
+    canvas.addEventListener("contextmenu", this._preventDefault);
 
     this._onBrushChange = this._onBrushChange.bind(this);
     document.addEventListener(EditorEvent.BRUSH_CHANGE, this._onBrushChange);
@@ -93,6 +120,29 @@ export class TextureEditor extends PIXI.Application {
       EditorEvent.FILTERS_CHANGE,
       this._onFiltersChange
     );
+  }
+
+  private _onFileDrop(event: DragEvent): void {
+    event.preventDefault();
+    this._containerDiv.classList.remove("editor-drag");
+
+    if (!event.dataTransfer) {
+      return;
+    }
+
+    const files = Array.from(event.dataTransfer.files);
+    const imageFiles = files.filter((f) => f.type.startsWith("image"));
+
+    if (0 === imageFiles.length) {
+      return;
+    }
+
+    try {
+      const url = URL.createObjectURL(imageFiles[0]);
+      this.loadTexture(url).catch();
+    } catch (e) {
+      // do nothing
+    }
   }
 
   private _unlisten(): void {
@@ -131,47 +181,46 @@ export class TextureEditor extends PIXI.Application {
     this._blurFilter.enabled = filters.blur.enabled;
 
     // adjustment
-    ["brightness", "contrast"].forEach((key) => {
-      this._adjustmentFilter[key] = filters[key].enabled
-        ? filters[key].value
-        : filters[key].defaultValue;
-    });
+    this._adjustmentFilter.brightness = filters.brightness.enabled
+      ? filters.brightness.value
+      : filters.brightness.defaultValue;
+    this._adjustmentFilter.contrast = filters.contrast.enabled
+      ? filters.contrast.value
+      : filters.contrast.defaultValue;
 
     // hsl adjustment
-    ["hue", "saturation"].forEach((key) => {
-      this._hslAdjustmentFilter[key] = filters[key].enabled
-        ? filters[key].value
-        : filters[key].defaultValue;
-    });
+    this._hslAdjustmentFilter.hue = filters.hue.enabled
+      ? filters.hue.value
+      : filters.hue.defaultValue;
+    this._hslAdjustmentFilter.saturation = filters.saturation.enabled
+      ? filters.saturation.value
+      : filters.hue.defaultValue;
     this._hslAdjustmentFilter.colorize =
       filters.hue.enabled && filters.hue.colorize;
 
     this._onChange();
   }
 
-  async loadTexture(url: string): Promise<void> {
-    // texture
+  async loadTexture(url: string): Promise<PIXI.Texture> {
     const texture: PIXI.Texture = await PIXI.Texture.fromURL(url);
-    const { width, height } = this._settings;
-
     this._textureSprite?.destroy();
     this._textureSprite = PIXI.Sprite.from(texture);
+
+    const { width, height } = this._settings;
     this._textureSprite.scale.x = width / texture.orig.width;
     this._textureSprite.scale.y = height / texture.orig.height;
-    this._textureContainer.addChild(this._textureSprite);
 
-    // outline
-    const o = await createOutline(this.renderer, texture, width, height);
-    this._outline.src = this.renderer.extract.canvas(o).toDataURL();
+    this._textureContainer.addChild(this._textureSprite);
 
     // callbacks
     this._onChange();
     this.onReady();
+
+    return texture;
   }
 
   toggleOutline(): void {
-    const d = this._outline.style.display;
-    this._outline.style.display = d === "none" ? "block" : "none";
+    this._outlineContainer.visible = !this._outlineContainer.visible;
   }
 
   download(filename = ""): void {

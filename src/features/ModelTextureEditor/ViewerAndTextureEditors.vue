@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted } from "vue";
+import { onBeforeMount, onBeforeUnmount, onMounted } from "vue";
 import { Items } from "@/pkg/quake/items";
 import { itemToViewerSettings, ModelViewer } from "@/pkg/ModelViewer";
 import { Texture } from "@/pkg/quake/models";
@@ -72,6 +72,32 @@ onBeforeUnmount(() => {
     editors[i].destroy();
   }
 });
+
+// async function onTextureFileUpload(event: Event): Promise<void> {
+//   const files = (event.target as HTMLInputElement).files;
+//
+//   if (!files) {
+//     return;
+//   }
+//
+//   await editor.setTextureByFile(files[0]);
+// }
+
+onBeforeMount(() => {
+  const dropzoneClass = "app-dropzone";
+
+  const prevent = function (e) {
+    e.preventDefault();
+
+    if (!e.target.classList.contains(dropzoneClass)) {
+      e.dataTransfer.effectAllowed = "none";
+      e.dataTransfer.dropEffect = "none";
+    }
+  };
+  window.addEventListener("dragenter", prevent, false);
+  window.addEventListener("dragover", prevent);
+  window.addEventListener("drop", prevent);
+});
 </script>
 
 <template>
@@ -127,9 +153,11 @@ onBeforeUnmount(() => {
           :style="`width: ${editorSetting.width + 4}px; height: ${
             editorSetting.height + 4
           }px`"
-          class="app-border-dashed app-checker"
         >
-          <div :id="`${editorSetting.containerID}`" />
+          <div
+            :id="`${editorSetting.containerID}`"
+            class="editor-container app-bg-checker app-border-dashed"
+          />
         </div>
 
         <div class="flex mt-2 space-x-4">
