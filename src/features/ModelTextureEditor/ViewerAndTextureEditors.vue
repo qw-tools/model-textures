@@ -96,7 +96,7 @@ async function onFileDrop(event: DragEvent): Promise<void> {
 // }
 
 onBeforeMount(() => {
-  const dropzoneClass = "editor-canvas";
+  const dropzoneClass = "app-dropzone";
 
   const prevent = function (e) {
     e.preventDefault();
@@ -166,7 +166,10 @@ onBeforeMount(() => {
             editorSetting.height + 4
           }px`"
         >
-          <div :id="`${editorSetting.containerID}`" class="app-checker" />
+          <div
+            :id="`${editorSetting.containerID}`"
+            class="editor-container app-bg-checker app-border-dashed"
+          />
         </div>
 
         <div class="flex mt-2 space-x-4">
