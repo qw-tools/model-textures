@@ -97,5 +97,20 @@ watch(filters, throttle(props.onChange, 20));
         type="range"
       />
     </div>
+
+    <div class="flex items-center space-x-2">
+      <label class="text-sm whitespace-nowrap">
+        <input v-model="filters.pixelate.enabled" type="checkbox" />
+        <strong>Pixelate</strong>
+      </label>
+      <input
+        v-model.number="filters.pixelate.value"
+        :disabled="!filters.pixelate.enabled"
+        :max="filters.pixelate.maxValue"
+        :min="filters.pixelate.minValue"
+        class="w-20"
+        type="range"
+      />
+    </div>
   </div>
 </template>

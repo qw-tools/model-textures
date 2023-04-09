@@ -3,6 +3,7 @@ import {
   AdjustmentFilter,
   HslAdjustmentFilter,
   OutlineFilter,
+  PixelateFilter,
 } from "pixi-filters";
 import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
@@ -29,6 +30,7 @@ export class TextureEditor extends PIXI.Application {
     new HslAdjustmentFilter();
   private readonly _adjustmentFilter: AdjustmentFilter = new AdjustmentFilter();
   private readonly _blurFilter: PIXI.BlurFilter = new PIXI.BlurFilter();
+  private readonly _pixelateFilter: PixelateFilter = new PixelateFilter(8);
   private _outlineContainer: PIXI.Container = new PIXI.Container();
   private _textureSprite: PIXI.Sprite = new PIXI.Sprite();
   private _textureContainer: PIXI.Container = new PIXI.Container();
@@ -41,12 +43,15 @@ export class TextureEditor extends PIXI.Application {
     super({ width, height, backgroundAlpha: 0 });
     this._settings = settings;
 
-    // texture
+    // filters
     this._blurFilter.enabled = false;
+    this._pixelateFilter.enabled = false;
+
     this._textureContainer.filters = [
       this._hslAdjustmentFilter,
       this._adjustmentFilter,
       this._blurFilter,
+      this._pixelateFilter,
     ];
     this.stage.addChild(this._textureContainer);
 
@@ -197,6 +202,19 @@ export class TextureEditor extends PIXI.Application {
       : filters.hue.defaultValue;
     this._hslAdjustmentFilter.colorize =
       filters.hue.enabled && filters.hue.colorize;
+
+    // pixelate
+    this._pixelateFilter.enabled = filters.pixelate.enabled;
+
+    if (this._pixelateFilter.enabled) {
+      this._pixelateFilter.size = filters.pixelate.value;
+      const offset = Math.round(filters.pixelate.value / 2);
+      this._textureContainer.x = -offset;
+      this._textureContainer.y = -offset;
+    } else {
+      this._textureContainer.x = 0;
+      this._textureContainer.y = 0;
+    }
 
     this._onChange();
   }
