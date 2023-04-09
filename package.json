@@ -1,8 +1,8 @@
 {
-  "name": "qw-gfx",
+  "name": "model-textures",
   "version": "0.1.0",
   "author": "Viktor Persson",
-  "repository": "vikpe/qw-gfx",
+  "repository": "qw-tools/model-textures",
   "type": "module",
   "scripts": {
     "dev": "vite",
