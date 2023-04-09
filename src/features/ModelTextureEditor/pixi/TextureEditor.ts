@@ -23,7 +23,7 @@ export interface TextureEditorSettings {
 }
 
 export class TextureEditor extends PIXI.Application {
-  private readonly _outline: HTMLImageElement;
+  private readonly _containerDiv: HTMLElement;
   private readonly _settings: TextureEditorSettings;
   private readonly _hslAdjustmentFilter: HslAdjustmentFilter =
     new HslAdjustmentFilter();
@@ -62,10 +62,12 @@ export class TextureEditor extends PIXI.Application {
     ];
     this.stage.addChild(this._outlineContainer);
 
-    // set canvas attributes
+    // HTML elements
+    this._containerDiv = document.getElementById(containerID) as HTMLElement;
+
     const canvas = this.getCanvas();
-    canvas.classList.add(..."editor-canvas app-border-dashed".split(" "));
     canvas.id = `${containerID}-canvas`;
+    canvas.classList.add(..."editor-canvas app-dropzone".split(" "));
 
     // events
     this._listen();
@@ -97,19 +99,19 @@ export class TextureEditor extends PIXI.Application {
 
   private _listen(): void {
     const canvas = this.getCanvas();
+    const dragClass = "editor-drag";
+    const container = this._containerDiv;
+
     canvas.addEventListener("dragenter", function (event) {
-      //console.log("dragenter");
-      canvas.classList.add(..."bg-green-400/25 opacity-25".split(" "));
+      console.log("dragenter");
+      container.classList.add(dragClass);
     });
     canvas.addEventListener("dragleave", function (event) {
-      //console.log("dragleave");
-      canvas.classList.remove(..."bg-green-400/25 opacity-25".split(" "));
+      console.log("dragleave");
+      container.classList.remove(dragClass);
     });
-    canvas.addEventListener("drop", function (event) {
-      event.preventDefault();
-      console.log("DROPPI", event);
-      canvas.classList.remove(..."bg-green-400/25 opacity-25".split(" "));
-    });
+    this._onFileDrop = this._onFileDrop.bind(this);
+    canvas.addEventListener("drop", this._onFileDrop);
 
     canvas.addEventListener("contextmenu", this._preventDefault);
 
@@ -121,6 +123,24 @@ export class TextureEditor extends PIXI.Application {
       EditorEvent.FILTERS_CHANGE,
       this._onFiltersChange
     );
+  }
+
+  private _onFileDrop(event: DragEvent) {
+    event.preventDefault();
+    this._containerDiv.classList.remove("editor-drag");
+
+    if (!event.dataTransfer) {
+      return;
+    }
+
+    const files = Array.from(event.dataTransfer.files);
+    const imageFiles = files.filter((f) => f.type.startsWith("image"));
+
+    if (0 === imageFiles.length) {
+      return;
+    }
+
+    this.loadTexture(URL.createObjectURL(imageFiles[0]));
   }
 
   private _unlisten(): void {

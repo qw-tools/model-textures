@@ -73,18 +73,6 @@ onBeforeUnmount(() => {
   }
 });
 
-async function onFileDrop(event: DragEvent): Promise<void> {
-  console.log("dropped something");
-
-  if (!event.dataTransfer) {
-    return;
-  }
-
-  console.log("DROP FILES", event.dataTransfer.files);
-
-  //await editor.setTextureByFile(event.dataTransfer.files[0]);
-}
-
 // async function onTextureFileUpload(event: Event): Promise<void> {
 //   const files = (event.target as HTMLInputElement).files;
 //
