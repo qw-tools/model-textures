@@ -99,16 +99,13 @@ export class TextureEditor extends PIXI.Application {
 
   private _listen(): void {
     const canvas = this.getCanvas();
-    const dragClass = "editor-drag";
     const container = this._containerDiv;
 
-    canvas.addEventListener("dragenter", function (event) {
-      console.log("dragenter");
-      container.classList.add(dragClass);
+    canvas.addEventListener("dragenter", () => {
+      container.classList.add("editor-drag");
     });
-    canvas.addEventListener("dragleave", function (event) {
-      console.log("dragleave");
-      container.classList.remove(dragClass);
+    canvas.addEventListener("dragleave", () => {
+      container.classList.remove("editor-drag");
     });
     this._onFileDrop = this._onFileDrop.bind(this);
     canvas.addEventListener("drop", this._onFileDrop);
