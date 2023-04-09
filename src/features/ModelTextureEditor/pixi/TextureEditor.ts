@@ -125,7 +125,7 @@ export class TextureEditor extends PIXI.Application {
     );
   }
 
-  private _onFileDrop(event: DragEvent) {
+  private _onFileDrop(event: DragEvent): void {
     event.preventDefault();
     this._containerDiv.classList.remove("editor-drag");
 
@@ -140,7 +140,12 @@ export class TextureEditor extends PIXI.Application {
       return;
     }
 
-    this.loadTexture(URL.createObjectURL(imageFiles[0]));
+    try {
+      const url = URL.createObjectURL(imageFiles[0]);
+      this.loadTexture(url).catch();
+    } catch (e) {
+      // do nothing
+    }
   }
 
   private _unlisten(): void {
