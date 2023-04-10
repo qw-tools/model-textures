@@ -4,6 +4,10 @@ export const pages = [
     url: "https://tools.quake.world/model-textures/",
   },
   {
+    title: "Simple Items",
+    url: "https://tools.quake.world/simple-items/",
+  },
+  {
     title: "HUD Numbers",
     url: "https://tools.quake.world/hud-numbers/",
   },
