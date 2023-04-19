@@ -1,6 +1,4 @@
-# QuakeWorld GFX
-
-> Tools for generating QuakeWorld graphics.
+# QuakeWorld Model Texture Editor
 
 Built with Vite, Tailwind CSS, PixiJS and model-viewer.
 
