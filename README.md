@@ -2,6 +2,8 @@
 
 Built with Vite, Tailwind CSS, PixiJS and model-viewer.
 
+![image](https://user-images.githubusercontent.com/1616817/233014248-956ee616-f063-4e18-863b-e0d47475c2b7.png)
+
 ## Development
 
 ### Setup
