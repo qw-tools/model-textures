@@ -11,6 +11,18 @@ export function slugify(text: string): string {
     .replace(/-$/g, ""); // Remove trailing -
 }
 
+export function toFilename(value: string): string {
+  return slugify(value).replaceAll("-", "_");
+}
+
+export function toCustomTextureUrl(orgUrl: string, customName: string): string {
+  const orgName = orgUrl
+    .substring(orgUrl.lastIndexOf("/") + 1)
+    .replace(".png", "");
+
+  return `/assets/custom_textures/${toFilename(customName)}_${orgName}.png`;
+}
+
 // async function onTextureFileDrop(event: DragEvent): Promise<void> {
 //   // prevent opening image in browser
 //   event.stopPropagation();

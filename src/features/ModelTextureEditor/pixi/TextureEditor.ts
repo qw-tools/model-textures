@@ -219,6 +219,10 @@ export class TextureEditor extends PIXI.Application {
     this._onChange();
   }
 
+  async resetTexture() {
+    await this.loadTexture(this._settings.texturePath);
+  }
+
   async loadTexture(url: string): Promise<PIXI.Texture> {
     const texture: PIXI.Texture = await PIXI.Texture.fromURL(url);
     this._textureSprite?.destroy();

@@ -5,7 +5,7 @@ import { BrushChange, FiltersChange } from "./pixi/events";
 import { Brush, getDefaultBrush } from "./pixi/brush";
 import SiteHeader from "@/Site/SiteHeader.vue";
 import SiteFooter from "@/Site/SiteFooter.vue";
-import ViewerAndTextureEditors from "./ViewerAndTextureEditors.vue";
+import ModelTextureEditor from "./ModelTextureEditor.vue";
 import BrushSettings from "./BrushSettings.vue";
 import FilterToolbar from "./FilterToolbar.vue";
 import { armors, Items } from "@/pkg/quake/items";
@@ -91,28 +91,12 @@ function onFiltersChange(filters: FilterInputs): void {
           :key="item.id"
           class="transition-opacity duration-300"
         >
-          <div class="p-2 bg-gray-300 rounded-md">
-            <div class="flex items-center">
-              <button
-                :title="`Close ${item.model.name} editor`"
-                class="px-3 py-1 rounded shadow bg-gray-200 border border-gray-400 hover:bg-gray-100 mr-2"
-                @click="() => store.remove(item)"
-              >
-                x
-              </button>
-
-              <div class="font-bold">
-                {{ item.model.name }}
-              </div>
-            </div>
-          </div>
-          <div class="fadeIn mt-2">
-            <ViewerAndTextureEditors
-              :brush="lastBrush"
-              :filters="lastFilters"
-              :item="item"
-            />
-          </div>
+          <ModelTextureEditor
+            :brush="lastBrush"
+            :filters="lastFilters"
+            :item="item"
+            :on-close="() => store.remove(item)"
+          />
         </div>
       </div>
     </div>
