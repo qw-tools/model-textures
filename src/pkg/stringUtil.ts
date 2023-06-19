@@ -1,3 +1,5 @@
+import { publicUrl } from "@/pkg/viteUtil";
+
 export function slugify(text: string): string {
   return text
     .toString() // Cast to string (optional)
@@ -20,7 +22,10 @@ export function toCustomTextureUrl(orgUrl: string, customName: string): string {
     .substring(orgUrl.lastIndexOf("/") + 1)
     .replace(".png", "");
 
-  return `/assets/custom_textures/${toFilename(customName)}_${orgName}.png`;
+  const url = `/assets/custom_textures/${toFilename(
+    customName
+  )}_${orgName}.png`;
+  return publicUrl(url);
 }
 
 // async function onTextureFileDrop(event: DragEvent): Promise<void> {
