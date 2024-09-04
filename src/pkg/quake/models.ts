@@ -4,6 +4,7 @@ import { slugify } from "../stringUtil";
 export interface Texture {
   index: number;
   filename: string;
+  destFilename?: string;
   width: number;
   height: number;
 }
@@ -101,6 +102,22 @@ export const Grenade: Model = {
   filename: "grenade.gltf",
   textureDirPath: "qw/textures/models",
   textures: [{ index: 0, filename: "grenade_0.png", width: 40, height: 44 }],
+  customTextureSets: [],
+};
+
+export const GrenadeV2: Model = {
+  name: "Grenade (v2)",
+  filename: "grenade_v2.gltf",
+  textureDirPath: "qw/textures/models",
+  textures: [
+    {
+      index: 0,
+      filename: "grenade_v2_0.png",
+      destFilename: "grenade_0.png",
+      width: 256,
+      height: 256,
+    },
+  ],
   customTextureSets: [],
 };
 

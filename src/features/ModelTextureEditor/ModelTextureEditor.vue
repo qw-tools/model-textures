@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { onBeforeMount, onBeforeUnmount, onMounted } from "vue";
+import { ModelViewer, itemToViewerSettings } from "@/pkg/ModelViewer";
 import { Items } from "@/pkg/quake/items";
-import { itemToViewerSettings, ModelViewer } from "@/pkg/ModelViewer";
 import { Texture } from "@/pkg/quake/models";
-import { itemToEditorSettings, TextureEditor } from "./pixi/TextureEditor";
+import { toCustomTextureUrl } from "@/pkg/stringUtil";
+import { onBeforeMount, onBeforeUnmount, onMounted } from "vue";
+import { TextureEditor, itemToEditorSettings } from "./pixi/TextureEditor";
 import { Brush } from "./pixi/brush";
 import { FilterInputs } from "./pixi/filter";
-import { toCustomTextureUrl } from "@/pkg/stringUtil";
 
 interface Props {
   item: Items;
@@ -181,6 +181,7 @@ onBeforeMount(() => {
                 <span class="text-gray-500 text-xs"
                   >{{ props.item.model.textureDirPath }}/</span
                 ><strong>{{
+                  props.item.model.textures[index].destFilename ??
                   props.item.model.textures[index].filename
                 }}</strong>
                 <span class="text-gray-500 text-xs ml-2"
@@ -195,7 +196,8 @@ onBeforeMount(() => {
                 @click="
                   () =>
                     editors[index]?.download(
-                      props.item.model.textures[index].filename
+                      props.item.model.textures[index].destFilename ??
+                        props.item.model.textures[index].filename
                     )
                 "
               >

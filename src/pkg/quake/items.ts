@@ -104,13 +104,20 @@ const Grenade: Items = {
   viewerOrientation: 90,
 };
 
+const GrenadeAlt: Items = {
+  category: "Projectiles",
+  id: modelToId(quakeModels.GrenadeV2),
+  model: quakeModels.GrenadeV2,
+  viewerOrientation: 90,
+};
+
 const Missile: Items = {
   category: "Projectiles",
   id: modelToId(quakeModels.Missile),
   model: quakeModels.Missile,
   viewerOrientation: 90,
 };
-export const projectiles: Items[] = [Grenade, Missile];
+export const projectiles: Items[] = [Grenade, GrenadeAlt, Missile];
 
 const Quad: Items = {
   category: "Powerups",
