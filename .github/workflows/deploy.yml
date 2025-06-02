@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -19,15 +19,15 @@ jobs:
       - uses: actions/setup-node@v3
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: pnpm install
 
       - name: Build site
-        run: yarn build
+        run: pnpm build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'dist'
+          path: "dist"
 
   deploy:
     needs: build

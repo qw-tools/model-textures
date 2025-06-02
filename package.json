@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build --base=https://tools.quake.world/model-textures/",
     "preview": "vite preview",
-    "format": "yarn prettier --write src",
+    "format": "pnpm prettier --write src",
     "lint": "eslint . --ext .ts,.vue"
   },
   "dependencies": {

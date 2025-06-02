@@ -15,10 +15,10 @@ git clone git@github.com:qw-tools/model-textures.git
 cd model-textures
 
 # install dependencies
-yarn install
+pnpm install
 
 # start dev server
-yarn dev
+pnpm dev
 ```
 
 dev server is hosted at http://localhost:5173
@@ -27,7 +27,7 @@ dev server is hosted at http://localhost:5173
 
 | Command      | Description                                       |
 |--------------|---------------------------------------------------|
-| `yarn dev`   | Start development server at http://localhost:5173 |
-| `yarn build` | Build site to `/dist`                             |
-| `yarn serve` | Serve `/dist` at http://localhost:4173            |
-| `yarn lint`  | Run linter (prettier)                             |
+| `pnpm dev`   | Start development server at http://localhost:5173 |
+| `pnpm build` | Build site to `/dist`                             |
+| `pnpm serve` | Serve `/dist` at http://localhost:4173            |
+| `pnpm lint`  | Run linter (prettier)                             |
