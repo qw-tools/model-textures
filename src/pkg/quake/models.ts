@@ -287,12 +287,27 @@ export const CellsLarge: Model = {
 };
 
 // Units
-export const Player: Model = {
+export const PlayerDefault: Model = {
   name: "Player",
   filename: "player.gltf",
   textureDirPath: "qw/skins",
   textures: [{ index: 0, filename: "player_0.png", width: 296, height: 194 }],
   customTextureSets: ["primevil base", "primevil white"],
+};
+export const PlayerNew: Model = {
+  name: "Player (new)",
+  filename: "player_new.gltf",
+  textureDirPath: "qw/skins",
+  textures: [
+    {
+      index: 0,
+      filename: "player_new_0.png",
+      destFilename: "player_0.png",
+      width: 256,
+      height: 256,
+    },
+  ],
+  customTextureSets: [],
 };
 
 // Runes

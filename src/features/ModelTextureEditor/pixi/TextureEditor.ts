@@ -9,7 +9,7 @@ import { PaintLayer } from "./PaintLayer";
 import { saveAs } from "file-saver";
 import { Brush, getDefaultBrush } from "./brush";
 import { slugify } from "@/pkg/stringUtil";
-import { Items, modelFilenamePath, player } from "@/pkg/quake/items";
+import { Items, modelFilenamePath } from "@/pkg/quake/items";
 import { nullOperation } from "@/pkg/functions";
 import { BrushChange, EditorEvent, FiltersChange } from "./events";
 import { FilterInputs } from "./filter";
@@ -278,7 +278,7 @@ export function itemToEditorSettings(item: Items): TextureEditorSettings[] {
 }
 
 function getEditorHeightByItem(item: Items): number {
-  if (item.model.name === player.model.name) {
+  if (item.model.name.startsWith("Player")) {
     return 520;
   }
   return 240;

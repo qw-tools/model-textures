@@ -36,12 +36,19 @@ const RedArmor = {
 export const armors: Items[] = [GreenArmor, YellowArmor, RedArmor];
 
 // Units
-export const player: Items = {
+const PlayerDefault: Items = {
   category: "Units",
-  id: modelToId(quakeModels.Player),
-  model: quakeModels.Player,
+  id: modelToId(quakeModels.PlayerDefault),
+  model: quakeModels.PlayerDefault,
   viewerOrientation: 45,
 };
+const PlayerNew: Items = {
+  category: "Units",
+  id: modelToId(quakeModels.PlayerNew),
+  model: quakeModels.PlayerNew,
+  viewerOrientation: 45,
+};
+export const players: Items[] = [PlayerDefault, PlayerNew];
 
 // weapon models
 const weaponOrientation = 45;

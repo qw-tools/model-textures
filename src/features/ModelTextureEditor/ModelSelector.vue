@@ -5,7 +5,7 @@ import {
   backpack,
   healthPacks,
   Items,
-  player,
+  players,
   powerups,
   projectiles,
   runes,
@@ -23,8 +23,8 @@ const itemsCategories = [
   { name: "Powerups", items: powerups },
   { name: "Projectiles", items: projectiles },
   { name: "Weapons", items: weapons },
-  { name: "Backpack", items: [backpack] },
-  { name: "Units", items: [player] },
+  { name: "Misc", items: [backpack] },
+  { name: "Units", items: players },
   { name: "Runes", items: runes },
 ];
 
